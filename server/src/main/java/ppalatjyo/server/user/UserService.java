@@ -32,4 +32,9 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow();
         user.promoteGuestToMember(oAuthEmail, oAuthProvider);
     }
+
+    public void changeNickname(Long userId, String newNickname) {
+        User user = userRepository.findById(userId).orElseThrow();
+        user.changeNickname(newNickname);
+    }
 }

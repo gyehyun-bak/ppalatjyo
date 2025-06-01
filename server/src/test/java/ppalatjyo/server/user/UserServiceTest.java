@@ -75,4 +75,21 @@ class UserServiceTest {
         // then
         assertThat(user.getRole()).isEqualTo(UserRole.MEMBER);
     }
+
+    @Test
+    @DisplayName("User nickname 변경")
+    void changeNickname() {
+        // given
+        String oldNickname = "oldNickname";
+        String newNickname = "newNickname";
+        User user = User.createGuest(oldNickname);
+        Long id = 1L;
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+
+        // when
+        userService.changeNickname(id, newNickname);
+
+        // then
+        assertThat(user.getNickname()).isEqualTo(newNickname);
+    }
 }
