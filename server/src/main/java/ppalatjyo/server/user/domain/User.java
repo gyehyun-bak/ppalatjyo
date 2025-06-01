@@ -1,8 +1,8 @@
-package ppalatjyo.server.domain;
+package ppalatjyo.server.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ppalatjyo.server.exception.UserAlreadyMemberException;
+import ppalatjyo.server.user.UserAlreadyMemberException;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public class User {
 
     @Id
@@ -33,7 +33,6 @@ public class User {
 
     @Builder.Default
     private LocalDateTime lastAccessedAt = LocalDateTime.now();
-
 
     public static User createGuest(String nickname) {
         return User.builder()
@@ -68,5 +67,9 @@ public class User {
         }
 
         this.nickname = nickname;
+    }
+
+    public void access() {
+        this.lastAccessedAt = LocalDateTime.now();
     }
 }

@@ -1,8 +1,8 @@
-package ppalatjyo.server.domain;
+package ppalatjyo.server.user.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ppalatjyo.server.exception.UserAlreadyMemberException;
+import ppalatjyo.server.user.UserAlreadyMemberException;
 
 import java.time.LocalDateTime;
 
@@ -121,5 +121,21 @@ class UserTest {
                 .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> user.changeNickname(""))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("접속한 유저는 마지막 접속 시간 업데이트")
+    void access() throws InterruptedException {
+        // given
+        String nickname = "nickname";
+        User user = User.createGuest(nickname);
+        LocalDateTime lastAccessedAtBefore = user.getLastAccessedAt();
+        Thread.sleep(10);
+
+        // when
+        user.access();
+
+        // then
+        assertThat(user.getLastAccessedAt()).isNotEqualTo(lastAccessedAtBefore);
     }
 }
