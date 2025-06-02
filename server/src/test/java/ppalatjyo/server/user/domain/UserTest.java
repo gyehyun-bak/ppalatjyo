@@ -94,18 +94,22 @@ class UserTest {
 
     @Test
     @DisplayName("유저는 nickname 변경 가능")
-    void editNickname() {
+    void editNickname() throws InterruptedException {
         // given
         String nickname = "nickname";
-        User user = User.createGuest(nickname);
-
         String newNickname = "newNickname";
+
+        User user = User.createGuest(nickname);
+        LocalDateTime lastModifiedAtBefore = user.getLastModifiedAt();
+
+        Thread.sleep(10);
 
         // when
         user.changeNickname(newNickname);
 
         // then
         assertThat(user.getNickname()).isEqualTo(newNickname);
+        assertThat(user.getLastModifiedAt()).isAfter(lastModifiedAtBefore);
     }
 
     @Test

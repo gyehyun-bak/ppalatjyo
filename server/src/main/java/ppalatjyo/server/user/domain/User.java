@@ -67,9 +67,11 @@ public class User {
         }
 
         this.nickname = nickname;
+        this.lastModifiedAt = LocalDateTime.now();
     }
 
     public void access() {
         this.lastAccessedAt = LocalDateTime.now();
+        this.lastModifiedAt = LocalDateTime.now();
     }
 }
