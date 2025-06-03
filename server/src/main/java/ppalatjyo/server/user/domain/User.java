@@ -2,6 +2,7 @@ package ppalatjyo.server.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ppalatjyo.server.common.BaseEntity;
 import ppalatjyo.server.user.UserAlreadyMemberException;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -22,12 +23,6 @@ public class User {
 
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
-
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Builder.Default
-    private LocalDateTime lastModifiedAt = LocalDateTime.now();
 
     private LocalDateTime deletedAt;
 
@@ -58,7 +53,6 @@ public class User {
         this.oAuthEmail = oAuthEmail;
         this.oAuthProvider = oAuthProvider;
         this.role = UserRole.MEMBER;
-        this.lastModifiedAt = LocalDateTime.now();
     }
 
     public void changeNickname(String nickname) {
@@ -67,11 +61,9 @@ public class User {
         }
 
         this.nickname = nickname;
-        this.lastModifiedAt = LocalDateTime.now();
     }
 
     public void access() {
         this.lastAccessedAt = LocalDateTime.now();
-        this.lastModifiedAt = LocalDateTime.now();
     }
 }

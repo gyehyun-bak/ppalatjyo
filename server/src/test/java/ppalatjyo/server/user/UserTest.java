@@ -1,8 +1,10 @@
-package ppalatjyo.server.user.domain;
+package ppalatjyo.server.user;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ppalatjyo.server.user.UserAlreadyMemberException;
+import ppalatjyo.server.user.domain.User;
+import ppalatjyo.server.user.domain.UserRole;
 
 import java.time.LocalDateTime;
 
@@ -23,8 +25,6 @@ class UserTest {
         // then
         assertThat(user.getNickname()).isEqualTo(nickname);
         assertThat(user.getRole()).isEqualTo(UserRole.GUEST);
-        assertThat(user.getCreatedAt()).isNotNull();
-        assertThat(user.getLastModifiedAt()).isNotNull();
         assertThat(user.getLastAccessedAt()).isNotNull();
         assertThat(user.getDeletedAt()).isNull();
     }
@@ -43,8 +43,6 @@ class UserTest {
         // then
         assertThat(user.getNickname()).isEqualTo(nickname);
         assertThat(user.getRole()).isEqualTo(UserRole.MEMBER);
-        assertThat(user.getCreatedAt()).isNotNull();
-        assertThat(user.getLastModifiedAt()).isNotNull();
         assertThat(user.getLastAccessedAt()).isNotNull();
         assertThat(user.getDeletedAt()).isNull();
 
@@ -62,10 +60,6 @@ class UserTest {
         String oAuthEmail = "member@test.com";
         String oAuthProvider = "provider";
 
-        LocalDateTime lastModifiedAtBefore = user.getLastModifiedAt();
-
-        Thread.sleep(10); // updatedAtBefore 와 업데이트 된 시간이 밀리초까지 일치하여 추가
-
         // when
         user.promoteGuestToMember(oAuthEmail, oAuthProvider);
 
@@ -73,7 +67,6 @@ class UserTest {
         assertThat(user.getRole()).isEqualTo(UserRole.MEMBER);
         assertThat(user.getOAuthEmail()).isEqualTo(oAuthEmail);
         assertThat(user.getOAuthProvider()).isEqualTo(oAuthProvider);
-        assertThat(user.getLastModifiedAt()).isAfter(lastModifiedAtBefore);
     }
 
     @Test
@@ -100,16 +93,12 @@ class UserTest {
         String newNickname = "newNickname";
 
         User user = User.createGuest(nickname);
-        LocalDateTime lastModifiedAtBefore = user.getLastModifiedAt();
-
-        Thread.sleep(10);
 
         // when
         user.changeNickname(newNickname);
 
         // then
         assertThat(user.getNickname()).isEqualTo(newNickname);
-        assertThat(user.getLastModifiedAt()).isAfter(lastModifiedAtBefore);
     }
 
     @Test
