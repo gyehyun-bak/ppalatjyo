@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.0'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'ppalatjyo'
@@ -23,6 +24,10 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -31,8 +36,36 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Spring REST Docs
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
+	outputs.dir snippetsDir
 	useJUnitPlatform()
+}
+
+tasks.named('asciidoctor') {
+	inputs.dir snippetsDir
+	attributes 'snippets': snippetsDir // index.adoc 내 {snippets} 위치 명시
+	dependsOn test
+}
+
+// Asciidoctor로 생성한 HTML 문서를 static/docs로 복사 (내장 톰캣에서 제공되게 함)
+tasks.register('copyDocs', Copy) {
+	dependsOn asciidoctor
+
+	doFirst {
+		delete "src/main/resources/static/docs/index.html" // 기존 index.html 삭제
+	}
+
+	from asciidoctor.outputDir // asciidoctor 결과물 경로
+	into "src/main/resources/static/docs" // 정적 리소스로 이동시켜 웹 접근 가능하게 함
+}
+
+// build 시 자동으로 문서 생성 및 복사까지 수행되게 설정
+tasks.named('build') {
+	dependsOn copyDocs
 }
