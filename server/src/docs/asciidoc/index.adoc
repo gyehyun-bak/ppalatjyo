@@ -1,0 +1,13 @@
+= API 문서
+:toc: left
+
+== Hello
+
+=== /hello
+
+.request
+include::{snippets}/hello/http-request.adoc[]
+
+
+.response
+include::{snippets}/hello/http-response.adoc[]
