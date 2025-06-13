@@ -1,12 +1,17 @@
-import {describe, it} from "vitest";
+import {describe, expect, it} from "vitest";
 import {render, screen} from "@testing-library/react";
 import '@testing-library/jest-dom'
 import App from "../App.tsx";
 
 describe("App", () => {
     it('renders Hello World', async () => {
+        // given
         render(<App/>)
-        const element = screen.getByText(/Hello World/i)
-        expect(element).toBeInTheDocument()
+
+        // when
+        const text = screen.getByText('Hello World');
+
+        // then
+        expect(text).toBeInTheDocument()
     })
 })
