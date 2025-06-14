@@ -1,6 +1,7 @@
-![image](https://github.com/user-attachments/assets/e6a03556-4455-42b0-8afa-436cdea48994)
+## 빨랐죠⚡
+![image](https://github.com/user-attachments/assets/0a7b4a8c-8585-43a8-9861-c4e657423abc)
 
-## 서비스 소개
+### 서비스 소개
 
 <빨랐죠>는 먼저 맞추면 이기는 채팅 기반의 퀴즈 게임 웹 서비스입니다. 다른 사람들이 만든 퀴즈로 플레이하거나, 원하는 퀴즈를 만들어 사람들과 경쟁할 수 있습니다.
 
