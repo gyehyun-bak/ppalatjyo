@@ -5,14 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ppalatjyo.server.global.dto.error.ResponseErrorDto;
 
-@Data
+@Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResponseDto<T> {
-    private boolean success;
-    private int status;
-    private String message;
+    private final boolean success;
+    private final int status;
+    private final String message;
     private T data;
     private ResponseErrorDto error;
 
@@ -35,5 +34,16 @@ public class ResponseDto<T> {
                 .build();
 
         return ResponseEntity.ok(dto);
+    }
+
+    public static ResponseEntity<ResponseDto<Void>> error(HttpStatus status, String message, ResponseErrorDto errorDto) {
+        ResponseDto<Void> dto = ResponseDto.<Void>builder()
+                .success(false)
+                .status(status.value())
+                .message(message)
+                .error(errorDto)
+                .build();
+
+        return ResponseEntity.status(status).body(dto);
     }
 }
