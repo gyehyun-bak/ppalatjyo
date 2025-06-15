@@ -2,7 +2,7 @@ package ppalatjyo.server.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ppalatjyo.server.common.BaseEntity;
+import ppalatjyo.server.global.audit.BaseEntity;
 import ppalatjyo.server.user.UserAlreadyMemberException;
 
 import java.time.LocalDateTime;

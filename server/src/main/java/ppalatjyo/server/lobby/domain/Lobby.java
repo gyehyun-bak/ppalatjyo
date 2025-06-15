@@ -2,7 +2,7 @@ package ppalatjyo.server.lobby.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ppalatjyo.server.common.BaseEntity;
+import ppalatjyo.server.global.audit.BaseEntity;
 import ppalatjyo.server.lobby.LobbyAlreadyDeletedException;
 import ppalatjyo.server.quiz.domain.Quiz;
 import ppalatjyo.server.user.domain.User;

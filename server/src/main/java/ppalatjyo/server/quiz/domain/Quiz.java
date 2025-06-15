@@ -2,7 +2,7 @@ package ppalatjyo.server.quiz.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ppalatjyo.server.common.BaseEntity;
+import ppalatjyo.server.global.audit.BaseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
