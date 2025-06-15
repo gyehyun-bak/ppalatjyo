@@ -1,4 +1,4 @@
-package ppalatjyo.server.common;
+package ppalatjyo.server.global.audit;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
