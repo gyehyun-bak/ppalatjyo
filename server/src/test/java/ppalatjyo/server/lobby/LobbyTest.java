@@ -38,6 +38,21 @@ class LobbyTest {
     }
 
     @Test
+    @DisplayName("Lobby 이름 변경")
+    void changeName() {
+        // given
+        String oldName = "oldName";
+        String newName = "newName";
+        Lobby lobby = Lobby.createLobby(oldName, User.createGuest("host"), Quiz.createQuiz("quiz"), LobbyOptions.createOptions(1, 1, 1));
+
+        // when
+        lobby.changeName(newName);
+
+        // then
+        assertThat(lobby.getName()).isEqualTo(newName);
+    }
+
+    @Test
     @DisplayName("Lobby 삭제")
     void deleteLobby() {
         // given

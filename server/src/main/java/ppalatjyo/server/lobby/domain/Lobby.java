@@ -63,4 +63,8 @@ public class Lobby extends BaseEntity {
     public void changeQuiz(Quiz quiz) {
         this.quiz = quiz;
     }
+
+    public void changeName(String name) {
+        this.name = name;
+    }
 }
