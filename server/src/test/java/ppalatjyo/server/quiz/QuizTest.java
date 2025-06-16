@@ -25,7 +25,7 @@ class QuizTest {
         Quiz quiz = Quiz.createQuiz(name, member);
 
         // then
-        assertThat(quiz.getName()).isEqualTo(name);
+        assertThat(quiz.getTitle()).isEqualTo(name);
         assertThat(quiz.getUser()).isEqualTo(member);
     }
 
@@ -44,16 +44,16 @@ class QuizTest {
 
     @Test
     @DisplayName("Quiz 이름 수정")
-    void changeName() {
+    void changeTitle() {
         // given
         Quiz quiz = Quiz.createQuiz("oldName", User.createMember("n", "e", "p"));
         String name = "newName";
 
         // when
-        quiz.changeName(name);
+        quiz.changeTitle(name);
 
         // then
-        assertThat(quiz.getName()).isEqualTo(name);
+        assertThat(quiz.getTitle()).isEqualTo(name);
     }
 
     @Test

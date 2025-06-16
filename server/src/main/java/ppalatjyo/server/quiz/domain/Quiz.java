@@ -20,7 +20,7 @@ public class Quiz extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "quiz_id")
     private Long id;
-    private String name;
+    private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -29,20 +29,20 @@ public class Quiz extends BaseEntity {
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions = new ArrayList<>();
 
-    public static Quiz createQuiz(String name, User user) {
+    public static Quiz createQuiz(String title, User user) {
         if (user.getRole() == UserRole.GUEST) {
             throw new GuestCannotCreateQuizException();
         }
 
         return Quiz.builder()
-                .name(name)
+                .title(title)
                 .user(user)
                 .questions(new ArrayList<>())
                 .build();
     }
 
-    public void changeName(String name) {
-        this.name = name;
+    public void changeTitle(String title) {
+        this.title = title;
     }
 
     public void addQuestion(Question question) {
