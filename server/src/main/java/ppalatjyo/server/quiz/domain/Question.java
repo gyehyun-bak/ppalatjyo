@@ -2,6 +2,7 @@ package ppalatjyo.server.quiz.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ppalatjyo.server.global.audit.BaseEntity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,8 +12,9 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Question {
+public class Question extends BaseEntity {
     @Id @GeneratedValue
+    @Column(name = "question_id")
     private Long id;
     private String content;
 
@@ -22,15 +24,14 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Answer> answers = new HashSet<>();
 
-    public void setQuiz(Quiz quiz) {
-        this.quiz = quiz;
-    }
-
-    public static Question createQuestion(String content, Answer... answers) {
+    public static Question create(Quiz quiz, String content, Answer... answers) {
         Question question = Question.builder()
+                .quiz(quiz)
                 .content(content)
                 .answers(new HashSet<>())
                 .build();
+
+        quiz.addQuestion(question);
 
         for (Answer answer : answers) {
             question.addAnswer(answer);

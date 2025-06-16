@@ -19,11 +19,11 @@ public class LobbyService {
     private UserRepository userRepository;
     private QuizRepository quizRepository;
 
-    public void createLobby(long hostId, long quizId, LobbyOptions options) {
+    public void createLobby(String name, long hostId, long quizId, LobbyOptions options) {
         User host = userRepository.findById(hostId).orElseThrow();
         Quiz quiz = quizRepository.findById(quizId).orElseThrow();
 
-        Lobby lobby = Lobby.createLobby(host, quiz, options);
+        Lobby lobby = Lobby.createLobby(name, host, quiz, options);
         lobbyRepository.save(lobby);
     }
 
