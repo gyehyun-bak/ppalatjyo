@@ -1,6 +1,5 @@
 package ppalatjyo.server.usergame;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ppalatjyo.server.game.Game;
