@@ -14,6 +14,7 @@ public class PermittedUrlChecker {
     private final List<String> permittedUrls  = List.of(
             "/",
             "/error",
+            "/test/**",
             "/docs/**",
             "/favicon.ico",
             "/api/auth/**"
