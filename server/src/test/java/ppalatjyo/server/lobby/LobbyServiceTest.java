@@ -38,6 +38,7 @@ class LobbyServiceTest {
     @DisplayName("Lobby 생성")
     void createLobby() {
         // given
+        String name = "lobby";
         User host = User.createGuest("host");
         Quiz quiz = Quiz.createQuiz("quiz");
         long hostId = 1L;
@@ -52,13 +53,14 @@ class LobbyServiceTest {
         LobbyOptions options = LobbyOptions.createOptions(maxUsers, minPerGame, secPerQuestion);
 
         // when
-        lobbyService.createLobby(hostId, quizId, options);
+        lobbyService.createLobby(name, hostId, quizId, options);
 
         // then
         ArgumentCaptor<Lobby> captor = ArgumentCaptor.forClass(Lobby.class);
         verify(lobbyRepository, times(1)).save(captor.capture());
 
         Lobby createdLobby = captor.getValue();
+        assertThat(createdLobby.getName()).isEqualTo(name);
         assertThat(createdLobby.getHost()).isEqualTo(host);
         assertThat(createdLobby.getQuiz()).isEqualTo(quiz);
         assertThat(createdLobby.getOptions().getMaxUsers()).isEqualTo(maxUsers);
@@ -68,10 +70,11 @@ class LobbyServiceTest {
     @DisplayName("Lobby 옵션 변경")
     void changeOptions() throws InterruptedException {
         // given
+        String name = "lobby";
         User host = User.createGuest("host");
         Quiz quiz = Quiz.createQuiz("quiz");
         LobbyOptions options = LobbyOptions.createOptions(10, 10, 10);
-        Lobby lobby = Lobby.createLobby(host, quiz, options);
+        Lobby lobby = Lobby.createLobby(name, host, quiz, options);
 
         long lobbyId = 1L;
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
@@ -91,10 +94,11 @@ class LobbyServiceTest {
     @DisplayName("Lobby 삭제")
     void deleteLobby() {
         // given
+        String name = "lobby";
         User host = User.createGuest("host");
         Quiz quiz = Quiz.createQuiz("quiz");
         LobbyOptions options = LobbyOptions.createOptions(10, 10, 10);
-        Lobby lobby = Lobby.createLobby(host, quiz, options);
+        Lobby lobby = Lobby.createLobby(name, host, quiz, options);
 
         long lobbyId = 1L;
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
@@ -110,11 +114,12 @@ class LobbyServiceTest {
     @DisplayName("Host 변경")
     void changeHost() {
         // given
+        String name = "lobby";
         User oldHost = User.createGuest("oldHost");
         User newHost = User.createGuest("newHost");
         Quiz quiz = Quiz.createQuiz("quiz");
         LobbyOptions options = LobbyOptions.createOptions(10, 10, 10);
-        Lobby lobby = Lobby.createLobby(oldHost, quiz, options);
+        Lobby lobby = Lobby.createLobby(name, oldHost, quiz, options);
 
         long lobbyId = 1L;
         long newHostId = 1L;
@@ -134,7 +139,7 @@ class LobbyServiceTest {
         // given
         Quiz oldQuiz = Quiz.createQuiz("oldQuiz");
         Quiz newQuiz = Quiz.createQuiz("newQuiz");
-        Lobby lobby = Lobby.createLobby(User.createGuest("host"), oldQuiz, LobbyOptions.createOptions(1, 1, 1));
+        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), oldQuiz, LobbyOptions.createOptions(1, 1, 1));
 
         long newQuizId = 1L;
         long lobbyId = 1L;

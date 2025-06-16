@@ -16,6 +16,7 @@ class LobbyTest {
     @DisplayName("Lobby 생성")
     void createLobby() {
         // given
+        String name = "name";
         User host = User.createGuest("user");
         Quiz quiz = Quiz.createQuiz("quiz");
         int maxUsers = 10;
@@ -25,9 +26,10 @@ class LobbyTest {
         LobbyOptions options = LobbyOptions.createOptions(maxUsers, minPerGame, secPerQuestion);
 
         // when
-        Lobby lobby = Lobby.createLobby(host, quiz, options);
+        Lobby lobby = Lobby.createLobby(name, host, quiz, options);
 
         // then
+        assertThat(lobby.getName()).isEqualTo(name);
         assertThat(lobby.getHost()).isEqualTo(host);
         assertThat(lobby.getQuiz()).isEqualTo(quiz);
         assertThat(lobby.getOptions().getMaxUsers()).isEqualTo(maxUsers);
@@ -39,7 +41,7 @@ class LobbyTest {
     @DisplayName("Lobby 삭제")
     void deleteLobby() {
         // given
-        Lobby lobby = Lobby.createLobby(User.createGuest("host"), Quiz.createQuiz("quiz"), LobbyOptions.createOptions(1, 1, 1));
+        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), Quiz.createQuiz("quiz"), LobbyOptions.createOptions(1, 1, 1));
 
         // when
         lobby.delete();
@@ -52,7 +54,7 @@ class LobbyTest {
     @DisplayName("삭제된 Lobby는 삭제할 수 없음")
     void lobbyAlreadyDeleted() {
         // given
-        Lobby lobby = Lobby.createLobby(User.createGuest("host"), Quiz.createQuiz("quiz"), LobbyOptions.createOptions(1, 1, 1));
+        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), Quiz.createQuiz("quiz"), LobbyOptions.createOptions(1, 1, 1));
         lobby.delete();
 
         // when
@@ -67,7 +69,7 @@ class LobbyTest {
         User oldHost = User.createGuest("oldHost");
         User newHost = User.createGuest("newHost");
 
-        Lobby lobby = Lobby.createLobby(oldHost, Quiz.createQuiz("quiz"), LobbyOptions.createOptions(1, 1, 1));
+        Lobby lobby = Lobby.createLobby("lobby", oldHost, Quiz.createQuiz("quiz"), LobbyOptions.createOptions(1, 1, 1));
 
         // when
         lobby.changeHost(newHost);
@@ -81,7 +83,7 @@ class LobbyTest {
     void changeOptions() {
         // given
         LobbyOptions options = LobbyOptions.createOptions(10, 10, 10);
-        Lobby lobby = Lobby.createLobby(User.createGuest("host"), Quiz.createQuiz("quiz"), options);
+        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), Quiz.createQuiz("quiz"), options);
         LobbyOptions newOptions = LobbyOptions.createOptions(20, 20, 20);
 
         // when
@@ -98,7 +100,7 @@ class LobbyTest {
     void changeQuiz() {
         // given
         Quiz oldQuiz = Quiz.createQuiz("oldQuiz");
-        Lobby lobby = Lobby.createLobby(User.createGuest("host"), oldQuiz, LobbyOptions.createOptions(1, 1, 1));
+        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), oldQuiz, LobbyOptions.createOptions(1, 1, 1));
 
         Quiz newQuiz = Quiz.createQuiz("newQuiz");
 

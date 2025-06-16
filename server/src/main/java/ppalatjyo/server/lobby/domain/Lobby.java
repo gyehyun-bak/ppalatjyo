@@ -20,6 +20,8 @@ public class Lobby extends BaseEntity {
     @Column(name = "lobby_id")
     private Long id;
 
+    private String name;
+
     @Embedded
     private LobbyOptions options;
 
@@ -33,8 +35,9 @@ public class Lobby extends BaseEntity {
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
-    public static Lobby createLobby(User host, Quiz quiz, LobbyOptions options) {
+    public static Lobby createLobby(String name, User host, Quiz quiz, LobbyOptions options) {
         return Lobby.builder()
+                .name(name)
                 .host(host)
                 .quiz(quiz)
                 .options(options)
