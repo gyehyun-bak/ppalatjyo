@@ -25,7 +25,7 @@ public class LobbyOptions {
                 .build();
     }
 
-    public static LobbyOptions createDefaultOptions() {
+    public static LobbyOptions defaultOptions() {
         return LobbyOptions.builder()
                 .maxUsers(DEFAULT_MAX_USERS)
                 .minPerGame(DEFAULT_MIN_PER_GAME)

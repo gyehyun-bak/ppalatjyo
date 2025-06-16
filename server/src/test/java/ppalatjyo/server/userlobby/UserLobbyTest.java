@@ -15,7 +15,7 @@ class UserLobbyTest {
     void join() {
         // given
         User user = User.createGuest("user");
-        Lobby lobby = Lobby.createLobby("lobby", user, null, LobbyOptions.createDefaultOptions());
+        Lobby lobby = Lobby.createLobby("lobby", user, null, LobbyOptions.defaultOptions());
 
         // when
         UserLobby userLobby = UserLobby.join(user, lobby);
@@ -32,7 +32,7 @@ class UserLobbyTest {
     void leave() {
         // given
         User user = User.createGuest("user");
-        Lobby lobby = Lobby.createLobby("lobby", user, null, LobbyOptions.createDefaultOptions());
+        Lobby lobby = Lobby.createLobby("lobby", user, null, LobbyOptions.defaultOptions());
         UserLobby userLobby = UserLobby.join(user, lobby);
 
         // when

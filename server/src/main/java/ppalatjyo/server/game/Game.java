@@ -6,7 +6,6 @@ import lombok.*;
 import ppalatjyo.server.game.exception.GameAlreadyEndedException;
 import ppalatjyo.server.global.audit.BaseEntity;
 import ppalatjyo.server.lobby.domain.Lobby;
-import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.quiz.domain.Question;
 import ppalatjyo.server.quiz.domain.Quiz;
 
