@@ -40,7 +40,7 @@ class LobbyServiceTest {
         // given
         String name = "lobby";
         User host = User.createGuest("host");
-        Quiz quiz = Quiz.createQuiz("quiz");
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         long hostId = 1L;
         long quizId = 1L;
         int maxUsers = 10;
@@ -72,7 +72,7 @@ class LobbyServiceTest {
         // given
         String name = "lobby";
         User host = User.createGuest("host");
-        Quiz quiz = Quiz.createQuiz("quiz");
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         LobbyOptions options = LobbyOptions.createOptions(10, 10, 10);
         Lobby lobby = Lobby.createLobby(name, host, quiz, options);
 
@@ -96,7 +96,7 @@ class LobbyServiceTest {
         // given
         String name = "lobby";
         User host = User.createGuest("host");
-        Quiz quiz = Quiz.createQuiz("quiz");
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         LobbyOptions options = LobbyOptions.createOptions(10, 10, 10);
         Lobby lobby = Lobby.createLobby(name, host, quiz, options);
 
@@ -117,7 +117,7 @@ class LobbyServiceTest {
         String name = "lobby";
         User oldHost = User.createGuest("oldHost");
         User newHost = User.createGuest("newHost");
-        Quiz quiz = Quiz.createQuiz("quiz");
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         LobbyOptions options = LobbyOptions.createOptions(10, 10, 10);
         Lobby lobby = Lobby.createLobby(name, oldHost, quiz, options);
 
@@ -137,8 +137,8 @@ class LobbyServiceTest {
     @DisplayName("Quiz 변경")
     void changeQuiz() {
         // given
-        Quiz oldQuiz = Quiz.createQuiz("oldQuiz");
-        Quiz newQuiz = Quiz.createQuiz("newQuiz");
+        Quiz oldQuiz = Quiz.createQuiz("oldQuiz", User.createMember("n", "e", "p"));
+        Quiz newQuiz = Quiz.createQuiz("newQuiz", User.createMember("n", "e", "p"));
         Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), oldQuiz, LobbyOptions.createOptions(1, 1, 1));
 
         long newQuizId = 1L;

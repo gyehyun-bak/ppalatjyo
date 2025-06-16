@@ -21,7 +21,7 @@ class GameTest {
         // given
         User user = User.createGuest("user");
 
-        Quiz quiz = Quiz.createQuiz("quiz");
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question.create(quiz,"question1", Answer.createAnswer("answer1"));
 
         Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.createDefaultOptions());
@@ -45,7 +45,7 @@ class GameTest {
         // given
         User user = User.createGuest("user");
 
-        Quiz quiz = Quiz.createQuiz("quiz");
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question.create(quiz,"question1", Answer.createAnswer("answer1"));
 
         Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.createDefaultOptions());
@@ -65,7 +65,7 @@ class GameTest {
         // given
         User user = User.createGuest("user");
 
-        Quiz quiz = Quiz.createQuiz("quiz");
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question.create(quiz,"question1", Answer.createAnswer("answer1"));
 
         Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.createDefaultOptions());
@@ -82,7 +82,7 @@ class GameTest {
     void hasNextQuestionTrue() {
         // given
         User user = User.createGuest("user");
-        Quiz quiz = Quiz.createQuiz("quiz");
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question.create(quiz, "question1", Answer.createAnswer("answer1"));
         Question.create(quiz, "question2", Answer.createAnswer("answer2"));
         Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.createDefaultOptions());
@@ -99,7 +99,7 @@ class GameTest {
     void hasNextQuestionFalse() {
         // given
         User user = User.createGuest("user");
-        Quiz quiz = Quiz.createQuiz("quiz");
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question.create(quiz, "question1", Answer.createAnswer("answer1"));
         Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.createDefaultOptions());
 
@@ -116,7 +116,7 @@ class GameTest {
         // given
         User user = User.createGuest("user");
 
-        Quiz quiz = Quiz.createQuiz("quiz");
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question.create(quiz,"question1", Answer.createAnswer("answer1"));
         Question.create(quiz, "question2", Answer.createAnswer("answer2"));
 
@@ -136,7 +136,7 @@ class GameTest {
         // given
         User user = User.createGuest("user");
 
-        Quiz quiz = Quiz.createQuiz("quiz");
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question.create(quiz,"question1", Answer.createAnswer("answer1"));
 
         Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.createDefaultOptions());
