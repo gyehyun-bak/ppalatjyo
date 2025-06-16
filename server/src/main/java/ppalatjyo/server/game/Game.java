@@ -3,8 +3,10 @@ package ppalatjyo.server.game;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ppalatjyo.server.game.exception.GameAlreadyEndedException;
 import ppalatjyo.server.global.audit.BaseEntity;
 import ppalatjyo.server.lobby.domain.Lobby;
+import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.quiz.domain.Question;
 import ppalatjyo.server.quiz.domain.Quiz;
 
@@ -38,6 +40,9 @@ public class Game extends BaseEntity {
     private LocalDateTime startedAt;
     private LocalDateTime endedAt;
 
+    @Embedded
+    private GameOptions options;
+
     public static Game start(Lobby lobby) {
         return Game.builder()
                 .lobby(lobby)
@@ -45,10 +50,15 @@ public class Game extends BaseEntity {
                 .currentQuestion(lobby.getQuiz().getQuestions().getFirst())
                 .currentQuestionIndex(0)
                 .startedAt(LocalDateTime.now())
+                .options(GameOptions.copy(lobby.getOptions()))
                 .build();
     }
 
     public void end() {
+        if (isEnded()) {
+            throw new GameAlreadyEndedException();
+        }
+
         endedAt = LocalDateTime.now();
     }
 

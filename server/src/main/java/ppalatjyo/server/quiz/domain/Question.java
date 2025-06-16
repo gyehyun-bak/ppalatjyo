@@ -2,6 +2,7 @@ package ppalatjyo.server.quiz.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ppalatjyo.server.global.audit.BaseEntity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +12,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Question {
+public class Question extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "question_id")
     private Long id;

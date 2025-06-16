@@ -2,6 +2,7 @@ package ppalatjyo.server.game;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ppalatjyo.server.game.exception.GameAlreadyEndedException;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.quiz.domain.Answer;
@@ -10,6 +11,7 @@ import ppalatjyo.server.quiz.domain.Quiz;
 import ppalatjyo.server.user.domain.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class GameTest {
 
@@ -32,7 +34,9 @@ class GameTest {
         assertThat(game.getQuiz()).isEqualTo(quiz);
         assertThat(game.getCurrentQuestion()).isEqualTo(quiz.getQuestions().getFirst());
         assertThat(game.getStartedAt()).isNotNull();
-        assertThat(game.getEndedAt()).isNull();
+        assertThat(game.getOptions().getMinPerGame()).isEqualTo(lobby.getOptions().getMinPerGame());
+        assertThat(game.getOptions().getSecPerQuestion()).isEqualTo(lobby.getOptions().getSecPerQuestion());
+        assertThat(game.isEnded()).isFalse();
     }
 
     @Test
@@ -53,6 +57,24 @@ class GameTest {
         // then
         assertThat(game.isEnded()).isTrue();
         assertThat(game.getEndedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("Game 끝 - 이미 끝난 게임을 끝낼 시 예외 발생")
+    void endExceptionWhenGameAlreadyEnded() {
+        // given
+        User user = User.createGuest("user");
+
+        Quiz quiz = Quiz.createQuiz("quiz");
+        Question.create(quiz,"question1", Answer.createAnswer("answer1"));
+
+        Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.createDefaultOptions());
+        Game game = Game.start(lobby);
+        game.end();
+
+        // when
+        assertThatThrownBy(game::end)
+                .isInstanceOf(GameAlreadyEndedException.class);
     }
 
     @Test
