@@ -34,7 +34,9 @@ public class Quiz extends BaseEntity {
     }
 
     public void addQuestion(Question question) {
-        question.setQuiz(this);
+        if (questions.contains(question)) {
+            return;
+        }
         questions.add(question);
     }
 }

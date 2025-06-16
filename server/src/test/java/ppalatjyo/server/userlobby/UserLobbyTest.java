@@ -39,6 +39,7 @@ class UserLobbyTest {
         userLobby.leave();
 
         // then
+        assertThat(userLobby.isLeft()).isTrue();
         assertThat(userLobby.getLeftAt()).isNotNull();
     }
 }

@@ -47,7 +47,7 @@ class QuizTest {
 
         Answer answer1 = Answer.createAnswer("answer1");
         Answer answer2 = Answer.createAnswer("answer2");
-        Question question = Question.createQuestion("content", answer1, answer2);
+        Question question = Question.create(quiz, "content", answer1, answer2);
 
         // when
         quiz.addQuestion(question);

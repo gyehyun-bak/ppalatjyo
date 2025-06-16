@@ -23,15 +23,14 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Answer> answers = new HashSet<>();
 
-    public void setQuiz(Quiz quiz) {
-        this.quiz = quiz;
-    }
-
-    public static Question createQuestion(String content, Answer... answers) {
+    public static Question create(Quiz quiz, String content, Answer... answers) {
         Question question = Question.builder()
+                .quiz(quiz)
                 .content(content)
                 .answers(new HashSet<>())
                 .build();
+
+        quiz.addQuestion(question);
 
         for (Answer answer : answers) {
             question.addAnswer(answer);

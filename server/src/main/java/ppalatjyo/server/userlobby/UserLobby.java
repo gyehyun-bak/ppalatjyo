@@ -2,6 +2,7 @@ package ppalatjyo.server.userlobby;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ppalatjyo.server.global.audit.BaseEntity;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.user.domain.User;
 
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-public class UserLobby {
+public class UserLobby extends BaseEntity {
     @Id
     @GeneratedValue
     @Column(name = "user_lobby_id")
@@ -39,5 +40,9 @@ public class UserLobby {
 
     public void leave() {
         this.leftAt = LocalDateTime.now();
+    }
+
+    public boolean isLeft() {
+        return this.leftAt != null;
     }
 }
