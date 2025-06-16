@@ -8,11 +8,11 @@ import ppalatjyo.server.user.domain.UserRole;
 import java.util.Collection;
 import java.util.List;
 
-public class CustomUserDetail implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
     private final User user;
 
-    public CustomUserDetail(User user) {
+    public CustomUserDetails(User user) {
         this.user = user;
     }
 
