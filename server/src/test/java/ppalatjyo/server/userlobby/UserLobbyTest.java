@@ -3,21 +3,42 @@ package ppalatjyo.server.userlobby;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ppalatjyo.server.lobby.domain.Lobby;
+import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.user.domain.User;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class UserLobbyTest {
 
     @Test
-    @DisplayName("UserLobby 생성")
-    void createUserLobby() {
+    @DisplayName("UserLobby 참가")
+    void join() {
         // given
         User user = User.createGuest("user");
-        Lobby.createLobby("lobby", user, null, null);
+        Lobby lobby = Lobby.createLobby("lobby", user, null, LobbyOptions.createDefaultOptions());
 
         // when
+        UserLobby userLobby = UserLobby.join(user, lobby);
 
         // then
+        assertThat(userLobby.getUser()).isEqualTo(user);
+        assertThat(userLobby.getLobby()).isEqualTo(lobby);
+        assertThat(userLobby.getJoinedAt()).isNotNull();
+        assertThat(userLobby.getLeftAt()).isNull();
+    }
+
+    @Test
+    @DisplayName("UserLobby 나가기")
+    void leave() {
+        // given
+        User user = User.createGuest("user");
+        Lobby lobby = Lobby.createLobby("lobby", user, null, LobbyOptions.createDefaultOptions());
+        UserLobby userLobby = UserLobby.join(user, lobby);
+
+        // when
+        userLobby.leave();
+
+        // then
+        assertThat(userLobby.getLeftAt()).isNotNull();
     }
 }
