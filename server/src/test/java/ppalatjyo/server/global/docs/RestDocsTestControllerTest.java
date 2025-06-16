@@ -1,4 +1,4 @@
-package ppalatjyo.server.global;
+package ppalatjyo.server.global.docs;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +15,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @SpringBootTest
-class RestDocTestControllerTest {
+class RestDocsTestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     void hello() throws Exception {
-        mockMvc.perform(get("/hello"))
+        mockMvc.perform(get("/test/restdocs/hello"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("hello"));
