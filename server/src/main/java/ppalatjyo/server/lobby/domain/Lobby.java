@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class Lobby extends BaseEntity {
 
     @Id @GeneratedValue
+    @Column(name = "lobby_id")
     private Long id;
 
     @Embedded

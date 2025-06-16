@@ -16,6 +16,7 @@ public class User extends BaseEntity {
 
     @Id
     @GeneratedValue
+    @Column(name = "user_id")
     private Long id;
     private String nickname;
     private String oAuthEmail;

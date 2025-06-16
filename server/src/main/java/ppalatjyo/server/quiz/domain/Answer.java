@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Answer {
     @Id @GeneratedValue
+    @Column(name = "answer_id")
     private Long id;
     private String content;
 

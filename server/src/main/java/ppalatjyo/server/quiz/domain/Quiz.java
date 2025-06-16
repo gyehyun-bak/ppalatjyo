@@ -15,6 +15,7 @@ import java.util.List;
 public class Quiz extends BaseEntity {
 
     @Id @GeneratedValue
+    @Column(name = "quiz_id")
     private Long id;
     private String name;
 

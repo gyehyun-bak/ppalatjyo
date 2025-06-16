@@ -13,6 +13,7 @@ import java.util.Set;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question {
     @Id @GeneratedValue
+    @Column(name = "question_id")
     private Long id;
     private String content;
 
