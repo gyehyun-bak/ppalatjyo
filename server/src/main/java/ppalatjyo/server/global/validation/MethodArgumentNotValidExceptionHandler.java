@@ -29,6 +29,6 @@ public class MethodArgumentNotValidExceptionHandler {
 
         ResponseErrorDto responseErrorDto = ResponseErrorDto.validationError(request.getRequestURI(), errorMap);
 
-        return ResponseDto.error(HttpStatus.BAD_REQUEST, "Validation Error", responseErrorDto);
+        return ResponseDto.error(HttpStatus.BAD_REQUEST, responseErrorDto);
     }
 }

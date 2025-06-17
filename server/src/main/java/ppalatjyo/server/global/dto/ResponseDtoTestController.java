@@ -9,6 +9,6 @@ public class ResponseDtoTestController {
 
     @GetMapping("/test/response/ok")
     public ResponseEntity<ResponseDto<Void>> testOk() {
-        return ResponseDto.ok("ok.");
+        return ResponseDto.ok();
     }
 }

@@ -80,7 +80,6 @@ class ValidationTestControllerTest {
                         responseFields(
                                 fieldWithPath("success").description("성공 여부"),
                                 fieldWithPath("status").description("HTTP 상태 코드"),
-                                fieldWithPath("message").description("결과 메시지"),
                                 fieldWithPath("error.message").description("에러 메시지"),
                                 fieldWithPath("error.path").description("요청 경로"),
                                 fieldWithPath("error.timestamp").description("에러 발생 시간"),

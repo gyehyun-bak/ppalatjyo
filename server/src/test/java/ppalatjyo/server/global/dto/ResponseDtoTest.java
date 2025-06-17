@@ -18,7 +18,7 @@ class ResponseDtoTest {
         String message = "Okay.";
 
         // when
-        ResponseEntity<ResponseDto<Void>> response = ResponseDto.ok(message);
+        ResponseEntity<ResponseDto<Void>> response = ResponseDto.ok();
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -26,7 +26,6 @@ class ResponseDtoTest {
         assertThat(response.getBody()).isInstanceOf(ResponseDto.class);
         assertThat(response.getBody().isSuccess()).isTrue();
         assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getBody().getMessage()).isEqualTo(message);
         assertThat(response.getBody().getData()).isNull();
         assertThat(response.getBody().getError()).isNull();
     }
@@ -40,7 +39,7 @@ class ResponseDtoTest {
         TestResponseDto dataDto = new TestResponseDto(content);
 
         // when
-        ResponseEntity<ResponseDto<TestResponseDto>> response = ResponseDto.ok(message, dataDto);
+        ResponseEntity<ResponseDto<TestResponseDto>> response = ResponseDto.ok(dataDto);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -48,7 +47,6 @@ class ResponseDtoTest {
         assertThat(response.getBody()).isInstanceOf(ResponseDto.class);
         assertThat(response.getBody().isSuccess()).isTrue();
         assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getBody().getMessage()).isEqualTo(message);
         assertThat(response.getBody().getError()).isNull();
 
         assertThat(response.getBody().getData()).isNotNull();
