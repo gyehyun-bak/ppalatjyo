@@ -92,4 +92,20 @@ class UserServiceTest {
         // then
         assertThat(user.getNickname()).isEqualTo(newNickname);
     }
+
+    @Test
+    @DisplayName("User 삭제")
+    void deleteUser() {
+        // given
+        Long id = 1L;
+        User user = User.createGuest("guest");
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+
+        // when
+        userService.deleteUser(id);
+
+        // then
+        assertThat(user.isDeleted()).isTrue();
+    }
 }

@@ -1,4 +1,4 @@
-package ppalatjyo.server.user;
+package ppalatjyo.server.user.exception;
 
 public class UserAlreadyMemberException extends RuntimeException {
     public UserAlreadyMemberException() {

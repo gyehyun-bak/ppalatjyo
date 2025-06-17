@@ -3,7 +3,8 @@ package ppalatjyo.server.user.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import ppalatjyo.server.global.audit.BaseEntity;
-import ppalatjyo.server.user.UserAlreadyMemberException;
+import ppalatjyo.server.user.exception.UserAlreadyMemberException;
+import ppalatjyo.server.user.exception.MemberAlreadyDeletedException;
 
 import java.time.LocalDateTime;
 
@@ -66,5 +67,17 @@ public class User extends BaseEntity {
 
     public void access() {
         this.lastAccessedAt = LocalDateTime.now();
+    }
+
+    public void delete() {
+        if (isDeleted()) {
+            throw new MemberAlreadyDeletedException();
+        }
+
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
     }
 }
