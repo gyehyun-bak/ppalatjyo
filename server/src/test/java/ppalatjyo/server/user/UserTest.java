@@ -52,7 +52,7 @@ class UserTest {
 
     @Test
     @DisplayName("GUEST를 MEMBER로 승격")
-    void promoteGuestToMember() throws InterruptedException {
+    void promoteGuestToMember() {
         // given
         String nickname = "nickname";
         User user = User.createGuest(nickname);
