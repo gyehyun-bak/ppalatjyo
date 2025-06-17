@@ -37,4 +37,9 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow();
         user.changeNickname(newNickname);
     }
+
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        user.delete();
+    }
 }

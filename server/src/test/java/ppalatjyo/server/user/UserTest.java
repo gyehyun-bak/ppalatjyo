@@ -2,7 +2,7 @@ package ppalatjyo.server.user;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ppalatjyo.server.user.UserAlreadyMemberException;
+import ppalatjyo.server.user.exception.UserAlreadyMemberException;
 import ppalatjyo.server.user.domain.User;
 import ppalatjyo.server.user.domain.UserRole;
 
@@ -87,7 +87,7 @@ class UserTest {
 
     @Test
     @DisplayName("유저는 nickname 변경 가능")
-    void editNickname() throws InterruptedException {
+    void editNickname() {
         // given
         String nickname = "nickname";
         String newNickname = "newNickname";
@@ -130,5 +130,19 @@ class UserTest {
 
         // then
         assertThat(user.getLastAccessedAt()).isNotEqualTo(lastAccessedAtBefore);
+    }
+
+    @Test
+    @DisplayName("User 삭제")
+    void delete() {
+        // given
+        User user = User.createGuest("nickname");
+
+        // when
+        user.delete();
+
+        // then
+        assertThat(user.isDeleted()).isTrue();
+        assertThat(user.getDeletedAt()).isNotNull();
     }
 }
