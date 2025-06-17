@@ -576,7 +576,6 @@ Host: localhost:8080
 <pre class="highlight nowrap"><code class="language-json" data-lang="json">{
   "success" : true,
   "status" : 200,
-  "message" : "ok.",
   "data" : null,
   "error" : null
 }</code></pre>
@@ -588,24 +587,23 @@ Host: localhost:8080
 <pre class="highlight nowrap"><code class="language-json" data-lang="json">{
   "success" : false,
   "status" : 400,
-  "message" : "Validation Error",
   "data" : null,
   "error" : {
-    "message" : "Validation Error",
+    "message" : "Validation Error.",
     "path" : "/test/validation",
-    "timestamp" : "2025-06-16T11:32:53.0982791",
+    "timestamp" : "2025-06-17T16:19:58.4358769",
     "data" : {
       "quantity" : {
         "rejectedValue" : 2000,
         "message" : "주문 수량은 한 번에 최대 999개 입니다."
       },
-      "phone" : {
-        "rejectedValue" : "123",
-        "message" : "전화번호는 10자 이상 15자 이하여야 합니다."
-      },
       "tags[0]" : {
         "rejectedValue" : "",
         "message" : "태그는 빈 값일 수 없습니다."
+      },
+      "phone" : {
+        "rejectedValue" : "123",
+        "message" : "전화번호는 10자 이상 15자 이하여야 합니다."
       },
       "name" : {
         "rejectedValue" : "",
@@ -647,11 +645,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 상태 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>error.message</code></p></td>

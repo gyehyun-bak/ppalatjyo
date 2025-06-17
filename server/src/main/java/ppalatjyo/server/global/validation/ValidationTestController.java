@@ -12,6 +12,6 @@ public class ValidationTestController {
 
     @PostMapping("/test/validation")
     public ResponseEntity<ResponseDto<Void>> validation(@RequestBody @Valid ValidationTestRequestDto requestDto) {
-        return ResponseDto.ok("ok.");
+        return ResponseDto.ok();
     }
 }

@@ -11,36 +11,32 @@ import ppalatjyo.server.global.dto.error.ResponseErrorDto;
 public class ResponseDto<T> {
     private final boolean success;
     private final int status;
-    private final String message;
     private T data;
     private ResponseErrorDto error;
 
-    public static <T> ResponseEntity<ResponseDto<T>> ok(String message, T data) {
+    public static <T> ResponseEntity<ResponseDto<T>> ok(T data) {
         ResponseDto<T> responseDto = ResponseDto.<T>builder()
                 .success(true)
                 .status(HttpStatus.OK.value())
-                .message(message)
                 .data(data)
                 .build();
 
         return ResponseEntity.ok(responseDto);
     }
 
-    public static ResponseEntity<ResponseDto<Void>> ok(String message) {
+    public static ResponseEntity<ResponseDto<Void>> ok() {
         ResponseDto<Void> dto = ResponseDto.<Void>builder()
                 .success(true)
                 .status(HttpStatus.OK.value())
-                .message(message)
                 .build();
 
         return ResponseEntity.ok(dto);
     }
 
-    public static ResponseEntity<ResponseDto<Void>> error(HttpStatus status, String message, ResponseErrorDto errorDto) {
+    public static ResponseEntity<ResponseDto<Void>> error(HttpStatus status, ResponseErrorDto errorDto) {
         ResponseDto<Void> dto = ResponseDto.<Void>builder()
                 .success(false)
                 .status(status.value())
-                .message(message)
                 .error(errorDto)
                 .build();
 

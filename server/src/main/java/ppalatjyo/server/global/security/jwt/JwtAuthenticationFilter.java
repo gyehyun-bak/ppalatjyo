@@ -54,12 +54,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void onUnsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, Exception ex) throws IOException {
-        log.info("Authentication Failed", ex);
+        log.debug("Authentication Failed", ex);
 
-        String message = "Authentication Failed";
+        String errorMessage = "Authentication Failed.";
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-        ResponseErrorDto errorDto = ResponseErrorDto.commonError(ex.getMessage(), request.getRequestURI());
-        ResponseDto<Void> responseDto = ResponseDto.error(status, message, errorDto).getBody();
+        ResponseErrorDto errorDto = ResponseErrorDto.commonError(errorMessage, request.getRequestURI());
+        ResponseDto<Void> responseDto = ResponseDto.error(status, errorDto).getBody();
 
         response.setStatus(status.value());
         response.setContentType("application/json");

@@ -26,7 +26,7 @@ public class ResponseErrorDto {
 
     public static ResponseErrorDto validationError(String path, Map<String, FieldErrorDto> data) {
         return ResponseErrorDto.builder()
-                .message("Validation Error")
+                .message("Validation Error.")
                 .path(path)
                 .timestamp(LocalDateTime.now())
                 .data(data)
