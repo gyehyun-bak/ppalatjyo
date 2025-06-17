@@ -68,7 +68,7 @@ class LobbyServiceTest {
 
     @Test
     @DisplayName("Lobby 옵션 변경")
-    void changeOptions() throws InterruptedException {
+    void changeOptions() {
         // given
         String name = "lobby";
         User host = User.createGuest("host");

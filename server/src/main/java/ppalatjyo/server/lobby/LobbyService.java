@@ -15,9 +15,9 @@ import ppalatjyo.server.user.domain.User;
 @Transactional
 public class LobbyService {
 
-    private LobbyRepository lobbyRepository;
-    private UserRepository userRepository;
-    private QuizRepository quizRepository;
+    private final LobbyRepository lobbyRepository;
+    private final UserRepository userRepository;
+    private final QuizRepository quizRepository;
 
     public void createLobby(String name, long hostId, long quizId, LobbyOptions options) {
         User host = userRepository.findById(hostId).orElseThrow();
