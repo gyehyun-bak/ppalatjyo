@@ -97,7 +97,7 @@ class LobbyServiceTest {
         String name = "lobby";
         User host = User.createGuest("host");
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
-        LobbyOptions options = LobbyOptions.createOptions(10, 10, 10);
+        LobbyOptions options = LobbyOptions.defaultOptions();
         Lobby lobby = Lobby.createLobby(name, host, quiz, options);
 
         long lobbyId = 1L;
@@ -118,7 +118,7 @@ class LobbyServiceTest {
         User oldHost = User.createGuest("oldHost");
         User newHost = User.createGuest("newHost");
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
-        LobbyOptions options = LobbyOptions.createOptions(10, 10, 10);
+        LobbyOptions options = LobbyOptions.defaultOptions();
         Lobby lobby = Lobby.createLobby(name, oldHost, quiz, options);
 
         long lobbyId = 1L;
@@ -139,7 +139,7 @@ class LobbyServiceTest {
         // given
         Quiz oldQuiz = Quiz.createQuiz("oldQuiz", User.createMember("n", "e", "p"));
         Quiz newQuiz = Quiz.createQuiz("newQuiz", User.createMember("n", "e", "p"));
-        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), oldQuiz, LobbyOptions.createOptions(1, 1, 1));
+        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), oldQuiz, LobbyOptions.defaultOptions());
 
         long newQuizId = 1L;
         long lobbyId = 1L;
