@@ -5,7 +5,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,10 +15,10 @@ import ppalatjyo.server.global.security.exception.JwtValidationException;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationManager implements AuthenticationManager {
+public class JwtAuthenticationProvider implements AuthenticationProvider {
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -34,7 +34,7 @@ public class JwtAuthenticationManager implements AuthenticationManager {
                     userDetails,
                     token,
                     userDetails.getAuthorities());
-        } catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) { // JwtException을 AuthenticationException 으로 변환
             throw new JwtValidationException("Token has expired");
         } catch (MalformedJwtException e) {
             throw new JwtValidationException("Token is invalid");
@@ -44,8 +44,11 @@ public class JwtAuthenticationManager implements AuthenticationManager {
             throw new JwtValidationException("Unsupported token");
         } catch (IllegalArgumentException e) {
             throw new JwtValidationException("Invalid JWT token");
-        } catch (Exception e) {
-            throw new JwtValidationException("Unexpected JWT token Exception");
         }
+    }
+
+    @Override
+    public boolean supports(Class<?> authentication) {
+        return JwtAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }
