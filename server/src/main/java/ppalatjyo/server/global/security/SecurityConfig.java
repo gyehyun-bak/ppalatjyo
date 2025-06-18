@@ -9,8 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import ppalatjyo.server.global.security.handler.CustomAccessDeniedHandler;
+import ppalatjyo.server.global.security.handler.CustomAuthenticationEntryPoint;
 import ppalatjyo.server.global.security.jwt.JwtAuthenticationFilter;
 
 import java.util.List;
@@ -27,12 +28,20 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(permittedUrlChecker.toArray()).permitAll()
+                        .requestMatchers(
+                                "/test/**",
+                                "/docs/**",
+                                "/api/auth/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtAuthenticationFilter, LogoutFilter.class)
+                .exceptionHandling(configurer -> configurer
+                                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                                .accessDeniedHandler(new CustomAccessDeniedHandler())
+                )
                 .build();
     }
 
