@@ -13,15 +13,13 @@ public class JwtAuthenticationConverter implements AuthenticationConverter {
     @Override
     public JwtAuthenticationToken convert(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader == null) {
-            throw new InvalidAuthorizationHeaderException("No authorization header found");
-        } else if (!authorizationHeader.startsWith("Bearer ")) {
-            throw new InvalidAuthorizationHeaderException("Authorization header should start with 'Bearer'");
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return null;
         }
 
         String token = authorizationHeader.substring(7);
         if (token.isEmpty()) {
-            throw new InvalidAuthorizationHeaderException("Token is not provided after 'Bearer'");
+            return null;
         }
 
         return JwtAuthenticationToken.unauthenticated(token);
