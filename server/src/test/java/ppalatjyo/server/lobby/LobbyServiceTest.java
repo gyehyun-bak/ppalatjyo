@@ -62,6 +62,7 @@ class LobbyServiceTest {
         Lobby createdLobby = captor.getValue();
         assertThat(createdLobby.getName()).isEqualTo(name);
         assertThat(createdLobby.getHost()).isEqualTo(host);
+        assertThat(createdLobby.getUserLobbies().size()).isEqualTo(1);
         assertThat(createdLobby.getQuiz()).isEqualTo(quiz);
         assertThat(createdLobby.getOptions().getMaxUsers()).isEqualTo(maxUsers);
     }
