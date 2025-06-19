@@ -103,7 +103,7 @@ class GameServiceTest {
 
     @Test
     @DisplayName("게임 종료")
-    void EndGame() {
+    void endGame() {
         // given
         Long gameId = 1L;
         Game game = createGame(LobbyOptions.defaultOptions());
