@@ -3,10 +3,12 @@ package ppalatjyo.server.quiz.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import ppalatjyo.server.global.audit.BaseEntity;
-import ppalatjyo.server.quiz.GuestCannotCreateQuizException;
+import ppalatjyo.server.quiz.exception.GuestCannotCreateQuizException;
+import ppalatjyo.server.quiz.exception.QuestionAlreadyDeletedException;
 import ppalatjyo.server.user.domain.User;
 import ppalatjyo.server.user.domain.UserRole;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +28,11 @@ public class Quiz extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions = new ArrayList<>();
+
+    private LocalDateTime deletedAt;
 
     public static Quiz createQuiz(String title, User user) {
         if (user.getRole() == UserRole.GUEST) {
@@ -50,5 +55,16 @@ public class Quiz extends BaseEntity {
             return;
         }
         questions.add(question);
+    }
+
+    public void delete() {
+        if (isDeleted()) {
+            throw new QuestionAlreadyDeletedException();
+        }
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
     }
 }

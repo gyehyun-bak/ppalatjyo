@@ -1,4 +1,4 @@
-package ppalatjyo.server.quiz;
+package ppalatjyo.server.quiz.exception;
 
 public class GuestCannotCreateQuizException extends RuntimeException {
     public GuestCannotCreateQuizException() {

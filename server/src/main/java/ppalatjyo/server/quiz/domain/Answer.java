@@ -3,6 +3,9 @@ package ppalatjyo.server.quiz.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import ppalatjyo.server.global.audit.BaseEntity;
+import ppalatjyo.server.quiz.exception.AnswerAlreadyDeletedException;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -10,7 +13,8 @@ import ppalatjyo.server.global.audit.BaseEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Answer extends BaseEntity {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "answer_id")
     private Long id;
     private String content;
@@ -19,13 +23,31 @@ public class Answer extends BaseEntity {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    public static Answer createAnswer(String content) {
-        return Answer.builder()
+    private LocalDateTime deletedAt;
+
+    public static Answer createAnswer(String content, Question question) {
+        Answer answer = Answer.builder()
                 .content(content)
+                .question(question)
                 .build();
+
+        question.addAnswer(answer);
+
+        return answer;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void changeContent(String content) {
+        this.content = content;
+    }
+
+    public void delete() {
+        if (isDeleted()) {
+            throw new AnswerAlreadyDeletedException();
+        }
+        deletedAt = LocalDateTime.now();
+    }
+
+    public boolean isDeleted() {
+        return deletedAt != null;
     }
 }

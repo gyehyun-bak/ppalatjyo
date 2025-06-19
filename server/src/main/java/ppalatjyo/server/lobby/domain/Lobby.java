@@ -38,6 +38,7 @@ public class Lobby extends BaseEntity {
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
+    @Builder.Default
     @OneToMany(mappedBy = "lobby", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserLobby> userLobbies = new ArrayList<>();
 

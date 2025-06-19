@@ -110,8 +110,10 @@ class GameEventTest {
 
     private Quiz getQuiz() {
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
-        Question.create(quiz,"question1", Answer.createAnswer("answer1"));
-        Question.create(quiz, "question2", Answer.createAnswer("answer2"));
+        Question question1 = Question.create(quiz, "question1");
+        Answer.createAnswer("answer1", question1);
+        Question question2 = Question.create(quiz, "question2");
+        Answer.createAnswer("answer2", question2);
         return quiz;
     }
 }

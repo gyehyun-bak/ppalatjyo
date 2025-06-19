@@ -35,6 +35,7 @@ public class Game extends BaseEntity {
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
+    @Builder.Default
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserGame> userGames = new ArrayList<>();
 
