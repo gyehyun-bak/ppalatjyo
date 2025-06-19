@@ -2,6 +2,7 @@ package ppalatjyo.server.game;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.game.exception.GameAlreadyEndedException;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
@@ -37,6 +38,8 @@ class GameTest {
         assertThat(game.getOptions().getMinPerGame()).isEqualTo(lobby.getOptions().getMinPerGame());
         assertThat(game.getOptions().getSecPerQuestion()).isEqualTo(lobby.getOptions().getSecPerQuestion());
         assertThat(game.isEnded()).isFalse();
+
+        assertThat(game.getUserGames().size()).isEqualTo(1);
     }
 
     @Test

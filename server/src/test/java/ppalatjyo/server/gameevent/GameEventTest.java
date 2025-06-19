@@ -2,7 +2,7 @@ package ppalatjyo.server.gameevent;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ppalatjyo.server.game.Game;
+import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.message.Message;

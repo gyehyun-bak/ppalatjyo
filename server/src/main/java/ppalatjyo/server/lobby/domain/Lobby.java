@@ -51,7 +51,6 @@ public class Lobby extends BaseEntity {
                 .build();
 
         UserLobby userLobby = UserLobby.join(host, lobby);
-        lobby.userLobbies.add(userLobby);
 
         return lobby;
     }

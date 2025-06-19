@@ -2,7 +2,7 @@ package ppalatjyo.server.usergame;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ppalatjyo.server.game.Game;
+import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.global.audit.BaseEntity;
 import ppalatjyo.server.user.domain.User;
 
