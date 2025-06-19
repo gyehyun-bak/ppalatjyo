@@ -27,4 +27,21 @@ class QuestionTest {
         assertThat(question.getQuiz()).isEqualTo(quiz);
         assertThat(quiz.getQuestions()).containsExactly(question);
     }
+
+    @Test
+    @DisplayName("content 변경")
+    void changeContent() {
+        // given
+        User user = User.createMember("author", "<EMAIL>", "google");
+        Quiz quiz = Quiz.createQuiz("quiz", user);
+        Question question = Question.create(quiz, "content");
+
+        String newContent = "newContent";
+
+        // when
+        question.changeContent(newContent);
+
+        // then
+        assertThat(question.getContent()).isEqualTo(newContent);
+    }
 }

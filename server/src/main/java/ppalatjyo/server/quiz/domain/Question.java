@@ -44,4 +44,8 @@ public class Question extends BaseEntity {
         answer.setQuestion(this);
         answers.add(answer);
     }
+
+    public void changeContent(String newContent) {
+        content = newContent;
+    }
 }

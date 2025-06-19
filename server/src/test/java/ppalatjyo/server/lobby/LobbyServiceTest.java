@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.quiz.domain.Quiz;
-import ppalatjyo.server.quiz.QuizRepository;
+import ppalatjyo.server.quiz.repository.QuizRepository;
 import ppalatjyo.server.user.UserRepository;
 import ppalatjyo.server.user.domain.User;
 
