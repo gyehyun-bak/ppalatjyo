@@ -35,7 +35,7 @@ public class UserGame extends BaseEntity {
                 .build();
     }
 
-    public void score() {
+    public void increaseScore() {
         this.score++;
     }
 }
