@@ -2,12 +2,10 @@ package ppalatjyo.server.message;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ppalatjyo.server.game.Game;
+import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.global.audit.BaseEntity;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.user.domain.User;
-
-import java.lang.reflect.Member;
 
 @Entity
 @Getter

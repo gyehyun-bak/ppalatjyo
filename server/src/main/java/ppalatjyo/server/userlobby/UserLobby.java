@@ -31,11 +31,15 @@ public class UserLobby extends BaseEntity {
     private LocalDateTime leftAt;
 
     public static UserLobby join(User user, Lobby lobby) {
-        return UserLobby.builder()
+        UserLobby userLobby = UserLobby.builder()
                 .user(user)
                 .lobby(lobby)
                 .joinedAt(LocalDateTime.now())
                 .build();
+
+        lobby.getUserLobbies().add(userLobby);
+
+        return userLobby;
     }
 
     public void leave() {

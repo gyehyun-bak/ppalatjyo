@@ -1,4 +1,4 @@
-package ppalatjyo.server.game;
+package ppalatjyo.server.game.domain;
 
 import jakarta.persistence.Embeddable;
 import lombok.*;
