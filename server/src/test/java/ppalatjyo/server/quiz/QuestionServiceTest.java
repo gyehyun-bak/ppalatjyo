@@ -84,4 +84,22 @@ class QuestionServiceTest {
         // then
         assertThat(question.getContent()).isEqualTo(questionUpdateRequestDto.getContent());
     }
+
+    @Test
+    @DisplayName("Question 삭제")
+    void delete() {
+        // given
+        User member = User.createMember("user", "", "");
+        Quiz quiz = Quiz.createQuiz("title", member);
+        Question question = Question.create(quiz, "content");
+        Long questionId = 1L;
+
+        when(questionRepository.findById(questionId)).thenReturn(Optional.of(question));
+
+        // when
+        questionService.delete(questionId);
+
+        // then
+        assertThat(question.isDeleted()).isTrue();
+    }
 }

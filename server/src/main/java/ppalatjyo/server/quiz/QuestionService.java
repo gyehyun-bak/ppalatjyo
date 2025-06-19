@@ -32,4 +32,9 @@ public class QuestionService {
             question.changeContent(content);
         }
     }
+
+    public void delete(Long questionId) {
+        Question question = questionRepository.findById(questionId).orElseThrow();
+        question.delete();
+    }
 }

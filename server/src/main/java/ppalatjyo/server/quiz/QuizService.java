@@ -26,4 +26,9 @@ public class QuizService {
         Quiz quiz = quizRepository.findById(quizId).orElseThrow();
         quiz.changeTitle(title);
     }
+
+    public void delete(Long quizId) {
+        Quiz quiz = quizRepository.findById(quizId).orElseThrow();
+        quiz.delete();
+    }
 }

@@ -14,16 +14,14 @@ class QuestionTest {
     void create() {
         // given
         String content = "content";
-        Answer answer1 = Answer.createAnswer("answer1");
         User user = User.createMember("author", "<EMAIL>", "google");
         Quiz quiz = Quiz.createQuiz("quiz", user);
 
         // when
-        Question question = Question.create(quiz, content, answer1);
+        Question question = Question.create(quiz, content);
 
         // then
         assertThat(question.getContent()).isEqualTo(content);
-        assertThat(question.getAnswers()).containsExactly(answer1);
         assertThat(question.getQuiz()).isEqualTo(quiz);
         assertThat(quiz.getQuestions()).containsExactly(question);
     }
@@ -43,5 +41,20 @@ class QuestionTest {
 
         // then
         assertThat(question.getContent()).isEqualTo(newContent);
+    }
+
+    @Test
+    @DisplayName("Question 삭제")
+    void delete() {
+        // given
+        User user = User.createMember("author", "<EMAIL>", "google");
+        Quiz quiz = Quiz.createQuiz("quiz", user);
+        Question question = Question.create(quiz, "content");
+
+        // when
+        question.delete();
+
+        // then
+        assertThat(question.isDeleted()).isTrue();
     }
 }

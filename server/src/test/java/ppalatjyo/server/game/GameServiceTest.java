@@ -44,7 +44,7 @@ class GameServiceTest {
         User participant = User.createGuest("user");
 
         Quiz quiz = Quiz.createQuiz("quiz", host);
-        Question question = Question.create(quiz, "question", Answer.createAnswer("answer"));
+        Question question = Question.create(quiz, "question");
 
         Lobby lobby = Lobby.createLobby("lobby", host, quiz, LobbyOptions.defaultOptions());
         UserLobby.join(participant, lobby);
@@ -124,8 +124,10 @@ class GameServiceTest {
 
     private Quiz createQuiz() {
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
-        Question.create(quiz,"question1", Answer.createAnswer("answer1"));
-        Question.create(quiz, "question2", Answer.createAnswer("answer2"));
+        Question question1 = Question.create(quiz, "question1");
+        Answer.createAnswer("answer1", question1);
+        Question question2 = Question.create(quiz, "question2");
+        Answer.createAnswer("answer2", question2);
         return quiz;
     }
 }

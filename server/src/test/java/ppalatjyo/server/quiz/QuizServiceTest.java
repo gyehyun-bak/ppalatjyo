@@ -66,4 +66,21 @@ class QuizServiceTest {
         // then
         assertThat(quiz.getTitle()).isEqualTo(newTitle);
     }
+
+    @Test
+    @DisplayName("Quiz 삭제")
+    void delete() {
+        // given
+        User member = User.createMember("user", "", "");
+        Quiz quiz = Quiz.createQuiz("title", member);
+
+        Long quizId = 1L;
+        when(quizRepository.findById(quizId)).thenReturn(Optional.of(quiz));
+
+        // when
+        quizService.delete(quizId);
+
+        // then
+        assertThat(quiz.isDeleted()).isTrue();
+    }
 }

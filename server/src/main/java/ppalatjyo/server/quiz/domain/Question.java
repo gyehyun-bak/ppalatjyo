@@ -3,7 +3,9 @@ package ppalatjyo.server.quiz.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import ppalatjyo.server.global.audit.BaseEntity;
+import ppalatjyo.server.quiz.exception.QuestionAlreadyDeletedException;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,10 +23,13 @@ public class Question extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Quiz quiz;
 
+    @Builder.Default
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<Answer> answers = new HashSet<>();
+    private Set<Answer> answers = new HashSet<>();
 
-    public static Question create(Quiz quiz, String content, Answer... answers) {
+    private LocalDateTime deletedAt;
+
+    public static Question create(Quiz quiz, String content) {
         Question question = Question.builder()
                 .quiz(quiz)
                 .content(content)
@@ -33,19 +38,25 @@ public class Question extends BaseEntity {
 
         quiz.addQuestion(question);
 
-        for (Answer answer : answers) {
-            question.addAnswer(answer);
-        }
-
         return question;
     }
 
-    private void addAnswer(Answer answer) {
-        answer.setQuestion(this);
+    public void addAnswer(Answer answer) {
         answers.add(answer);
     }
 
     public void changeContent(String newContent) {
         content = newContent;
+    }
+
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
+
+    public void delete() {
+        if (isDeleted()) {
+            throw new QuestionAlreadyDeletedException();
+        }
+        deletedAt = LocalDateTime.now();
     }
 }
