@@ -35,6 +35,7 @@ class LobbyTest {
         assertThat(lobby.getOptions().getMaxUsers()).isEqualTo(maxUsers);
         assertThat(lobby.getOptions().getMinPerGame()).isEqualTo(minPerGame);
         assertThat(lobby.getOptions().getSecPerQuestion()).isEqualTo(secPerQuestion);
+        assertThat(lobby.getUserLobbies().size()).isEqualTo(1);
     }
 
     @Test

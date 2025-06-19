@@ -6,8 +6,11 @@ import ppalatjyo.server.global.audit.BaseEntity;
 import ppalatjyo.server.lobby.LobbyAlreadyDeletedException;
 import ppalatjyo.server.quiz.domain.Quiz;
 import ppalatjyo.server.user.domain.User;
+import ppalatjyo.server.userlobby.UserLobby;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,13 +38,22 @@ public class Lobby extends BaseEntity {
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
+    @OneToMany(mappedBy = "lobby", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserLobby> userLobbies = new ArrayList<>();
+
     public static Lobby createLobby(String name, User host, Quiz quiz, LobbyOptions options) {
-        return Lobby.builder()
+        Lobby lobby = Lobby.builder()
                 .name(name)
                 .host(host)
                 .quiz(quiz)
+                .userLobbies(new ArrayList<>())
                 .options(options)
                 .build();
+
+        UserLobby userLobby = UserLobby.join(host, lobby);
+        lobby.userLobbies.add(userLobby);
+
+        return lobby;
     }
 
     public void delete() {
