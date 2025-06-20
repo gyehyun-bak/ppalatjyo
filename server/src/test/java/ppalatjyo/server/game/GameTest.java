@@ -24,7 +24,7 @@ class GameTest {
 
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question question = Question.create(quiz, "question1");
-        Answer.createAnswer("answer1", question);
+        Answer.createAnswer(question, "answer1");
 
         Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.defaultOptions());
 

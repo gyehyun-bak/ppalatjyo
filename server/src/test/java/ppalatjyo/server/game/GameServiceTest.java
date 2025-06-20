@@ -8,14 +8,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ppalatjyo.server.game.domain.Game;
+import ppalatjyo.server.game.dto.SubmitAnswerRequestDto;
 import ppalatjyo.server.gameevent.GameEventService;
 import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
+import ppalatjyo.server.message.Message;
+import ppalatjyo.server.message.MessageRepository;
 import ppalatjyo.server.quiz.domain.Answer;
 import ppalatjyo.server.quiz.domain.Question;
 import ppalatjyo.server.quiz.domain.Quiz;
 import ppalatjyo.server.user.domain.User;
+import ppalatjyo.server.usergame.UserGame;
+import ppalatjyo.server.usergame.UserGameRepository;
 import ppalatjyo.server.userlobby.UserLobby;
 
 import java.util.Optional;
@@ -30,10 +35,16 @@ class GameServiceTest {
     private GameRepository gameRepository;
 
     @Mock
+    private UserGameRepository userGameRepository;
+
+    @Mock
     private GameEventService gameEventService;
 
     @Mock
     private LobbyRepository lobbyRepository;
+
+    @Mock
+    private MessageRepository messageRepository;
 
     @InjectMocks
     private GameService gameService;
@@ -130,9 +141,86 @@ class GameServiceTest {
     private Quiz createQuiz() {
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question question1 = Question.create(quiz, "question1");
-        Answer.createAnswer("answer1", question1);
+        Answer.createAnswer(question1, "answer1");
         Question question2 = Question.create(quiz, "question2");
-        Answer.createAnswer("answer2", question2);
+        Answer.createAnswer(question2, "answer2");
         return quiz;
+    }
+
+    @Test
+    @DisplayName("정답 제출 - 정답")
+    void submitAnswer() {
+        // given
+        String answer = "answer";
+
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Question question1 = Question.create(quiz, "question1");
+        Answer.createAnswer(question1, answer);
+
+        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), quiz, LobbyOptions.defaultOptions());
+
+        Long gameId = 1L;
+        Game game = Game.start(lobby);
+
+        User user = User.createGuest("user");
+        Long userGameId = 1L;
+        UserGame userGame = UserGame.join(user, game);
+
+        Long messageId = 1L;
+        Message message = Message.create(answer, user, lobby, game);
+
+        SubmitAnswerRequestDto requestDto = new SubmitAnswerRequestDto();
+        requestDto.setGameId(gameId);
+        requestDto.setUserGameId(userGameId);
+        requestDto.setMessageId(messageId);
+
+        when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
+        when(userGameRepository.findById(userGameId)).thenReturn(Optional.of(userGame));
+        when(messageRepository.findById(messageId)).thenReturn(Optional.of(message));
+
+        // when
+        gameService.submitAnswer(requestDto);
+
+        // then
+        verify(gameEventService, times(1)).rightAnswer(any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("정답 제출 - 오답")
+    void submitWrongAnswer() {
+        // given
+        String answer = "answer1";
+        String wrongAnswer = "wrongAnswer";
+
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Question question1 = Question.create(quiz, "question1");
+        Answer.createAnswer(question1, answer);
+
+        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), quiz, LobbyOptions.defaultOptions());
+
+        Long gameId = 1L;
+        Game game = Game.start(lobby);
+
+        User user = User.createGuest("user");
+        Long userGameId = 1L;
+        UserGame userGame = UserGame.join(user, game);
+
+        Long messageId = 1L;
+        Message message = Message.create(wrongAnswer, user, lobby, game); // 오답 작성
+
+        SubmitAnswerRequestDto requestDto = new SubmitAnswerRequestDto();
+        requestDto.setGameId(gameId);
+        requestDto.setUserGameId(userGameId);
+        requestDto.setMessageId(messageId);
+
+        when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
+        when(userGameRepository.findById(userGameId)).thenReturn(Optional.of(userGame));
+        when(messageRepository.findById(messageId)).thenReturn(Optional.of(message));
+
+        // when
+        gameService.submitAnswer(requestDto);
+
+        // then
+        verify(gameEventService, times(1)).wrongAnswer(any(), any(), any());
     }
 }

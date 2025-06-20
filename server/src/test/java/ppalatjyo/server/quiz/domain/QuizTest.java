@@ -60,8 +60,8 @@ class QuizTest {
         // given
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question question = Question.create(quiz, "content");
-        Answer.createAnswer("answer1", question);
-        Answer.createAnswer("answer2", question);
+        Answer.createAnswer(question, "answer1");
+        Answer.createAnswer(question, "answer2");
 
 
         // when

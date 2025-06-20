@@ -20,7 +20,7 @@ public class AnswerService {
 
     public void create(AnswerCreateRequestDto requestDto) {
         Question question = questionRepository.findById(requestDto.getQuestionId()).orElseThrow();
-        Answer answer = Answer.createAnswer(requestDto.getContent(), question);
+        Answer answer = Answer.createAnswer(question, requestDto.getContent());
         answerRepository.save(answer);
     }
 
