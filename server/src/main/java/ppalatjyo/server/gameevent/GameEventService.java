@@ -15,7 +15,7 @@ public class GameEventService {
     private final GameEventRepository gameEventRepository;
     private final GameRepository gameRepository;
 
-    public void start(Long gameId) {
+    public void started(Long gameId) {
         Game game = gameRepository.findById(gameId).orElseThrow();
         GameEvent gameEvent = GameEvent.started(game);
         gameEventRepository.save(gameEvent);

@@ -3,12 +3,14 @@ package ppalatjyo.server.gameevent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ppalatjyo.server.game.GameRepository;
 import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.gameevent.domain.GameEvent;
+import ppalatjyo.server.gameevent.domain.GameEventType;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.quiz.domain.Question;
@@ -17,7 +19,7 @@ import ppalatjyo.server.user.domain.User;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,10 +47,16 @@ class GameEventServiceTest {
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
 
         // when
-        gameEventService.start(gameId);
+        gameEventService.started(gameId);
 
         // then
-        verify(gameEventRepository, times(1)).save(any(GameEvent.class));
+        ArgumentCaptor<GameEvent> captor = ArgumentCaptor.forClass(GameEvent.class);
+        verify(gameEventRepository, times(1)).save(captor.capture());
+
+        GameEvent gameEvent = captor.getValue();
+        assertThat(gameEvent).isNotNull();
+        assertThat(gameEvent.getGame()).isEqualTo(game);
+        assertThat(gameEvent.getType()).isEqualTo(GameEventType.GAME_STARTED);
     }
 
 

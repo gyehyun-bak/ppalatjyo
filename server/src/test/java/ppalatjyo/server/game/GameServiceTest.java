@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ppalatjyo.server.game.domain.Game;
+import ppalatjyo.server.gameevent.GameEventService;
 import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
@@ -27,6 +28,9 @@ class GameServiceTest {
 
     @Mock
     private GameRepository gameRepository;
+
+    @Mock
+    private GameEventService gameEventService;
 
     @Mock
     private LobbyRepository lobbyRepository;
@@ -57,6 +61,7 @@ class GameServiceTest {
         // then
         ArgumentCaptor<Game> captor = ArgumentCaptor.forClass(Game.class);
         verify(gameRepository, times(1)).save(captor.capture());
+        verify(gameEventService, times(1)).started(any());
 
         Game game = captor.getValue();
         assertThat(game).isNotNull();
