@@ -48,7 +48,7 @@ jobs:
               password: password
             jpa:
               hibernate:
-                ddl-auto: create-drop
+                ddl-auto: create
           EOT
 
       - name: Grant execute permission for gradlew
