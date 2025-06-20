@@ -18,7 +18,7 @@ class AnswerTest {
         Question question = Question.create(quiz, "question");
 
         // when
-        Answer answer = Answer.createAnswer(content, question);
+        Answer answer = Answer.createAnswer(question, content);
 
         // then
         assertThat(answer).isNotNull();
@@ -35,7 +35,7 @@ class AnswerTest {
         Quiz quiz = Quiz.createQuiz("quiz", member);
         String content = "answer";
         Question question = Question.create(quiz, "question");
-        Answer answer = Answer.createAnswer(content, question);
+        Answer answer = Answer.createAnswer(question, content);
 
         String newContent = "newContent";
 
@@ -54,12 +54,48 @@ class AnswerTest {
         Quiz quiz = Quiz.createQuiz("quiz", member);
         String content = "answer";
         Question question = Question.create(quiz, "question");
-        Answer answer = Answer.createAnswer(content, question);
+        Answer answer = Answer.createAnswer(question, content);
 
         // when
         answer.delete();
 
         // then
         assertThat(answer.isDeleted()).isTrue();
+    }
+
+    @Test
+    @DisplayName("정답 확인 - 정답")
+    void isCorrect() {
+        // given
+        User member = User.createMember("user", "", "");
+        Quiz quiz = Quiz.createQuiz("quiz", member);
+        String content = "answer";
+        Question question = Question.create(quiz, "question");
+        Answer answer = Answer.createAnswer(question, content);
+
+        // when
+        boolean isCorrect = answer.isCorrect(content);
+
+        // then
+        assertThat(isCorrect).isTrue();
+    }
+
+    @Test
+    @DisplayName("정답 확인 - 오답")
+    void isCorrectFalse() {
+        // given
+        User member = User.createMember("user", "", "");
+        Quiz quiz = Quiz.createQuiz("quiz", member);
+        String content = "answer";
+        Question question = Question.create(quiz, "question");
+        Answer answer = Answer.createAnswer(question, content);
+
+        String wrongAnswer = "wrongAnswer";
+
+        // when
+        boolean isCorrect = answer.isCorrect(wrongAnswer);
+
+        // then
+        assertThat(isCorrect).isFalse();
     }
 }

@@ -3,6 +3,8 @@ package ppalatjyo.server.gameevent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ppalatjyo.server.game.domain.Game;
+import ppalatjyo.server.gameevent.domain.GameEvent;
+import ppalatjyo.server.gameevent.domain.GameEventType;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.message.Message;
@@ -23,14 +25,12 @@ class GameEventTest {
         User user = User.createGuest("guest");
         Lobby lobby = Lobby.createLobby("lobby", user, getQuiz(), LobbyOptions.defaultOptions());
         Game game = Game.start(lobby);
-        UserGame userGame = UserGame.join(user, game);
 
         // when
-        GameEvent gameEvent = GameEvent.started(game, userGame);
+        GameEvent gameEvent = GameEvent.started(game);
 
         // then
         assertThat(gameEvent.getGame()).isEqualTo(game);
-        assertThat(gameEvent.getUserGame()).isEqualTo(userGame);
         assertThat(gameEvent.getType()).isEqualTo(GameEventType.GAME_STARTED);
     }
 
@@ -111,9 +111,9 @@ class GameEventTest {
     private Quiz getQuiz() {
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question question1 = Question.create(quiz, "question1");
-        Answer.createAnswer("answer1", question1);
+        Answer.createAnswer(question1, "answer1");
         Question question2 = Question.create(quiz, "question2");
-        Answer.createAnswer("answer2", question2);
+        Answer.createAnswer(question2, "answer2");
         return quiz;
     }
 }

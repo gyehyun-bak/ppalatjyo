@@ -15,7 +15,8 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question extends BaseEntity {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "question_id")
     private Long id;
     private String content;
@@ -58,5 +59,13 @@ public class Question extends BaseEntity {
             throw new QuestionAlreadyDeletedException();
         }
         deletedAt = LocalDateTime.now();
+    }
+
+    public boolean isCorrect(String submission) {
+        for (Answer answer : answers) {
+            return answer.isCorrect(submission);
+        }
+
+        return false;
     }
 }

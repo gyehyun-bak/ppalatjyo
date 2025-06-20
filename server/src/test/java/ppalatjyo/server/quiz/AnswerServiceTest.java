@@ -68,7 +68,7 @@ class AnswerServiceTest {
         User user = User.createMember("user", "", "");
         Quiz quiz = Quiz.createQuiz("quiz", user);
         Question question = Question.create(quiz, "question");
-        Answer answer = Answer.createAnswer("answer", question);
+        Answer answer = Answer.createAnswer(question, "answer");
 
         Long answerId = 1L;
         when(answerRepository.findById(answerId)).thenReturn(Optional.of(answer));
@@ -92,7 +92,7 @@ class AnswerServiceTest {
         User user = User.createMember("user", "", "");
         Quiz quiz = Quiz.createQuiz("quiz", user);
         Question question = Question.create(quiz, "question");
-        Answer answer = Answer.createAnswer("answer", question);
+        Answer answer = Answer.createAnswer(question, "answer");
         Long answerId = 1L;
 
         when(answerRepository.findById(answerId)).thenReturn(Optional.of(answer));

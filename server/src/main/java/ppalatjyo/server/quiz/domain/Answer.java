@@ -25,7 +25,7 @@ public class Answer extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
-    public static Answer createAnswer(String content, Question question) {
+    public static Answer createAnswer(Question question, String content) {
         Answer answer = Answer.builder()
                 .content(content)
                 .question(question)
@@ -49,5 +49,9 @@ public class Answer extends BaseEntity {
 
     public boolean isDeleted() {
         return deletedAt != null;
+    }
+
+    public boolean isCorrect(String submission) {
+        return content.equalsIgnoreCase(submission);
     }
 }

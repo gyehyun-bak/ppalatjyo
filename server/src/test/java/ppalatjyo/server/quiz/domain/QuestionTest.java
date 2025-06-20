@@ -1,6 +1,5 @@
 package ppalatjyo.server.quiz.domain;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ppalatjyo.server.user.domain.User;
@@ -56,5 +55,41 @@ class QuestionTest {
 
         // then
         assertThat(question.isDeleted()).isTrue();
+    }
+
+    @Test
+    @DisplayName("정답 확인 - 정답")
+    void isCorrect() {
+        // given
+        User user = User.createMember("author", "<EMAIL>", "google");
+        Quiz quiz = Quiz.createQuiz("quiz", user);
+        Question question = Question.create(quiz, "question");
+
+        String content = "content";
+        Answer.createAnswer(question, content);
+
+        // when
+        boolean isCorrect = question.isCorrect(content);
+
+        // then
+        assertThat(isCorrect).isTrue();
+    }
+
+    @Test
+    @DisplayName("정답 확인 - 오답")
+    void isCorrectFalse() {
+        // given
+        User user = User.createMember("author", "<EMAIL>", "google");
+        Quiz quiz = Quiz.createQuiz("quiz", user);
+        Question question = Question.create(quiz, "question");
+
+        String content = "content";
+        Answer.createAnswer(question, content);
+
+        // when
+        boolean isCorrect = question.isCorrect("wrongAnswer");
+
+        // then
+        assertThat(isCorrect).isFalse();
     }
 }
