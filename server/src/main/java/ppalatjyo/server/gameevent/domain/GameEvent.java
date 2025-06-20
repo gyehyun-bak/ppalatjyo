@@ -1,4 +1,4 @@
-package ppalatjyo.server.gameevent;
+package ppalatjyo.server.gameevent.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,8 +44,8 @@ public class GameEvent extends BaseEntity {
                 .build();
     }
 
-    public static GameEvent started(Game game, UserGame userGame) {
-        return create(game, userGame, null, GameEventType.GAME_STARTED);
+    public static GameEvent started(Game game) {
+        return create(game, null, null, GameEventType.GAME_STARTED);
     }
 
     public static GameEvent ended(Game game) {
