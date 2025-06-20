@@ -7,7 +7,6 @@ import ppalatjyo.server.quiz.exception.QuestionAlreadyDeletedException;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 @Entity

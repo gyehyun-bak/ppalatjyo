@@ -1,6 +1,5 @@
 package ppalatjyo.server.quiz.domain;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ppalatjyo.server.user.domain.User;

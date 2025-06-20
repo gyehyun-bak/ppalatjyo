@@ -10,12 +10,8 @@ import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.message.Message;
 import ppalatjyo.server.message.MessageRepository;
-import ppalatjyo.server.quiz.domain.Answer;
-import ppalatjyo.server.quiz.domain.Question;
 import ppalatjyo.server.usergame.UserGame;
 import ppalatjyo.server.usergame.UserGameRepository;
-
-import java.util.Set;
 
 @Service
 @Transactional
