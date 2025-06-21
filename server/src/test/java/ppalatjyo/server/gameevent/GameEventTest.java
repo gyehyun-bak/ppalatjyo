@@ -7,7 +7,7 @@ import ppalatjyo.server.gameevent.domain.GameEvent;
 import ppalatjyo.server.gameevent.domain.GameEventType;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
-import ppalatjyo.server.message.Message;
+import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.quiz.domain.Answer;
 import ppalatjyo.server.quiz.domain.Question;
 import ppalatjyo.server.quiz.domain.Quiz;
@@ -59,7 +59,7 @@ class GameEventTest {
         Lobby lobby = Lobby.createLobby("lobby", user, getQuiz(), LobbyOptions.defaultOptions());
         Game game = Game.start(lobby);
         UserGame userGame = UserGame.join(user, game);
-        Message message = Message.create(wrongAnswer, user, lobby, game);
+        Message message = Message.chatMessage(wrongAnswer, user, lobby, game);
 
         // when
         GameEvent gameEvent = GameEvent.wrongAnswer(game, userGame, message);
@@ -80,7 +80,7 @@ class GameEventTest {
         Lobby lobby = Lobby.createLobby("lobby", user, getQuiz(), LobbyOptions.defaultOptions());
         Game game = Game.start(lobby);
         UserGame userGame = UserGame.join(user, game);
-        Message message = Message.create(rightAnswer, user, lobby, game);
+        Message message = Message.chatMessage(rightAnswer, user, lobby, game);
 
         // when
         GameEvent gameEvent = GameEvent.rightAnswer(game, userGame, message);

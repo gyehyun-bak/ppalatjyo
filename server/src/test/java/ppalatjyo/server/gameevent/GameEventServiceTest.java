@@ -13,7 +13,7 @@ import ppalatjyo.server.gameevent.domain.GameEvent;
 import ppalatjyo.server.gameevent.domain.GameEventType;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
-import ppalatjyo.server.message.Message;
+import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.message.MessageRepository;
 import ppalatjyo.server.quiz.domain.Question;
 import ppalatjyo.server.quiz.domain.Quiz;
@@ -133,7 +133,7 @@ class GameEventServiceTest {
         UserGame userGame = game.getUserGames().getFirst();
 
         Long messageId = 1L;
-        Message message = Message.create("message", user, lobby);
+        Message message = Message.chatMessage("message", user, lobby);
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
         when(userGameRepository.findById(userGameId)).thenReturn(Optional.of(userGame));
         when(messageRepository.findById(messageId)).thenReturn(Optional.of(message));
@@ -168,7 +168,7 @@ class GameEventServiceTest {
         UserGame userGame = game.getUserGames().getFirst();
 
         Long messageId = 1L;
-        Message message = Message.create("message", user, lobby);
+        Message message = Message.chatMessage("message", user, lobby);
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
         when(userGameRepository.findById(userGameId)).thenReturn(Optional.of(userGame));
         when(messageRepository.findById(messageId)).thenReturn(Optional.of(message));

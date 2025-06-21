@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.game.GameRepository;
 import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.gameevent.domain.GameEvent;
-import ppalatjyo.server.message.Message;
+import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.message.MessageRepository;
 import ppalatjyo.server.usergame.UserGame;
 import ppalatjyo.server.usergame.UserGameRepository;

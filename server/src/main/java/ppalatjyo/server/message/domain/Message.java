@@ -1,4 +1,4 @@
-package ppalatjyo.server.message;
+package ppalatjyo.server.message.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,6 +19,9 @@ public class Message extends BaseEntity {
     @Column(name = "message_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    private MessageType type;
+
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,16 +36,25 @@ public class Message extends BaseEntity {
     @JoinColumn(name = "game_id")
     private Game game;
 
-    public static Message create(String content, User user, Lobby lobby) {
-        return create(content, user, lobby, null);
+    public static Message chatMessage(String content, User user, Lobby lobby) {
+        return chatMessage(content, user, lobby, null);
     }
 
-    public static Message create(String content, User user, Lobby lobby, Game game) {
+    public static Message chatMessage(String content, User user, Lobby lobby, Game game) {
         return Message.builder()
                 .content(content)
+                .type(MessageType.CHAT)
                 .user(user)
                 .lobby(lobby)
                 .game(game)
+                .build();
+    }
+
+    public static Message systemMessage(String content, Lobby lobby) {
+        return Message.builder()
+                .content(content)
+                .type(MessageType.SYSTEM)
+                .lobby(lobby)
                 .build();
     }
 }
