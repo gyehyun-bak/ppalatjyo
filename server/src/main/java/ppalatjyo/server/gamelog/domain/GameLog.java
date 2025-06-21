@@ -1,4 +1,4 @@
-package ppalatjyo.server.gameevent.domain;
+package ppalatjyo.server.gamelog.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +13,7 @@ import ppalatjyo.server.usergame.UserGame;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-public class GameEvent extends BaseEntity {
+public class GameLog extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -36,11 +36,11 @@ public class GameEvent extends BaseEntity {
     private Question question;
 
     @Enumerated(EnumType.STRING)
-    private GameEventType type;
+    private GameLogType type;
 
 
-    private static GameEvent create(Game game, UserGame userGame, Message message, Question question, GameEventType type) {
-        return GameEvent.builder()
+    private static GameLog create(Game game, UserGame userGame, Message message, Question question, GameLogType type) {
+        return GameLog.builder()
                 .game(game)
                 .userGame(userGame)
                 .message(message)
@@ -49,23 +49,23 @@ public class GameEvent extends BaseEntity {
                 .build();
     }
 
-    public static GameEvent started(Game game) {
-        return create(game, null, null, null, GameEventType.GAME_STARTED);
+    public static GameLog started(Game game) {
+        return create(game, null, null, null, GameLogType.GAME_STARTED);
     }
 
-    public static GameEvent ended(Game game) {
-        return create(game, null, null, null, GameEventType.GAME_ENDED);
+    public static GameLog ended(Game game) {
+        return create(game, null, null, null, GameLogType.GAME_ENDED);
     }
 
-    public static GameEvent rightAnswer(Game game, UserGame userGame, Message message) {
-        return create(game, userGame, message, game.getCurrentQuestion(), GameEventType.RIGHT_ANSWER);
+    public static GameLog rightAnswer(Game game, UserGame userGame, Message message) {
+        return create(game, userGame, message, game.getCurrentQuestion(), GameLogType.RIGHT_ANSWER);
     }
 
-    public static GameEvent wrongAnswer(Game game, UserGame userGame, Message message) {
-        return create(game, userGame, message, game.getCurrentQuestion(), GameEventType.WRONG_ANSWER);
+    public static GameLog wrongAnswer(Game game, UserGame userGame, Message message) {
+        return create(game, userGame, message, game.getCurrentQuestion(), GameLogType.WRONG_ANSWER);
     }
 
-    public static GameEvent timeOut(Game game) {
-        return create(game, null, null, game.getCurrentQuestion(), GameEventType.TIME_OUT);
+    public static GameLog timeOut(Game game) {
+        return create(game, null, null, game.getCurrentQuestion(), GameLogType.TIME_OUT);
     }
 }

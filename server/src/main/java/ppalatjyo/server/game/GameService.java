@@ -1,16 +1,19 @@
 package ppalatjyo.server.game;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.game.dto.SubmitAnswerRequestDto;
+import ppalatjyo.server.game.event.*;
 import ppalatjyo.server.game.exception.GameNotFoundException;
 import ppalatjyo.server.lobby.exception.LobbyNotFoundException;
-import ppalatjyo.server.gameevent.GameEventService;
+import ppalatjyo.server.gamelog.GameLogService;
 import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.message.MessageNotFoundException;
+import ppalatjyo.server.message.MessageService;
 import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.message.MessageRepository;
 import ppalatjyo.server.usergame.UserGame;
@@ -26,7 +29,9 @@ public class GameService {
     private final UserGameRepository userGameRepository;
     private final MessageRepository messageRepository;
     private final GameRepository gameRepository;
-    private final GameEventService gameEventService;
+    private final GameLogService gameLogService;
+    private final MessageService messageService;
+    private final ApplicationEventPublisher eventPublisher;
 
     public void start(Long lobbyId) {
         Lobby lobby = lobbyRepository.findById(lobbyId).orElseThrow(LobbyNotFoundException::new);
@@ -34,17 +39,58 @@ public class GameService {
         Game game = Game.start(lobby);
 
         gameRepository.save(game);
-        gameEventService.started(game.getId());
+        gameLogService.started(game.getId());
+
+        messageService.sendSystemMessage("게임이 시작되었습니다.", lobbyId);
+
+        eventPublisher.publishEvent(new GameStartedEvent(
+                game.getId(),
+                game.getOptions().getMinPerGame(),
+                game.getOptions().getSecPerQuestion()));
     }
 
     public void nextQuestion(Long gameId) {
         Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
+
+        if (!game.hasNextQuestion()) {
+            end(gameId);
+            return;
+        }
+
         game.nextQuestion();
+
+        eventPublisher.publishEvent(new NextQuestionEvent(game.getId()));
     }
 
     public void end(Long gameId) {
         Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
+
+        if (game.isEnded()) {
+            return;
+        }
+
         game.end();
+
+        eventPublisher.publishEvent(new GameEndedEvent(game.getId()));
+    }
+
+    public void timeOut(Long gameId) {
+        Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
+
+        if (game.isEnded()) {
+            return;
+        }
+
+        gameLogService.timeOut(gameId);
+
+        eventPublisher.publishEvent(new TimeOutEvent(gameId));
+
+        if (game.hasNextQuestion()) {
+            nextQuestion(gameId);
+            return;
+        }
+
+        end(gameId);
     }
 
     public void submitAnswer(SubmitAnswerRequestDto requestDto) {
@@ -54,9 +100,13 @@ public class GameService {
 
         boolean isCorrect = game.getCurrentQuestion().isCorrect(message.getContent());
         if (isCorrect) {
-            gameEventService.rightAnswer(game.getId(), userGame.getId(), requestDto.getMessageId());
+            gameLogService.rightAnswer(game.getId(), userGame.getId(), requestDto.getMessageId());
+
+            eventPublisher.publishEvent(new RightAnswerEvent(game.getId(), userGame.getId(), userGame.getUser().getNickname(),requestDto.getMessageId()));
+
+            nextQuestion(requestDto.getGameId());
         } else {
-            gameEventService.wrongAnswer(game.getId(), userGame.getId(), requestDto.getMessageId());
+            gameLogService.wrongAnswer(game.getId(), userGame.getId(), requestDto.getMessageId());
         }
     }
 }

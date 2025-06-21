@@ -7,6 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import ppalatjyo.server.global.websocket.dto.MessagePublicationDto;
+import ppalatjyo.server.global.websocket.dto.TestPublicationDataDto;
 
 import static org.mockito.Mockito.verify;
 

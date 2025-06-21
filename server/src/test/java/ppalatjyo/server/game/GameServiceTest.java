@@ -7,12 +7,15 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.game.dto.SubmitAnswerRequestDto;
-import ppalatjyo.server.gameevent.GameEventService;
+import ppalatjyo.server.game.event.TimeOutEvent;
+import ppalatjyo.server.gamelog.GameLogService;
 import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
+import ppalatjyo.server.message.MessageService;
 import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.message.MessageRepository;
 import ppalatjyo.server.quiz.domain.Answer;
@@ -38,13 +41,19 @@ class GameServiceTest {
     private UserGameRepository userGameRepository;
 
     @Mock
-    private GameEventService gameEventService;
+    private GameLogService gameLogService;
 
     @Mock
     private LobbyRepository lobbyRepository;
 
     @Mock
     private MessageRepository messageRepository;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
+    @Mock
+    private MessageService messageService;
 
     @InjectMocks
     private GameService gameService;
@@ -72,7 +81,8 @@ class GameServiceTest {
         // then
         ArgumentCaptor<Game> captor = ArgumentCaptor.forClass(Game.class);
         verify(gameRepository, times(1)).save(captor.capture());
-        verify(gameEventService, times(1)).started(any());
+        verify(gameLogService, times(1)).started(any());
+        verify(messageService, times(1)).sendSystemMessage(any(), any());
 
         Game game = captor.getValue();
         assertThat(game).isNotNull();
@@ -133,18 +143,21 @@ class GameServiceTest {
         assertThat(game.isEnded()).isTrue();
     }
 
-    private Game createGame(LobbyOptions options) {
-        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), createQuiz(), options);
-        return Game.start(lobby);
-    }
+    @Test
+    @DisplayName("문제 시간 초과")
+    void timeOut() {
+        // given
+        Long gameId = 1L;
+        Game game = createGame(LobbyOptions.defaultOptions());
 
-    private Quiz createQuiz() {
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
-        Question question1 = Question.create(quiz, "question1");
-        Answer.createAnswer(question1, "answer1");
-        Question question2 = Question.create(quiz, "question2");
-        Answer.createAnswer(question2, "answer2");
-        return quiz;
+        when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
+
+        // when
+        gameService.timeOut(gameId);
+
+        // then
+        verify(gameLogService).timeOut(gameId);
+        verify(eventPublisher).publishEvent(any(TimeOutEvent.class));
     }
 
     @Test
@@ -182,7 +195,7 @@ class GameServiceTest {
         gameService.submitAnswer(requestDto);
 
         // then
-        verify(gameEventService, times(1)).rightAnswer(any(), any(), any());
+        verify(gameLogService, times(1)).rightAnswer(any(), any(), any());
     }
 
     @Test
@@ -221,6 +234,20 @@ class GameServiceTest {
         gameService.submitAnswer(requestDto);
 
         // then
-        verify(gameEventService, times(1)).wrongAnswer(any(), any(), any());
+        verify(gameLogService, times(1)).wrongAnswer(any(), any(), any());
+    }
+
+    private Game createGame(LobbyOptions options) {
+        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), createQuiz(), options);
+        return Game.start(lobby);
+    }
+
+    private Quiz createQuiz() {
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Question question1 = Question.create(quiz, "question1");
+        Answer.createAnswer(question1, "answer1");
+        Question question2 = Question.create(quiz, "question2");
+        Answer.createAnswer(question2, "answer2");
+        return quiz;
     }
 }

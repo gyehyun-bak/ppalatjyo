@@ -1,4 +1,4 @@
-package ppalatjyo.server.global.websocket;
+package ppalatjyo.server.global.websocket.dto;
 
 import lombok.Data;
 
