@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
+import ppalatjyo.server.lobby.exception.LobbyAlreadyDeletedException;
 import ppalatjyo.server.quiz.domain.Quiz;
 import ppalatjyo.server.user.domain.User;
 

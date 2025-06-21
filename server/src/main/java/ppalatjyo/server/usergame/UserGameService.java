@@ -12,7 +12,7 @@ public class UserGameService {
     private final UserGameRepository userGameRepository;
 
     public void addScore(Long userGameId) {
-        UserGame userGame = userGameRepository.findById(userGameId).orElseThrow();
+        UserGame userGame = userGameRepository.findById(userGameId).orElseThrow(UserGameNotFoundException::new);
         userGame.increaseScore();
     }
 }
