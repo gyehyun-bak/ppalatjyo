@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.message.domain.Message;
+import ppalatjyo.server.message.event.ChatMessageSentEvent;
+import ppalatjyo.server.message.event.SystemMessageSentEvent;
 import ppalatjyo.server.user.UserRepository;
 import ppalatjyo.server.user.domain.User;
 
@@ -28,7 +30,17 @@ public class MessageService {
         messageRepository.save(message);
 
         // MessageSentEventHandler 에서 트랜잭션 여부에 따라 분기 처리
-        MessageSentEvent event = new MessageSentEvent(userId, lobbyId, message.getId());
+        ChatMessageSentEvent event = new ChatMessageSentEvent(userId, lobbyId, message.getId());
+        eventPublisher.publishEvent(event);
+    }
+
+    public void sendSystemMessage(String content, Long lobbyId) {
+        Lobby lobby = lobbyRepository.findById(lobbyId).orElseThrow();
+
+        Message message = Message.systemMessage(content, lobby);
+        messageRepository.save(message);
+
+        SystemMessageSentEvent event = new SystemMessageSentEvent(lobbyId, message.getId());
         eventPublisher.publishEvent(event);
     }
 }

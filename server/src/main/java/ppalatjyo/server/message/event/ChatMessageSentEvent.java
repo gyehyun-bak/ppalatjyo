@@ -1,12 +1,12 @@
-package ppalatjyo.server.message;
+package ppalatjyo.server.message.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class MessageSentEvent {
+public class ChatMessageSentEvent {
     private Long userId;
-    private Long gameId;
+    private Long lobbyId;
     private Long messageId;
 }
