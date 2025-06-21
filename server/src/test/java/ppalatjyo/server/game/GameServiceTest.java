@@ -13,7 +13,7 @@ import ppalatjyo.server.gameevent.GameEventService;
 import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
-import ppalatjyo.server.message.Message;
+import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.message.MessageRepository;
 import ppalatjyo.server.quiz.domain.Answer;
 import ppalatjyo.server.quiz.domain.Question;
@@ -167,7 +167,7 @@ class GameServiceTest {
         UserGame userGame = UserGame.join(user, game);
 
         Long messageId = 1L;
-        Message message = Message.create(answer, user, lobby, game);
+        Message message = Message.chatMessage(answer, user, lobby, game);
 
         SubmitAnswerRequestDto requestDto = new SubmitAnswerRequestDto();
         requestDto.setGameId(gameId);
@@ -206,7 +206,7 @@ class GameServiceTest {
         UserGame userGame = UserGame.join(user, game);
 
         Long messageId = 1L;
-        Message message = Message.create(wrongAnswer, user, lobby, game); // 오답 작성
+        Message message = Message.chatMessage(wrongAnswer, user, lobby, game); // 오답 작성
 
         SubmitAnswerRequestDto requestDto = new SubmitAnswerRequestDto();
         requestDto.setGameId(gameId);

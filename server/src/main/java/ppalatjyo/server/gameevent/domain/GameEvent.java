@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.global.audit.BaseEntity;
-import ppalatjyo.server.message.Message;
+import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.quiz.domain.Question;
 import ppalatjyo.server.usergame.UserGame;
 

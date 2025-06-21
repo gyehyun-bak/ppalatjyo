@@ -8,7 +8,7 @@ import ppalatjyo.server.game.dto.SubmitAnswerRequestDto;
 import ppalatjyo.server.gameevent.GameEventService;
 import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
-import ppalatjyo.server.message.Message;
+import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.message.MessageRepository;
 import ppalatjyo.server.usergame.UserGame;
 import ppalatjyo.server.usergame.UserGameRepository;
