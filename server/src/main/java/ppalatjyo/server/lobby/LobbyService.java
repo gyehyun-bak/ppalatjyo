@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
+import ppalatjyo.server.lobby.dto.MessageToLobbyRequestDto;
 import ppalatjyo.server.lobby.exception.LobbyNotFoundException;
 import ppalatjyo.server.quiz.domain.Quiz;
 import ppalatjyo.server.quiz.exception.QuizNotFoundException;
@@ -52,5 +53,10 @@ public class LobbyService {
         Quiz quiz = quizRepository.findById(quizId).orElseThrow(QuizNotFoundException::new);
 
         lobby.changeQuiz(quiz);
+    }
+
+    // TODO: 메시지 수신
+    public void receiveMessage(MessageToLobbyRequestDto requestDto) {
+
     }
 }
