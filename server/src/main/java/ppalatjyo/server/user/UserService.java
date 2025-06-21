@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.user.domain.User;
 import ppalatjyo.server.user.dto.JoinAsGuestResponseDto;
 import ppalatjyo.server.user.dto.JoinAsMemberResponseDto;
+import ppalatjyo.server.user.exception.UserNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -29,17 +30,17 @@ public class UserService {
     }
 
     public void promoteGuestToMember(Long userId, String oAuthEmail, String oAuthProvider) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         user.promoteGuestToMember(oAuthEmail, oAuthProvider);
     }
 
     public void changeNickname(Long userId, String newNickname) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         user.changeNickname(newNickname);
     }
 
     public void deleteUser(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         user.delete();
     }
 }

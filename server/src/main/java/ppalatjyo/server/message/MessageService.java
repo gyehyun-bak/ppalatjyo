@@ -6,11 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
+import ppalatjyo.server.lobby.exception.LobbyNotFoundException;
 import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.message.event.ChatMessageSentEvent;
 import ppalatjyo.server.message.event.SystemMessageSentEvent;
 import ppalatjyo.server.user.UserRepository;
 import ppalatjyo.server.user.domain.User;
+import ppalatjyo.server.user.exception.UserNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +25,8 @@ public class MessageService {
     private final ApplicationEventPublisher eventPublisher;
 
     public void sendChatMessage(String content, Long userId, Long lobbyId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        Lobby lobby = lobbyRepository.findById(lobbyId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Lobby lobby = lobbyRepository.findById(lobbyId).orElseThrow(LobbyNotFoundException::new);
 
         Message message = Message.chatMessage(content, user, lobby);
         messageRepository.save(message);
@@ -35,7 +37,7 @@ public class MessageService {
     }
 
     public void sendSystemMessage(String content, Long lobbyId) {
-        Lobby lobby = lobbyRepository.findById(lobbyId).orElseThrow();
+        Lobby lobby = lobbyRepository.findById(lobbyId).orElseThrow(LobbyNotFoundException::new);
 
         Message message = Message.systemMessage(content, lobby);
         messageRepository.save(message);

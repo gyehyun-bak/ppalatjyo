@@ -1,4 +1,4 @@
-package ppalatjyo.server.lobby;
+package ppalatjyo.server.lobby.exception;
 
 public class LobbyAlreadyDeletedException extends RuntimeException {
     public LobbyAlreadyDeletedException() {
