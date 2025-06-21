@@ -11,22 +11,22 @@ include::{snippets}/hello/http-request.adoc[]
 .response
 include::{snippets}/hello/http-response.adoc[]
 
-=== Validation Example
+== Global Error Response
 
-Request
+=== Internal Server Error (500)
 
-.request
-include::{snippets}/validation-success/http-request.adoc[]
-.request body
-include::{snippets}/validation-success/request-body.adoc[]
-.request fields
-include::{snippets}/validation-success/request-fields.adoc[]
+include::{snippets}/internal-server-error/response-body.adoc[]
 
-Response
+include::{snippets}/internal-server-error/response-fields.adoc[]
 
-.Success
-include::{snippets}/validation-success/response-body.adoc[]
-.Validation Fail
+=== Not Found (404)
+
+include::{snippets}/no-such-element-exception/response-body.adoc[]
+
+include::{snippets}/no-such-element-exception/response-fields.adoc[]
+
+=== Validation Fail (400)
+
 include::{snippets}/validation-fail/response-body.adoc[]
 
 include::{snippets}/validation-fail/response-fields.adoc[]
