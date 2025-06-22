@@ -19,6 +19,7 @@ import ppalatjyo.server.message.MessageRepository;
 import ppalatjyo.server.usergame.UserGame;
 import ppalatjyo.server.usergame.UserGameNotFoundException;
 import ppalatjyo.server.usergame.UserGameRepository;
+import ppalatjyo.server.usergame.UserGameService;
 
 @Service
 @Transactional
@@ -104,7 +105,7 @@ public class GameService {
 
             eventPublisher.publishEvent(new RightAnswerEvent(game.getId(), userGame.getId(), userGame.getUser().getNickname(),requestDto.getMessageId()));
 
-            // TODO: 유저 점수 증가
+            userGame.increaseScoreBy(1); // 현재 1점으로 고정
 
             nextQuestion(requestDto.getGameId());
         } else {

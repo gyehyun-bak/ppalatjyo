@@ -1,12 +1,10 @@
 package ppalatjyo.server.usergame;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.lobby.domain.Lobby;
@@ -31,7 +29,7 @@ class UserGameServiceTest {
 
     @Test
     @DisplayName("점수 추가")
-    void increaseScore() {
+    void increaseScoreBy() {
         // given
         User user = User.createGuest("user");
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("m", "email", "password"));
@@ -47,7 +45,7 @@ class UserGameServiceTest {
         when(userGameRepository.findById(userGameId)).thenReturn(Optional.of(userGame));
 
         // when
-        userGameService.addScore(userGameId);
+        userGameService.increaseScoreBy(userGameId, 1);
 
         // then
         assertThat(userGame.getScore()).isEqualTo(1);

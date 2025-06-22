@@ -33,7 +33,7 @@ class UserGameTest {
 
     @Test
     @DisplayName("득점")
-    void increaseScore() {
+    void increaseScoreBy() {
         // given
         User user = User.createGuest("guest");
         Lobby lobby = Lobby.createLobby("lobby", user, getQuiz(), LobbyOptions.defaultOptions());
@@ -41,7 +41,7 @@ class UserGameTest {
         UserGame userGame = UserGame.join(user, game);
 
         // when
-        userGame.increaseScore();
+        userGame.increaseScoreBy(1);
 
         // then
         assertThat(userGame.getScore()).isEqualTo(1);

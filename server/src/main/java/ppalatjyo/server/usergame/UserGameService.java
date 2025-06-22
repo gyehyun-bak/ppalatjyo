@@ -11,8 +11,8 @@ public class UserGameService {
 
     private final UserGameRepository userGameRepository;
 
-    public void addScore(Long userGameId) {
+    public void increaseScoreBy(Long userGameId, int amount) {
         UserGame userGame = userGameRepository.findById(userGameId).orElseThrow(UserGameNotFoundException::new);
-        userGame.increaseScore();
+        userGame.increaseScoreBy(amount);
     }
 }

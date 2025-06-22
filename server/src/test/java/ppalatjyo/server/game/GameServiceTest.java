@@ -24,6 +24,7 @@ import ppalatjyo.server.quiz.domain.Quiz;
 import ppalatjyo.server.user.domain.User;
 import ppalatjyo.server.usergame.UserGame;
 import ppalatjyo.server.usergame.UserGameRepository;
+import ppalatjyo.server.usergame.UserGameService;
 import ppalatjyo.server.userlobby.UserLobby;
 
 import java.util.Optional;
@@ -196,6 +197,7 @@ class GameServiceTest {
 
         // then
         verify(gameLogService, times(1)).rightAnswer(any(), any(), any());
+        assertThat(userGame.getScore()).isEqualTo(1);
     }
 
     @Test
