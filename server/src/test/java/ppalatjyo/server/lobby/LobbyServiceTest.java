@@ -9,6 +9,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
+import ppalatjyo.server.lobby.dto.MessageToLobbyRequestDto;
+import ppalatjyo.server.message.MessageService;
 import ppalatjyo.server.quiz.domain.Quiz;
 import ppalatjyo.server.quiz.repository.QuizRepository;
 import ppalatjyo.server.user.UserRepository;
@@ -30,6 +32,9 @@ class LobbyServiceTest {
 
     @Mock
     private QuizRepository quizRepository;
+
+    @Mock
+    private MessageService messageService;
 
     @InjectMocks
     private LobbyService lobbyService;
@@ -152,5 +157,21 @@ class LobbyServiceTest {
 
         // then
         assertThat(lobby.getQuiz()).isEqualTo(newQuiz);
+    }
+
+    @Test
+    @DisplayName("Lobby에 메시지 송신 - MessageService로 위임")
+    void sendMessageToLobby() {
+        // given
+        String content = "content";
+        Long userId = 1L;
+        Long lobbyId = 1L;
+        MessageToLobbyRequestDto requestDto = new MessageToLobbyRequestDto(userId, lobbyId, content);
+
+        // when
+        lobbyService.sendMessageToLobby(requestDto);
+
+        // then
+        verify(messageService, times(1)).sendChatMessage(content, userId, lobbyId);
     }
 }

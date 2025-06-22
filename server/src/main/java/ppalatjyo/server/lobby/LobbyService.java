@@ -7,6 +7,7 @@ import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.lobby.dto.MessageToLobbyRequestDto;
 import ppalatjyo.server.lobby.exception.LobbyNotFoundException;
+import ppalatjyo.server.message.MessageService;
 import ppalatjyo.server.quiz.domain.Quiz;
 import ppalatjyo.server.quiz.exception.QuizNotFoundException;
 import ppalatjyo.server.quiz.repository.QuizRepository;
@@ -22,6 +23,7 @@ public class LobbyService {
     private final LobbyRepository lobbyRepository;
     private final UserRepository userRepository;
     private final QuizRepository quizRepository;
+    private final MessageService messageService;
 
     public void createLobby(String name, long hostId, long quizId, LobbyOptions options) {
         User host = userRepository.findById(hostId).orElseThrow(UserNotFoundException::new);
@@ -55,8 +57,8 @@ public class LobbyService {
         lobby.changeQuiz(quiz);
     }
 
-    // TODO: 메시지 수신
-    public void receiveMessage(MessageToLobbyRequestDto requestDto) {
-
+    // MessageService로 위임
+    public void sendMessageToLobby(MessageToLobbyRequestDto requestDto) {
+        messageService.sendChatMessage(requestDto.getContent(), requestDto.getUserId(), requestDto.getLobbyId());
     }
 }

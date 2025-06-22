@@ -11,11 +11,12 @@ import ppalatjyo.server.user.domain.User;
 import ppalatjyo.server.user.domain.UserRole;
 import ppalatjyo.server.user.dto.JoinAsGuestResponseDto;
 import ppalatjyo.server.user.dto.JoinAsMemberResponseDto;
+import ppalatjyo.server.userlobby.UserLobbyService;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @Transactional
@@ -23,6 +24,9 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private UserLobbyService userLobbyService;
 
     @InjectMocks
     private UserService userService;
@@ -107,5 +111,21 @@ class UserServiceTest {
 
         // then
         assertThat(user.isDeleted()).isTrue();
+    }
+
+    @Test
+    @DisplayName("연결 끊김")
+    void disconnect() {
+        // given
+        Long id = 1L;
+        User user = User.createGuest("guest");
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+
+        // when
+        userService.disconnect(id);
+
+        // then
+        verify(userLobbyService, times(1)).leaveAllLobbies(user.getId());
     }
 }
