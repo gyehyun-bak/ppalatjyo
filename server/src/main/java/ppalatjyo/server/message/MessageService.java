@@ -32,7 +32,7 @@ public class MessageService {
         messageRepository.save(message);
 
         // MessageSentEventHandler 에서 트랜잭션 여부에 따라 분기 처리
-        ChatMessageSentEvent event = new ChatMessageSentEvent(userId, lobbyId, message.getId());
+        ChatMessageSentEvent event = new ChatMessageSentEvent(message.getId());
         eventPublisher.publishEvent(event);
     }
 
@@ -42,7 +42,7 @@ public class MessageService {
         Message message = Message.systemMessage(content, lobby);
         messageRepository.save(message);
 
-        SystemMessageSentEvent event = new SystemMessageSentEvent(lobbyId, message.getId());
+        SystemMessageSentEvent event = new SystemMessageSentEvent(message.getId());
         eventPublisher.publishEvent(event);
     }
 }

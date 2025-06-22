@@ -6,7 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ChatMessageSentEvent {
-    private Long userId;
-    private Long lobbyId;
     private Long messageId;
 }

@@ -1,16 +1,13 @@
 package ppalatjyo.server.userlobby;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
@@ -18,11 +15,11 @@ import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.quiz.domain.Quiz;
 import ppalatjyo.server.user.UserRepository;
 import ppalatjyo.server.user.domain.User;
+import ppalatjyo.server.userlobby.event.UserLeftLobbyEvent;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +34,9 @@ class UserLobbyServiceTest {
 
     @Mock
     private UserLobbyRepository userLobbyRepository;
+
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @InjectMocks
     private UserLobbyService userLobbyService;
@@ -88,6 +88,7 @@ class UserLobbyServiceTest {
         userLobbyService.leave(userId, lobbyId);
 
         // then
+        verify(applicationEventPublisher, times(1)).publishEvent(any(UserLeftLobbyEvent.class));
         assertThat(userLobby.isLeft()).isTrue();
     }
 }

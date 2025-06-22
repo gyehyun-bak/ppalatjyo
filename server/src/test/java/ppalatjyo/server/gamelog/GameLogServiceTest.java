@@ -1,4 +1,4 @@
-package ppalatjyo.server.gameevent;
+package ppalatjyo.server.gamelog;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,8 +9,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ppalatjyo.server.game.GameRepository;
 import ppalatjyo.server.game.domain.Game;
-import ppalatjyo.server.gameevent.domain.GameEvent;
-import ppalatjyo.server.gameevent.domain.GameEventType;
+import ppalatjyo.server.gamelog.domain.GameLog;
+import ppalatjyo.server.gamelog.domain.GameLogType;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.message.domain.Message;
@@ -27,10 +27,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class GameEventServiceTest {
+class GameLogServiceTest {
 
     @Mock
-    private GameEventRepository gameEventRepository;
+    private GameLogRepository gameLogRepository;
 
     @Mock
     private GameRepository gameRepository;
@@ -42,7 +42,7 @@ class GameEventServiceTest {
     private MessageRepository messageRepository;
 
     @InjectMocks
-    private GameEventService gameEventService;
+    private GameLogService gameLogService;
 
     @Test
     @DisplayName("게임 시작")
@@ -57,16 +57,16 @@ class GameEventServiceTest {
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
 
         // when
-        gameEventService.started(gameId);
+        gameLogService.started(gameId);
 
         // then
-        ArgumentCaptor<GameEvent> captor = ArgumentCaptor.forClass(GameEvent.class);
-        verify(gameEventRepository, times(1)).save(captor.capture());
+        ArgumentCaptor<GameLog> captor = ArgumentCaptor.forClass(GameLog.class);
+        verify(gameLogRepository, times(1)).save(captor.capture());
 
-        GameEvent gameEvent = captor.getValue();
-        assertThat(gameEvent).isNotNull();
-        assertThat(gameEvent.getGame()).isEqualTo(game);
-        assertThat(gameEvent.getType()).isEqualTo(GameEventType.GAME_STARTED);
+        GameLog gameLog = captor.getValue();
+        assertThat(gameLog).isNotNull();
+        assertThat(gameLog.getGame()).isEqualTo(game);
+        assertThat(gameLog.getType()).isEqualTo(GameLogType.GAME_STARTED);
     }
 
     @Test
@@ -82,15 +82,15 @@ class GameEventServiceTest {
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
 
         // when
-        gameEventService.ended(gameId);
+        gameLogService.ended(gameId);
 
         // then
-        ArgumentCaptor<GameEvent> captor = ArgumentCaptor.forClass(GameEvent.class);
-        verify(gameEventRepository, times(1)).save(captor.capture());
-        GameEvent gameEvent = captor.getValue();
-        assertThat(gameEvent).isNotNull();
-        assertThat(gameEvent.getGame()).isEqualTo(game);
-        assertThat(gameEvent.getType()).isEqualTo(GameEventType.GAME_ENDED);
+        ArgumentCaptor<GameLog> captor = ArgumentCaptor.forClass(GameLog.class);
+        verify(gameLogRepository, times(1)).save(captor.capture());
+        GameLog gameLog = captor.getValue();
+        assertThat(gameLog).isNotNull();
+        assertThat(gameLog.getGame()).isEqualTo(game);
+        assertThat(gameLog.getType()).isEqualTo(GameLogType.GAME_ENDED);
     }
 
     @Test
@@ -106,15 +106,15 @@ class GameEventServiceTest {
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
 
         // when
-        gameEventService.timeOut(gameId);
+        gameLogService.timeOut(gameId);
 
         // then
-        ArgumentCaptor<GameEvent> captor = ArgumentCaptor.forClass(GameEvent.class);
-        verify(gameEventRepository, times(1)).save(captor.capture());
-        GameEvent gameEvent = captor.getValue();
-        assertThat(gameEvent).isNotNull();
-        assertThat(gameEvent.getGame()).isEqualTo(game);
-        assertThat(gameEvent.getType()).isEqualTo(GameEventType.TIME_OUT);
+        ArgumentCaptor<GameLog> captor = ArgumentCaptor.forClass(GameLog.class);
+        verify(gameLogRepository, times(1)).save(captor.capture());
+        GameLog gameLog = captor.getValue();
+        assertThat(gameLog).isNotNull();
+        assertThat(gameLog.getGame()).isEqualTo(game);
+        assertThat(gameLog.getType()).isEqualTo(GameLogType.TIME_OUT);
     }
 
     @Test
@@ -139,17 +139,17 @@ class GameEventServiceTest {
         when(messageRepository.findById(messageId)).thenReturn(Optional.of(message));
 
         // when
-        gameEventService.rightAnswer(gameId, userGameId, messageId);
+        gameLogService.rightAnswer(gameId, userGameId, messageId);
 
         // then
-        ArgumentCaptor<GameEvent> captor = ArgumentCaptor.forClass(GameEvent.class);
-        verify(gameEventRepository, times(1)).save(captor.capture());
-        GameEvent gameEvent = captor.getValue();
-        assertThat(gameEvent).isNotNull();
-        assertThat(gameEvent.getGame()).isEqualTo(game);
-        assertThat(gameEvent.getType()).isEqualTo(GameEventType.RIGHT_ANSWER);
-        assertThat(gameEvent.getMessage()).isEqualTo(message);
-        assertThat(gameEvent.getUserGame()).isEqualTo(userGame);
+        ArgumentCaptor<GameLog> captor = ArgumentCaptor.forClass(GameLog.class);
+        verify(gameLogRepository, times(1)).save(captor.capture());
+        GameLog gameLog = captor.getValue();
+        assertThat(gameLog).isNotNull();
+        assertThat(gameLog.getGame()).isEqualTo(game);
+        assertThat(gameLog.getType()).isEqualTo(GameLogType.RIGHT_ANSWER);
+        assertThat(gameLog.getMessage()).isEqualTo(message);
+        assertThat(gameLog.getUserGame()).isEqualTo(userGame);
     }
 
     @Test
@@ -174,17 +174,17 @@ class GameEventServiceTest {
         when(messageRepository.findById(messageId)).thenReturn(Optional.of(message));
 
         // when
-        gameEventService.wrongAnswer(gameId, userGameId, messageId);
+        gameLogService.wrongAnswer(gameId, userGameId, messageId);
 
         // then
-        ArgumentCaptor<GameEvent> captor = ArgumentCaptor.forClass(GameEvent.class);
-        verify(gameEventRepository, times(1)).save(captor.capture());
-        GameEvent gameEvent = captor.getValue();
-        assertThat(gameEvent).isNotNull();
-        assertThat(gameEvent.getGame()).isEqualTo(game);
-        assertThat(gameEvent.getType()).isEqualTo(GameEventType.WRONG_ANSWER);
-        assertThat(gameEvent.getMessage()).isEqualTo(message);
-        assertThat(gameEvent.getUserGame()).isEqualTo(userGame);
+        ArgumentCaptor<GameLog> captor = ArgumentCaptor.forClass(GameLog.class);
+        verify(gameLogRepository, times(1)).save(captor.capture());
+        GameLog gameLog = captor.getValue();
+        assertThat(gameLog).isNotNull();
+        assertThat(gameLog.getGame()).isEqualTo(game);
+        assertThat(gameLog.getType()).isEqualTo(GameLogType.WRONG_ANSWER);
+        assertThat(gameLog.getMessage()).isEqualTo(message);
+        assertThat(gameLog.getUserGame()).isEqualTo(userGame);
     }
 
 

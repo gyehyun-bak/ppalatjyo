@@ -1,4 +1,4 @@
-package ppalatjyo.server.gameevent;
+package ppalatjyo.server.gamelog;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.game.GameRepository;
 import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.game.exception.GameNotFoundException;
-import ppalatjyo.server.gameevent.domain.GameEvent;
+import ppalatjyo.server.gamelog.domain.GameLog;
 import ppalatjyo.server.message.MessageNotFoundException;
 import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.message.MessageRepository;
@@ -17,29 +17,29 @@ import ppalatjyo.server.usergame.UserGameRepository;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class GameEventService {
+public class GameLogService {
 
-    private final GameEventRepository gameEventRepository;
+    private final GameLogRepository gameLogRepository;
     private final GameRepository gameRepository;
     private final UserGameRepository userGameRepository;
     private final MessageRepository messageRepository;
 
     public void started(Long gameId) {
         Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
-        GameEvent gameEvent = GameEvent.started(game);
-        gameEventRepository.save(gameEvent);
+        GameLog gameLog = GameLog.started(game);
+        gameLogRepository.save(gameLog);
     }
 
     public void ended(Long gameId) {
         Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
-        GameEvent gameEvent = GameEvent.ended(game);
-        gameEventRepository.save(gameEvent);
+        GameLog gameLog = GameLog.ended(game);
+        gameLogRepository.save(gameLog);
     }
 
     public void timeOut(Long gameId) {
         Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
-        GameEvent gameEvent = GameEvent.timeOut(game);
-        gameEventRepository.save(gameEvent);
+        GameLog gameLog = GameLog.timeOut(game);
+        gameLogRepository.save(gameLog);
     }
 
     public void rightAnswer(Long gameId, Long userGameId, Long messageId) {
@@ -47,8 +47,8 @@ public class GameEventService {
         UserGame userGame = userGameRepository.findById(userGameId).orElseThrow(UserGameNotFoundException::new);
         Message message = messageRepository.findById(messageId).orElseThrow(MessageNotFoundException::new);
 
-        GameEvent gameEvent = GameEvent.rightAnswer(game, userGame, message);
-        gameEventRepository.save(gameEvent);
+        GameLog gameLog = GameLog.rightAnswer(game, userGame, message);
+        gameLogRepository.save(gameLog);
     }
 
     public void wrongAnswer(Long gameId, Long userGameId, Long messageId) {
@@ -56,7 +56,7 @@ public class GameEventService {
         UserGame userGame = userGameRepository.findById(userGameId).orElseThrow(UserGameNotFoundException::new);
         Message message = messageRepository.findById(messageId).orElseThrow(MessageNotFoundException::new);
 
-        GameEvent gameEvent = GameEvent.wrongAnswer(game, userGame, message);
-        gameEventRepository.save(gameEvent);
+        GameLog gameLog = GameLog.wrongAnswer(game, userGame, message);
+        gameLogRepository.save(gameLog);
     }
 }

@@ -50,6 +50,8 @@ public class Message extends BaseEntity {
                 .build();
     }
 
+    // System 메시지에 내용을 직접 집어넣는게 과연 맞는지?
+    // -> 이벤트 타입에 따라 표시할 메시지를 정해두는게 맞지 않는지?
     public static Message systemMessage(String content, Lobby lobby) {
         return Message.builder()
                 .content(content)

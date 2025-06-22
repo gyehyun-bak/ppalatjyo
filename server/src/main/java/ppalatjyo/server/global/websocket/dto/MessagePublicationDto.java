@@ -1,0 +1,16 @@
+package ppalatjyo.server.global.websocket.dto;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class MessagePublicationDto<T> {
+    @NotNull
+    private String destination;
+    @NotNull
+    private T data;
+}

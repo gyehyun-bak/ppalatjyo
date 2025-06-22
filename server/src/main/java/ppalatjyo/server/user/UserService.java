@@ -3,10 +3,12 @@ package ppalatjyo.server.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ppalatjyo.server.lobby.LobbyService;
 import ppalatjyo.server.user.domain.User;
 import ppalatjyo.server.user.dto.JoinAsGuestResponseDto;
 import ppalatjyo.server.user.dto.JoinAsMemberResponseDto;
 import ppalatjyo.server.user.exception.UserNotFoundException;
+import ppalatjyo.server.userlobby.UserLobbyService;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +16,7 @@ import ppalatjyo.server.user.exception.UserNotFoundException;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserLobbyService userLobbyService;
 
     public JoinAsGuestResponseDto joinAsGuest(String nickname) {
         User guest = User.createGuest(nickname);
@@ -42,5 +45,10 @@ public class UserService {
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         user.delete();
+    }
+
+    public void disconnect(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        userLobbyService.leaveAllLobbies(user.getId());
     }
 }

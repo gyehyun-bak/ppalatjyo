@@ -1,10 +1,10 @@
-package ppalatjyo.server.gameevent;
+package ppalatjyo.server.gamelog;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ppalatjyo.server.game.domain.Game;
-import ppalatjyo.server.gameevent.domain.GameEvent;
-import ppalatjyo.server.gameevent.domain.GameEventType;
+import ppalatjyo.server.gamelog.domain.GameLog;
+import ppalatjyo.server.gamelog.domain.GameLogType;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.message.domain.Message;
@@ -16,7 +16,7 @@ import ppalatjyo.server.usergame.UserGame;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class GameEventTest {
+class GameLogTest {
 
     @Test
     @DisplayName("게임 시작됨")
@@ -27,11 +27,11 @@ class GameEventTest {
         Game game = Game.start(lobby);
 
         // when
-        GameEvent gameEvent = GameEvent.started(game);
+        GameLog gameLog = GameLog.started(game);
 
         // then
-        assertThat(gameEvent.getGame()).isEqualTo(game);
-        assertThat(gameEvent.getType()).isEqualTo(GameEventType.GAME_STARTED);
+        assertThat(gameLog.getGame()).isEqualTo(game);
+        assertThat(gameLog.getType()).isEqualTo(GameLogType.GAME_STARTED);
     }
 
     @Test
@@ -43,11 +43,11 @@ class GameEventTest {
         Game game = Game.start(lobby);
 
         // when
-        GameEvent gameEvent = GameEvent.ended(game);
+        GameLog gameLog = GameLog.ended(game);
 
         // then
-        assertThat(gameEvent.getGame()).isEqualTo(game);
-        assertThat(gameEvent.getType()).isEqualTo(GameEventType.GAME_ENDED);
+        assertThat(gameLog.getGame()).isEqualTo(game);
+        assertThat(gameLog.getType()).isEqualTo(GameLogType.GAME_ENDED);
     }
 
     @Test
@@ -62,13 +62,13 @@ class GameEventTest {
         Message message = Message.chatMessage(wrongAnswer, user, lobby, game);
 
         // when
-        GameEvent gameEvent = GameEvent.wrongAnswer(game, userGame, message);
+        GameLog gameLog = GameLog.wrongAnswer(game, userGame, message);
 
         // then
-        assertThat(gameEvent.getType()).isEqualTo(GameEventType.WRONG_ANSWER);
-        assertThat(gameEvent.getGame()).isEqualTo(game);
-        assertThat(gameEvent.getUserGame()).isEqualTo(userGame);
-        assertThat(gameEvent.getMessage()).isEqualTo(message);
+        assertThat(gameLog.getType()).isEqualTo(GameLogType.WRONG_ANSWER);
+        assertThat(gameLog.getGame()).isEqualTo(game);
+        assertThat(gameLog.getUserGame()).isEqualTo(userGame);
+        assertThat(gameLog.getMessage()).isEqualTo(message);
     }
 
     @Test
@@ -83,13 +83,13 @@ class GameEventTest {
         Message message = Message.chatMessage(rightAnswer, user, lobby, game);
 
         // when
-        GameEvent gameEvent = GameEvent.rightAnswer(game, userGame, message);
+        GameLog gameLog = GameLog.rightAnswer(game, userGame, message);
 
         // then
-        assertThat(gameEvent.getType()).isEqualTo(GameEventType.RIGHT_ANSWER);
-        assertThat(gameEvent.getGame()).isEqualTo(game);
-        assertThat(gameEvent.getUserGame()).isEqualTo(userGame);
-        assertThat(gameEvent.getMessage()).isEqualTo(message);
+        assertThat(gameLog.getType()).isEqualTo(GameLogType.RIGHT_ANSWER);
+        assertThat(gameLog.getGame()).isEqualTo(game);
+        assertThat(gameLog.getUserGame()).isEqualTo(userGame);
+        assertThat(gameLog.getMessage()).isEqualTo(message);
     }
 
     @Test
@@ -101,11 +101,11 @@ class GameEventTest {
         Game game = Game.start(lobby);
 
         // when
-        GameEvent gameEvent = GameEvent.timeOut(game);
+        GameLog gameLog = GameLog.timeOut(game);
 
         // then
-        assertThat(gameEvent.getType()).isEqualTo(GameEventType.TIME_OUT);
-        assertThat(gameEvent.getGame()).isEqualTo(game);
+        assertThat(gameLog.getType()).isEqualTo(GameLogType.TIME_OUT);
+        assertThat(gameLog.getGame()).isEqualTo(game);
     }
 
     private Quiz getQuiz() {
