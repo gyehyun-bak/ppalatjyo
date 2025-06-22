@@ -23,7 +23,7 @@ public class UserLobbyService {
     private final UserLobbyRepository userLobbyRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public void join(Long userId, Long lobbyId) { // TODO: 참가 메시지 전송
+    public void join(Long userId, Long lobbyId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Lobby lobby = lobbyRepository.findById(lobbyId).orElseThrow(LobbyNotFoundException::new);
 
@@ -34,7 +34,7 @@ public class UserLobbyService {
         applicationEventPublisher.publishEvent(new UserJoinedLobbyEvent(userId, lobbyId));
     }
 
-    public void leave(Long userId, Long lobbyId) { // TODO: 퇴장 메시지 전송
+    public void leave(Long userId, Long lobbyId) {
         UserLobby userLobby = userLobbyRepository.findByUserIdAndLobbyId(userId, lobbyId).orElseThrow(UserLobbyNotFoundException::new);
         leave(userLobby);
     }
@@ -47,6 +47,6 @@ public class UserLobbyService {
     private void leave(UserLobby userLobby) {
         userLobby.leave();
 
-        applicationEventPublisher.publishEvent(new UserLeftLobbyEvent());
+        applicationEventPublisher.publishEvent(new UserLeftLobbyEvent(userLobby.getUser().getId(), userLobby.getLobby().getId()));
     }
 }
