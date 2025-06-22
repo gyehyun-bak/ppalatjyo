@@ -15,6 +15,7 @@ import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.quiz.domain.Quiz;
 import ppalatjyo.server.user.UserRepository;
 import ppalatjyo.server.user.domain.User;
+import ppalatjyo.server.userlobby.event.UserLeftLobbyEvent;
 
 import java.util.Optional;
 

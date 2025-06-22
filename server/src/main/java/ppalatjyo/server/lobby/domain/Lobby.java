@@ -19,7 +19,8 @@ import java.util.List;
 @Builder
 public class Lobby extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "lobby_id")
     private Long id;
 
@@ -64,6 +65,10 @@ public class Lobby extends BaseEntity {
         deletedAt = LocalDateTime.now();
     }
 
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
+
     public void changeHost(User newHost) {
         this.host = newHost;
     }
@@ -78,5 +83,13 @@ public class Lobby extends BaseEntity {
 
     public void changeName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Lobby에 참여한 유저가 남지 않았는지 확인하는 메서드.
+     * @return Lobby가 비었으면 true | 아니면 false
+     */
+    public boolean isEmpty() {
+        return userLobbies.stream().allMatch(UserLobby::isLeft);
     }
 }

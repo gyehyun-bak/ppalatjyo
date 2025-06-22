@@ -7,6 +7,7 @@ import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.lobby.exception.LobbyAlreadyDeletedException;
 import ppalatjyo.server.quiz.domain.Quiz;
 import ppalatjyo.server.user.domain.User;
+import ppalatjyo.server.userlobby.UserLobby;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -65,6 +66,7 @@ class LobbyTest {
 
         // then
         assertThat(lobby.getDeletedAt()).isNotNull();
+        assertThat(lobby.isDeleted()).isTrue();
     }
 
     @Test
@@ -126,5 +128,37 @@ class LobbyTest {
 
         // then
         assertThat(lobby.getQuiz()).isEqualTo(newQuiz);
+    }
+
+    @Test
+    @DisplayName("로비가 비었으면 isEmpty() == true")
+    void isEmpty() {
+        // given
+        Quiz quiz = Quiz.createQuiz("oldQuiz", User.createMember("n", "e", "p"));
+        User user = User.createGuest("host");
+        Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.defaultOptions());
+
+        lobby.getUserLobbies().forEach(UserLobby::leave);
+
+        // when
+        boolean isEmpty = lobby.isEmpty();
+
+        // then
+        assertThat(isEmpty).isTrue();
+    }
+
+    @Test
+    @DisplayName("로비에 누가 남아있으면 isEmpty() == false")
+    void isEmptyFalse() {
+        // given
+        Quiz quiz = Quiz.createQuiz("oldQuiz", User.createMember("n", "e", "p"));
+        User user = User.createGuest("host");
+        Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.defaultOptions());
+
+        // when
+        boolean isEmpty = lobby.isEmpty();
+
+        // then
+        assertThat(isEmpty).isFalse();
     }
 }

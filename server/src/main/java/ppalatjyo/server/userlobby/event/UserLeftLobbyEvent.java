@@ -1,4 +1,4 @@
-package ppalatjyo.server.userlobby;
+package ppalatjyo.server.userlobby.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

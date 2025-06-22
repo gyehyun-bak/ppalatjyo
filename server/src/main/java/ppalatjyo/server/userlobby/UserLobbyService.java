@@ -10,6 +10,8 @@ import ppalatjyo.server.lobby.exception.LobbyNotFoundException;
 import ppalatjyo.server.user.UserRepository;
 import ppalatjyo.server.user.domain.User;
 import ppalatjyo.server.user.exception.UserNotFoundException;
+import ppalatjyo.server.userlobby.event.UserJoinedLobbyEvent;
+import ppalatjyo.server.userlobby.event.UserLeftLobbyEvent;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +30,8 @@ public class UserLobbyService {
         UserLobby userLobby = UserLobby.join(user, lobby);
 
         userLobbyRepository.save(userLobby);
+
+        applicationEventPublisher.publishEvent(new UserJoinedLobbyEvent(userId, lobbyId));
     }
 
     public void leave(Long userId, Long lobbyId) { // TODO: 퇴장 메시지 전송
@@ -42,6 +46,7 @@ public class UserLobbyService {
 
     private void leave(UserLobby userLobby) {
         userLobby.leave();
+
         applicationEventPublisher.publishEvent(new UserLeftLobbyEvent());
     }
 }
