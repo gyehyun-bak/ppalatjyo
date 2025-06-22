@@ -14,11 +14,11 @@ public class MessageEventHandler {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleChatMessageSentEvent(ChatMessageSentEvent event) {
-
+        // TODO: 구현
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleSystemMessageSentEvent(SystemMessageSentEvent event) {
-
+        // TODO: 구현
     }
 }

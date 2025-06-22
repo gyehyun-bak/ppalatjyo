@@ -104,6 +104,8 @@ public class GameService {
 
             eventPublisher.publishEvent(new RightAnswerEvent(game.getId(), userGame.getId(), userGame.getUser().getNickname(),requestDto.getMessageId()));
 
+            // TODO: 유저 점수 증가
+
             nextQuestion(requestDto.getGameId());
         } else {
             gameLogService.wrongAnswer(game.getId(), userGame.getId(), requestDto.getMessageId());
