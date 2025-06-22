@@ -3,38 +3,29 @@ package ppalatjyo.server.global.websocket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.web.authentication.AuthenticationConverter;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import ppalatjyo.server.global.security.jwt.JwtAuthenticationConverter;
-
-import java.security.Principal;
+import ppalatjyo.server.global.security.userdetails.CustomUserDetails;
+import ppalatjyo.server.user.UserService;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class WebSocketEventHandler {
 
-    private final AuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
-    private final AuthenticationManager authenticationManager;
-    // TODO: 유저 연결 이벤트 처리
+    private final UserService userService;
 
     /**
-     * STOMP CONNECT 헤더에 포함한 엑세스 토큰을 통해 유저 정보를 찾아내 웹소켓 세션에 보관합니다.
+     * 연결이 끊긴 유저에 대해 나가기 처리를 합니다.
      */
     @EventListener
-    public void handleSessionConnect(SessionConnectEvent event) {
-        SimpMessageHeaderAccessor accessor = SimpMessageHeaderAccessor.wrap(event.getMessage());
-        Principal userDetails = null;
-        accessor.setUser(userDetails);
-    }
-
-    // TODO: 유저 연결 끊김 이벤트 처리
-    @EventListener
     public void handleSessionDisconnect(SessionDisconnectEvent event) {
-
+        if (event.getUser() instanceof Authentication authentication
+                && authentication.getPrincipal() instanceof CustomUserDetails userDetails
+        ) {
+            Long userId = userDetails.getId();
+            userService.disconnect(userId);
+        }
     }
 }
