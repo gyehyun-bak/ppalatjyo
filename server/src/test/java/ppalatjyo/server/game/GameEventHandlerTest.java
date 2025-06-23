@@ -6,10 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ppalatjyo.server.game.event.GameEndedEvent;
-import ppalatjyo.server.game.event.GameStartedEvent;
-import ppalatjyo.server.game.event.RightAnswerEvent;
-import ppalatjyo.server.game.event.TimeOutEvent;
+import ppalatjyo.server.game.event.*;
 import ppalatjyo.server.global.scheduler.SchedulerService;
 import ppalatjyo.server.global.websocket.MessageBrokerService;
 
@@ -76,6 +73,19 @@ class GameEventHandlerTest {
 
         // when
         gameEventHandler.handleRightAnswer(event);
+
+        // then
+        verify(messageBrokerService).publish(anyString(), any());
+    }
+
+    @Test
+    @DisplayName("NextQuestionEvent")
+    void handleNextQuestionEvent() {
+        // given
+        NextQuestionEvent event = mock(NextQuestionEvent.class);
+
+        // when
+        gameEventHandler.handleNextQuestionEvent(event);
 
         // then
         verify(messageBrokerService).publish(anyString(), any());

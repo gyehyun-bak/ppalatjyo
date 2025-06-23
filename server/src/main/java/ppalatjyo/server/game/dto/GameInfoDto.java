@@ -8,15 +8,15 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class GameStartedEventDto {
+public class GameInfoDto {
     private Long gameId;
     private Integer minPerGame;
     private Integer secPerQuestion;
     private Integer totalQuestion;
     private LocalDateTime startedAt;
 
-    public static GameStartedEventDto create(GameStartedEvent event) {
-        return GameStartedEventDto.builder()
+    public static GameInfoDto create(GameStartedEvent event) {
+        return GameInfoDto.builder()
                 .gameId(event.getGameId())
                 .minPerGame(event.getMinPerGame())
                 .secPerQuestion(event.getSecPerQuestion())

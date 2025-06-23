@@ -63,7 +63,7 @@ public class GameService {
 
         game.nextQuestion();
 
-        eventPublisher.publishEvent(new NextQuestionEvent(game.getId()));
+        eventPublisher.publishEvent(NextQuestionEvent.create(game));
     }
 
     public void end(Long gameId) {
@@ -101,7 +101,7 @@ public class GameService {
 
         gameLogService.timeOut(gameId);
 
-        eventPublisher.publishEvent(new TimeOutEvent(gameId, game.getLobby().getId()));
+        eventPublisher.publishEvent(TimeOutEvent.create(game, timedOutQuestion));
 
         nextQuestion(gameId);
     }
@@ -110,12 +110,12 @@ public class GameService {
         Game game = gameRepository.findById(requestDto.getGameId()).orElseThrow(GameNotFoundException::new);
         UserGame userGame = userGameRepository.findById(requestDto.getUserGameId()).orElseThrow(UserGameNotFoundException::new);
         Message message = messageRepository.findById(requestDto.getMessageId()).orElseThrow(MessageNotFoundException::new);
-
-        boolean isCorrect = game.getCurrentQuestion().isCorrect(message.getContent());
+        Question currentQuestion = game.getCurrentQuestion();
+        boolean isCorrect = currentQuestion.isCorrect(message.getContent());
         if (isCorrect) {
             gameLogService.rightAnswer(game.getId(), userGame.getId(), requestDto.getMessageId());
 
-            eventPublisher.publishEvent(new RightAnswerEvent(game.getId(), userGame.getId(), game.getLobby().getId(), userGame.getUser().getNickname(), requestDto.getMessageId()));
+            eventPublisher.publishEvent(RightAnswerEvent.create(game, message, currentQuestion));
 
             userGame.increaseScoreBy(1); // 현재 1점으로 고정
 
