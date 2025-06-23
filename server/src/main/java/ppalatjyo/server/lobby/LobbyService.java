@@ -3,6 +3,7 @@ package ppalatjyo.server.lobby;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.lobby.dto.MessageToLobbyRequestDto;
@@ -70,14 +71,16 @@ public class LobbyService {
     }
 
     /**
-     * User가 Lobby를 나갑니다. User가 나가고 더 이상 Lobby에 참가한 인원이 없으면 Lobby를 삭제합니다.
+     * <p> User가 Lobby를 나갑니다. User가 나가고 더 이상 Lobby에 참가한 인원이 없으면 Lobby를 삭제합니다.
+     * <p> Lobby에서 실행되는 게임을 모두 종료합니다. (진행 중인 게임이 있는 경우 끝까지 진행되지 않게 하기 위함)
      */
     public void leaveLobby(long userId, long lobbyId) {
         userLobbyService.leave(userId, lobbyId);
 
-        // 로비가 비었으면 삭제
+        // 로비가 비었으면 게임 종료 후 삭제
         Lobby lobby = lobbyRepository.findById(lobbyId).orElseThrow(LobbyNotFoundException::new);
         if (lobby.isEmpty()) {
+            lobby.getGames().forEach(Game::end);
             lobby.delete();
         }
     }
