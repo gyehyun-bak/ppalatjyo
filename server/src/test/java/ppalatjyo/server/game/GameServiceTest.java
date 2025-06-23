@@ -10,6 +10,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.game.dto.SubmitAnswerRequestDto;
+import ppalatjyo.server.game.event.LeaderboardUpdateEvent;
+import ppalatjyo.server.game.event.RightAnswerEvent;
 import ppalatjyo.server.game.event.TimeOutEvent;
 import ppalatjyo.server.gamelog.GameLogService;
 import ppalatjyo.server.lobby.LobbyRepository;
@@ -28,6 +30,7 @@ import ppalatjyo.server.usergame.UserGameRepository;
 import ppalatjyo.server.usergame.UserGameService;
 import ppalatjyo.server.userlobby.UserLobby;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -171,6 +174,7 @@ class GameServiceTest {
         Question question1 = Question.create(quiz, "question1");
         Answer.createAnswer(question1, answer);
 
+        Long lobbyId = 1L;
         Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), quiz, LobbyOptions.defaultOptions());
 
         Long gameId = 1L;
@@ -185,18 +189,23 @@ class GameServiceTest {
 
         SubmitAnswerRequestDto requestDto = new SubmitAnswerRequestDto();
         requestDto.setGameId(gameId);
+        requestDto.setLobbyId(lobbyId);
         requestDto.setUserGameId(userGameId);
         requestDto.setMessageId(messageId);
 
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
         when(userGameRepository.findById(userGameId)).thenReturn(Optional.of(userGame));
         when(messageRepository.findById(messageId)).thenReturn(Optional.of(message));
+        when(userGameRepository.findByGameIdOrderByScoreDesc(gameId)).thenReturn(List.of(userGame));
 
         // when
         gameService.submitAnswer(requestDto);
 
         // then
         verify(gameLogService, times(1)).rightAnswer(any(), any(), any());
+        verify(eventPublisher).publishEvent(any(RightAnswerEvent.class));
+        verify(userGameRepository).findByGameIdOrderByScoreDesc(gameId);
+        verify(eventPublisher).publishEvent(any(LeaderboardUpdateEvent.class));
         assertThat(userGame.getScore()).isEqualTo(1);
     }
 
@@ -237,6 +246,8 @@ class GameServiceTest {
 
         // then
         verify(gameLogService, times(1)).wrongAnswer(any(), any(), any());
+        verify(eventPublisher, never()).publishEvent(any(RightAnswerEvent.class));
+        verify(userGameRepository, never()).findByGameIdOrderByScoreDesc(any());
     }
 
     private Game createGame(LobbyOptions options) {

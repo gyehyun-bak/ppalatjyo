@@ -91,4 +91,17 @@ class GameEventHandlerTest {
         // then
         verify(schedulerService).runAfterSecondes(anyInt(), any());
     }
+
+    @Test
+    @DisplayName("LeaderboardUpdateEvent")
+    void handleLeaderboardUpdateEvent() {
+        // given
+        LeaderboardUpdateEvent event = mock(LeaderboardUpdateEvent.class);
+
+        // when
+        gameEventHandler.handleLeaderboardUpdateEvent(event);
+
+        // then
+        verify(messageBrokerService).publish(anyString(), any());
+    }
 }
