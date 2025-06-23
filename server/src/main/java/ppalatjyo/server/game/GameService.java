@@ -5,6 +5,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.game.domain.Game;
+import ppalatjyo.server.game.dto.LeaderboardItemDto;
+import ppalatjyo.server.game.event.LeaderboardUpdateEvent;
 import ppalatjyo.server.game.dto.SubmitAnswerRequestDto;
 import ppalatjyo.server.game.event.*;
 import ppalatjyo.server.game.exception.GameNotFoundException;
@@ -22,7 +24,8 @@ import ppalatjyo.server.quiz.repository.QuestionRepository;
 import ppalatjyo.server.usergame.UserGame;
 import ppalatjyo.server.usergame.UserGameNotFoundException;
 import ppalatjyo.server.usergame.UserGameRepository;
-import ppalatjyo.server.usergame.UserGameService;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -119,9 +122,21 @@ public class GameService {
 
             userGame.increaseScoreBy(1); // 현재 1점으로 고정
 
+            updateLeaderboard(requestDto.getLobbyId(), requestDto.getGameId()); // 리더보드(점수보드) 업데이트
+
             nextQuestion(requestDto.getGameId());
         } else {
             gameLogService.wrongAnswer(game.getId(), userGame.getId(), requestDto.getMessageId());
         }
+    }
+
+    private void updateLeaderboard(long gameId, long lobbyId) {
+        List<UserGame> userGames = userGameRepository.findByGameIdOrderByScoreDesc(gameId);
+
+        List<LeaderboardItemDto> leaderboard = userGames.stream()
+                .map(LeaderboardItemDto::create)
+                .toList();
+
+        eventPublisher.publishEvent(new LeaderboardUpdateEvent(lobbyId, leaderboard));
     }
 }

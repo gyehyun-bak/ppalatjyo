@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
-import ppalatjyo.server.game.dto.AnswerInfoDto;
-import ppalatjyo.server.game.dto.GameEventDto;
-import ppalatjyo.server.game.dto.GameInfoDto;
-import ppalatjyo.server.game.dto.NewQuestionDto;
+import ppalatjyo.server.game.dto.*;
 import ppalatjyo.server.game.event.*;
 import ppalatjyo.server.global.scheduler.SchedulerService;
 import ppalatjyo.server.global.websocket.MessageBrokerService;
@@ -110,6 +107,16 @@ public class GameEventHandler {
         PublicationDto<GameEventDto> dto = new PublicationDto<>(data);
 
         messageBrokerService.publish(getDestination(event.getLobbyId()), dto);
+    }
+
+    /**
+     * {@code /lobbies/{lobbyId}/games/leaderboard/update} 로 현재 점수를 반영하여 내림차순으로 정렬한 {@link LeaderboardUpdateDto}를 반환합니다.
+     */
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleLeaderboardUpdateEvent(LeaderboardUpdateEvent event) {
+        String destination = "/lobbies/" + event.getLobbyId() + "/games/leaderboard/update";
+        PublicationDto<LeaderboardUpdateDto> dto = new PublicationDto<>(new LeaderboardUpdateDto(event.getLeaderboard()));
+        messageBrokerService.publish(destination, dto);
     }
 
     private String getDestination(Long lobbyId) {
