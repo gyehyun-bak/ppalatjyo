@@ -24,8 +24,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         log.debug("Authentication Failed", accessDeniedException);
 
-        String errorMessage = "Authentication Failed.";
-        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        String errorMessage = "Access Denied.";
+        HttpStatus status = HttpStatus.FORBIDDEN;
         ResponseErrorDto errorDto = ResponseErrorDto.commonError(errorMessage, request.getRequestURI());
         ResponseDto<Void> responseDto = ResponseDto.error(status, errorDto).getBody();
 
