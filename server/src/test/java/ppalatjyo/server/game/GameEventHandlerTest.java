@@ -89,6 +89,6 @@ class GameEventHandlerTest {
         gameEventHandler.handleNextQuestionEvent(event);
 
         // then
-        verify(messageBrokerService).publish(anyString(), any());
+        verify(schedulerService).runAfterSecondes(anyInt(), any());
     }
 }
