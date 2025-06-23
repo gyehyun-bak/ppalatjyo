@@ -29,13 +29,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        Authentication authenticationResult = authenticationManager.authenticate(authenticationRequest);
-        if (authenticationResult == null) {
-            filterChain.doFilter(request, response);
-            return;
+        try {
+            Authentication authenticationResult = authenticationManager.authenticate(authenticationRequest);
+            if (authenticationResult == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            SecurityContextHolder.getContext().setAuthentication(authenticationResult);
+        } catch (Exception e) {
+            log.trace("Exception occurred on JwtAuthenticationFilter. This usually means request has proper Bearer header but failed to validate the token. The filter does not throw an exception out of the filter chain but simply delegates the exception strategy to AuthorizationFilter.", e);
         }
 
-        SecurityContextHolder.getContext().setAuthentication(authenticationResult);
         filterChain.doFilter(request, response);
     }
 }

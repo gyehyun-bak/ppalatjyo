@@ -13,6 +13,9 @@ import ppalatjyo.server.global.dto.error.ResponseErrorDto;
 
 import java.io.IOException;
 
+/**
+ * AuthorizationFilter 에서 발생하는 AuthenticationException 혹은, Anonymous 유저에 대한 AccessDeniedException 을 처리합니다.
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
