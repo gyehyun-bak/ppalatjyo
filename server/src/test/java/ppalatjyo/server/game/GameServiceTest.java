@@ -21,6 +21,7 @@ import ppalatjyo.server.message.MessageRepository;
 import ppalatjyo.server.quiz.domain.Answer;
 import ppalatjyo.server.quiz.domain.Question;
 import ppalatjyo.server.quiz.domain.Quiz;
+import ppalatjyo.server.quiz.repository.QuestionRepository;
 import ppalatjyo.server.user.domain.User;
 import ppalatjyo.server.usergame.UserGame;
 import ppalatjyo.server.usergame.UserGameRepository;
@@ -37,22 +38,18 @@ class GameServiceTest {
 
     @Mock
     private GameRepository gameRepository;
-
     @Mock
     private UserGameRepository userGameRepository;
-
     @Mock
     private GameLogService gameLogService;
-
     @Mock
     private LobbyRepository lobbyRepository;
-
+    @Mock
+    private QuestionRepository questionRepository;
     @Mock
     private MessageRepository messageRepository;
-
     @Mock
     private ApplicationEventPublisher eventPublisher;
-
     @Mock
     private MessageService messageService;
 
@@ -151,10 +148,13 @@ class GameServiceTest {
         Long gameId = 1L;
         Game game = createGame(LobbyOptions.defaultOptions());
 
+        Question currentQuestion = game.getCurrentQuestion();
+
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
+        when(questionRepository.findById(currentQuestion.getId())).thenReturn(Optional.of(currentQuestion));
 
         // when
-        gameService.timeOut(gameId);
+        gameService.timeOut(gameId, currentQuestion.getId());
 
         // then
         verify(gameLogService).timeOut(gameId);

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import ppalatjyo.server.global.websocket.MessageBrokerService;
-import ppalatjyo.server.global.websocket.dto.MessagePublicationDto;
+import ppalatjyo.server.global.websocket.dto.PublicationDto;
 import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.message.event.ChatMessageSentEvent;
 import ppalatjyo.server.message.event.SystemMessageSentEvent;
@@ -26,11 +26,9 @@ public class MessageEventHandler {
 
         MessageDto messageDto = MessageDto.chatMessage(message);
 
-        MessagePublicationDto<MessageDto> publicationDto = new MessagePublicationDto<>();
-        publicationDto.setDestination("lobbies/" + message.getLobby().getId() + "/messages/new");
-        publicationDto.setData(messageDto);
+        PublicationDto<MessageDto> publicationDto = new PublicationDto<>(messageDto);
 
-        messageBrokerService.publish(publicationDto);
+        messageBrokerService.publish(getDestination(message.getLobby().getId()),publicationDto);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -39,10 +37,14 @@ public class MessageEventHandler {
 
         MessageDto messageDto = MessageDto.systemMessage(message);
 
-        MessagePublicationDto<MessageDto> publicationDto = new MessagePublicationDto<>();
-        publicationDto.setDestination("lobbies/" + message.getLobby().getId() + "/messages/new");
-        publicationDto.setData(messageDto);
+        PublicationDto<MessageDto> publicationDto = new PublicationDto<>(messageDto);
 
-        messageBrokerService.publish(publicationDto);
+        messageBrokerService.publish(getDestination(message.getLobby().getId()), publicationDto);
+    }
+
+    private String getDestination(Long lobbyId) {
+        String MESSAGE_EVENT_DESTINATION_PREFIX = "/lobbies/";
+        String MESSAGE_EVENT_DESTINATION_SUFFIX = "/messages/new";
+        return MESSAGE_EVENT_DESTINATION_PREFIX + lobbyId + MESSAGE_EVENT_DESTINATION_SUFFIX;
     }
 }

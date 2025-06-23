@@ -8,6 +8,7 @@ import lombok.Data;
 public class RightAnswerEvent {
     private Long gameId;
     private Long userId;
+    private Long lobbyId;
     private String nickname;
     private Long messageId;
 }

@@ -13,9 +13,8 @@ import ppalatjyo.server.game.event.TimeOutEvent;
 import ppalatjyo.server.global.scheduler.SchedulerService;
 import ppalatjyo.server.global.websocket.MessageBrokerService;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GameEventHandlerTest {
@@ -33,63 +32,52 @@ class GameEventHandlerTest {
     @DisplayName("게임 시작 이벤트")
     void gameStartedEvent() {
         // given
-        Long gameId = 1L;
-        int minPerGame = 5;
-        int secPerQuestion = 30;
-        GameStartedEvent event = new GameStartedEvent(gameId, minPerGame, secPerQuestion);
+        GameStartedEvent event = mock(GameStartedEvent.class);
 
         // when
         gameEventHandler.handleGameStartedEvent(event);
 
         // then
-        verify(messageBrokerService).publish(any());
+        verify(messageBrokerService, times(2)).publish(anyString(), any());
         verify(schedulerService).runAfterMinutes(anyInt(), any(Runnable.class));
-        verify(schedulerService).runAfterSecondes(anyInt(), any(Runnable.class));
     }
 
     @Test
     @DisplayName("게임 종료 이벤트")
     void gameEndedEvent() {
         // given
-        Long gameId = 1L;
-        GameEndedEvent event = new GameEndedEvent(gameId);
+        GameEndedEvent event = mock(GameEndedEvent.class);
 
         // when
         gameEventHandler.handleGameEndedEvent(event);
 
         // then
-        verify(messageBrokerService).publish(any());
+        verify(messageBrokerService).publish(anyString(), any());
     }
 
     @Test
     @DisplayName("게임 타임업 이벤트")
     void gameTimeUp() {
         // given
-        Long gameId = 1L;
-        TimeOutEvent event = new TimeOutEvent(gameId);
+        TimeOutEvent event = mock(TimeOutEvent.class);
 
         // when
         gameEventHandler.handleTimeOutEvent(event);
 
         // then
-        verify(messageBrokerService).publish(any());
+        verify(messageBrokerService).publish(anyString(), any());
     }
 
     @Test
     @DisplayName("정답 이벤트")
     void rightAnswerEvent() {
         // given
-        Long gameId = 1L;
-        Long userId = 1L;
-        String nickname = "winner";
-        Long messageId = 1L;
-
-        RightAnswerEvent event = new RightAnswerEvent(gameId, userId, nickname, messageId);
+        RightAnswerEvent event = mock(RightAnswerEvent.class);
 
         // when
         gameEventHandler.handleRightAnswer(event);
 
         // then
-        verify(messageBrokerService).publish(any());
+        verify(messageBrokerService).publish(anyString(), any());
     }
 }

@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MessagePublicationDto<T> {
-    @NotNull
-    private String destination;
+public class PublicationDto<T> {
     @NotNull
     private T data;
 }
