@@ -3,6 +3,7 @@ package ppalatjyo.server.user;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,18 +33,20 @@ class UserServiceTest {
     private UserService userService;
 
     @Test
-    @DisplayName("GUEST로 참가시 토큰 반환")
+    @DisplayName("GUEST로 참가 시 userId 반환")
     void joinAsGuest() {
         // given
         String nickname = "nickname";
+        User saved = mock(User.class);
+        when(userRepository.save(any(User.class))).thenReturn(saved);
+        when(saved.getId()).thenReturn(1L);
 
         // when
-        JoinAsGuestResponseDto responseDto = userService.joinAsGuest(nickname);
+        long userId = userService.joinAsGuest(nickname);
 
         // then
-        assertThat(responseDto.getAccessToken()).isNotNull();
-        assertThat(responseDto.getRefreshToken()).isNotNull();
-        // TODO: 2025-06-02 Token 검증 추가
+        assertThat(userId).isEqualTo(1L);
+        verify(userRepository).save(any(User.class));
     }
 
     @Test

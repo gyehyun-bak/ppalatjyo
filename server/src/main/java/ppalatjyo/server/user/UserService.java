@@ -20,9 +20,8 @@ public class UserService {
 
     public long joinAsGuest(String nickname) {
         User guest = User.createGuest(nickname);
-        userRepository.save(guest);
-
-        return guest.getId();
+        User saved = userRepository.save(guest);
+        return saved.getId();
     }
 
     public JoinAsMemberResponseDto joinAsMember(String nickname, String oAuthEmail, String oAuthProvider) {
