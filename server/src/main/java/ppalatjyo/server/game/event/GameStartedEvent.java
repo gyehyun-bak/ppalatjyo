@@ -19,8 +19,8 @@ public class GameStartedEvent {
     private Integer secPerQuestion;
     private Integer totalQuestion;
     private LocalDateTime startedAt;
-    private Long currentQuestionId;
-    private String currentQuestionContent;
+    private Long firstQuestionId;
+    private String firstQuestionContent;
 
     public static GameStartedEvent create(Game game) {
         return GameStartedEvent.builder()
@@ -30,8 +30,8 @@ public class GameStartedEvent {
                 .secPerQuestion(game.getOptions().getSecPerQuestion())
                 .totalQuestion(game.getQuiz().getQuestions().size())
                 .startedAt(game.getStartedAt())
-                .currentQuestionId(game.getCurrentQuestion().getId())
-                .currentQuestionContent(game.getCurrentQuestion().getContent())
+                .firstQuestionId(game.getCurrentQuestion().getId())
+                .firstQuestionContent(game.getCurrentQuestion().getContent())
                 .build();
     }
 }

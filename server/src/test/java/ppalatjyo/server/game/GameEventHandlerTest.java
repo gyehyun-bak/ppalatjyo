@@ -35,8 +35,9 @@ class GameEventHandlerTest {
         gameEventHandler.handleGameStartedEvent(event);
 
         // then
-        verify(messageBrokerService, times(2)).publish(anyString(), any());
+        verify(messageBrokerService, times(1)).publish(anyString(), any());
         verify(schedulerService).runAfterMinutes(anyInt(), any(Runnable.class));
+        verify(schedulerService).runAfterSecondes(anyInt(), any(Runnable.class));
     }
 
     @Test

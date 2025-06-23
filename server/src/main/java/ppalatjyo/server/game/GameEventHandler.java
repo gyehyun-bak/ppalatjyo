@@ -22,10 +22,25 @@ import ppalatjyo.server.global.websocket.dto.PublicationDto;
 @RequiredArgsConstructor
 public class GameEventHandler {
 
+    private final int SECONDS_BEFORE_FIRST_QUESTION = 10;
+    private final int SECONDS_BEFORE_NEXT_QUESTION = 5;
+
     private final MessageBrokerService messageBrokerService;
     private final GameService gameService;
     private final SchedulerService schedulerService;
 
+    /**
+     * 게임 시작 이벤트를 처리하는 메서드입니다.
+     * <p>
+     * 로 전달된 정보를 통해 다음 작업을 수행합니다:
+     * <ul>
+     *     <li>게임 시작 메시지를 메시지 브로커로 전송</li>
+     *     <li>설정된 게임 제한 시간({@code minPerGame}) 후 게임 종료 스케줄 등록</li>
+     *     <li>일정 대기 시간 후 첫 문항 출제</li>
+     * </ul>
+     *
+     * @param event {@link GameStartedEvent}
+     */
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleGameStartedEvent(GameStartedEvent event) {
         Long gameId = event.getGameId();
@@ -36,18 +51,17 @@ public class GameEventHandler {
 
         messageBrokerService.publish(getDestination(event.getLobbyId()), dto);
 
-        schedulerService.runAfterMinutes(event.getSecPerQuestion(),
-                () -> gameService.end(gameId));
+        schedulerService.runAfterMinutes(event.getMinPerGame(), () -> gameService.end(gameId));
 
-        NewQuestionDto newQuestionDto = new NewQuestionDto(event.getCurrentQuestionId(), event.getCurrentQuestionContent());
-
-        publishNewQuestion(event.getLobbyId(), gameId, event.getSecPerQuestion(), newQuestionDto);
+        // 대기 시간을 두고 문제를 제시합니다.
+        NewQuestionDto newQuestionDto = new NewQuestionDto(event.getFirstQuestionId(), event.getFirstQuestionContent());
+        schedulerService.runAfterSecondes(SECONDS_BEFORE_FIRST_QUESTION, () -> publishNewQuestion(event.getLobbyId(), gameId, event.getSecPerQuestion(), newQuestionDto));
     }
 
     /**
-     * 문제를 클라이언트에 제시하는 하는 이벤트 메시지를 발행합니다.
-     * 이벤트를 기준으로 타임 아웃 카운트가 시작됩니다.
-     * 타임 아웃 호출 시점에 동일한 Question인 경우 실제로 타임 아웃 처리됩니다.
+     * <p>문제를 클라이언트에 제시하는 하는 이벤트 메시지를 발행합니다.
+     * <p>이벤트를 기준으로 타임 아웃 카운트가 시작됩니다.
+     * <p>타임 아웃 호출 시점에 동일한 Question인 경우 실제로 타임 아웃 처리됩니다.
      */
     public void publishNewQuestion(long gameId, long lobbyId, int secPerQuestion, NewQuestionDto newQuestionDto) {
         GameEventDto gameEventDto = GameEventDto.newQuestion(newQuestionDto);
@@ -60,8 +74,9 @@ public class GameEventHandler {
     }
 
     /**
-     * 다음 문제를 제시하는 이벤트에 대해 메시지를 발행합니다. 게임 시작 시 문제 발행과 로직이 동일합니다.
-     * {@code publishNewQuestion()} 으로 위임합니다.
+     * 다음 문제를 제시하는 이벤트에 대해 메시지를 발행합니다.
+     * <p> 게임 시작 시 문제 발행과 로직이 동일합니다.
+     * <p> {@code publishNewQuestion()} 으로 위임합니다.
      */
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleNextQuestionEvent(NextQuestionEvent event) {
