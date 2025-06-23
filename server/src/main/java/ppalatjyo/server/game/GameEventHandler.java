@@ -2,22 +2,15 @@ package ppalatjyo.server.game;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
-import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.game.dto.GameEventDto;
-import ppalatjyo.server.game.dto.GameStartedEventDto;
-import ppalatjyo.server.game.dto.PresentQuestionEventDto;
-import ppalatjyo.server.game.event.GameEndedEvent;
-import ppalatjyo.server.game.event.GameStartedEvent;
-import ppalatjyo.server.game.event.RightAnswerEvent;
-import ppalatjyo.server.game.event.TimeOutEvent;
-import ppalatjyo.server.game.exception.GameNotFoundException;
+import ppalatjyo.server.game.dto.GameInfoDto;
+import ppalatjyo.server.game.dto.NewQuestionDto;
+import ppalatjyo.server.game.event.*;
 import ppalatjyo.server.global.scheduler.SchedulerService;
 import ppalatjyo.server.global.websocket.MessageBrokerService;
 import ppalatjyo.server.global.websocket.dto.PublicationDto;
-import ppalatjyo.server.quiz.domain.Question;
 
 /**
  * 발생한 GameEvent에 대해 핸들링합니다.
@@ -36,30 +29,42 @@ public class GameEventHandler {
     public void handleGameStartedEvent(GameStartedEvent event) {
         Long gameId = event.getGameId();
 
-        GameStartedEventDto eventDto = GameStartedEventDto.create(event);
-        PublicationDto<GameStartedEventDto> dto = new PublicationDto<>(eventDto);
+        GameInfoDto eventDto = GameInfoDto.create(event);
+        PublicationDto<GameInfoDto> dto = new PublicationDto<>(eventDto);
 
         messageBrokerService.publish(getDestination(event.getLobbyId()), dto);
 
         schedulerService.runAfterMinutes(event.getSecPerQuestion(),
                 () -> gameService.end(gameId));
 
-        presentQuestion(event);
+        NewQuestionDto newQuestionDto = new NewQuestionDto(event.getCurrentQuestionId(), event.getCurrentQuestionContent());
+
+        publishNewQuestion(event.getLobbyId(), gameId, event.getSecPerQuestion(), newQuestionDto);
     }
 
     /**
-     * 문제를 클라이언트에 제시하는 하는 이벤트 메시지를 발급합니다.
-     * 발급을 기준으로 타임 아웃 카운트가 시작됩니다.
+     * 문제를 클라이언트에 제시하는 하는 이벤트 메시지를 발행합니다.
+     * 이벤트를 기준으로 타임 아웃 카운트가 시작됩니다.
      * 타임 아웃 호출 시점에 동일한 Question인 경우 실제로 타임 아웃 처리됩니다.
      */
-    public void presentQuestion(GameStartedEvent event) {
-        PresentQuestionEventDto messageDto = new PresentQuestionEventDto(event.getCurrentQuestionId(), event.getCurrentQuestionContent());
-        PublicationDto<PresentQuestionEventDto> dto = new PublicationDto<>(messageDto);
+    public void publishNewQuestion(long gameId, long lobbyId, int secPerQuestion, NewQuestionDto newQuestionDto) {
+        GameEventDto gameEventDto = GameEventDto.newQuestion(newQuestionDto);
+        PublicationDto<GameEventDto> dto = new PublicationDto<>(gameEventDto);
 
-        messageBrokerService.publish(getDestination(event.getLobbyId()), dto);
+        messageBrokerService.publish(getDestination(lobbyId), dto);
 
-        schedulerService.runAfterSecondes(event.getSecPerQuestion(),
-                () -> gameService.timeOut(event.getGameId(), event.getCurrentQuestionId()));
+        schedulerService.runAfterSecondes(secPerQuestion,
+                () -> gameService.timeOut(gameId, newQuestionDto.getQuestionId()));
+    }
+
+    /**
+     * 다음 문제를 제시하는 이벤트에 대해 메시지를 발행합니다. 게임 시작 시 문제 발행과 로직이 동일합니다.
+     * {@code publishNewQuestion()} 으로 위임합니다.
+     */
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleNextQuestionEvent(NextQuestionEvent event) {
+        NewQuestionDto newQuestionDto = new NewQuestionDto(event.getQuestionId(), event.getQuestionContent());
+        publishNewQuestion(event.getGameId(), event.getLobbyId(), event.getSecPerQuestion(), newQuestionDto);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

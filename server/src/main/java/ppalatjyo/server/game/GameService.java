@@ -63,7 +63,7 @@ public class GameService {
 
         game.nextQuestion();
 
-        eventPublisher.publishEvent(new NextQuestionEvent(game.getId()));
+        eventPublisher.publishEvent(NextQuestionEvent.create(game));
     }
 
     public void end(Long gameId) {

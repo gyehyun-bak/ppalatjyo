@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PresentQuestionEventDto {
+public class NewQuestionDto {
     private Long questionId;
     private String content;
 }
