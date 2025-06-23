@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
+import ppalatjyo.server.game.dto.AnswerInfoDto;
 import ppalatjyo.server.game.dto.GameEventDto;
 import ppalatjyo.server.game.dto.GameInfoDto;
 import ppalatjyo.server.game.dto.NewQuestionDto;
@@ -29,8 +30,9 @@ public class GameEventHandler {
     public void handleGameStartedEvent(GameStartedEvent event) {
         Long gameId = event.getGameId();
 
-        GameInfoDto eventDto = GameInfoDto.create(event);
-        PublicationDto<GameInfoDto> dto = new PublicationDto<>(eventDto);
+        GameInfoDto gameInfoDto = GameInfoDto.create(event);
+        GameEventDto gameEventDto = GameEventDto.started(gameInfoDto);
+        PublicationDto<GameEventDto> dto = new PublicationDto<>(gameEventDto);
 
         messageBrokerService.publish(getDestination(event.getLobbyId()), dto);
 
@@ -69,9 +71,7 @@ public class GameEventHandler {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleGameEndedEvent(GameEndedEvent event) {
-        Long gameId = event.getGameId();
-
-        GameEventDto data = GameEventDto.ended(gameId);
+        GameEventDto data = GameEventDto.ended();
         PublicationDto<GameEventDto> dto = new PublicationDto<>(data);
 
         messageBrokerService.publish(getDestination(event.getLobbyId()), dto);
@@ -79,7 +79,7 @@ public class GameEventHandler {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleTimeOutEvent(TimeOutEvent event) {
-        GameEventDto data = GameEventDto.timeOut(event.getGameId());
+        GameEventDto data = GameEventDto.timeOut(AnswerInfoDto.create(event));
         PublicationDto<GameEventDto> dto = new PublicationDto<>(data);
 
         messageBrokerService.publish(getDestination(event.getLobbyId()), dto);
@@ -87,7 +87,7 @@ public class GameEventHandler {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleRightAnswer(RightAnswerEvent event) {
-        GameEventDto data = GameEventDto.rightAnswer(event.getGameId(), event.getUserId(), event.getNickname(), event.getMessageId());
+        GameEventDto data = GameEventDto.correct(AnswerInfoDto.create(event));
         PublicationDto<GameEventDto> dto = new PublicationDto<>(data);
 
         messageBrokerService.publish(getDestination(event.getLobbyId()), dto);
