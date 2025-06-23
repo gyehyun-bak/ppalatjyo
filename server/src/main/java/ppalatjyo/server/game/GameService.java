@@ -48,7 +48,9 @@ public class GameService {
 
         messageService.sendSystemMessage("게임이 시작되었습니다.", lobbyId);
 
-        eventPublisher.publishEvent(new GameStartedEvent(game.getId()));
+        GameStartedEvent event = GameStartedEvent.create(game);
+
+        eventPublisher.publishEvent(event);
     }
 
     public void nextQuestion(Long gameId) {
@@ -73,14 +75,14 @@ public class GameService {
 
         game.end();
 
-        eventPublisher.publishEvent(new GameEndedEvent(game.getId()));
+        eventPublisher.publishEvent(new GameEndedEvent(game.getId(), game.getLobby().getId()));
     }
 
     /**
      * 문제가 제시되고 정해진 시간이 지나면 호출됩니다. 현재 게임이 이미 종료되었거나, 타임 아웃된 문제가 현재 문제가 아니라면(이미 다음
      * 문제로 넘어갔다면) 조기에 리턴됩니다. 타임 아웃이 확인되면 이벤트를 발행하고 내부 {@code nextQuestion()}을 호출합니다.
      *
-     * @param gameId 게임 ID
+     * @param gameId     게임 ID
      * @param questionId 타임 아웃된 문제 ID
      */
     public void timeOut(Long gameId, Long questionId) {
@@ -99,7 +101,7 @@ public class GameService {
 
         gameLogService.timeOut(gameId);
 
-        eventPublisher.publishEvent(new TimeOutEvent(gameId));
+        eventPublisher.publishEvent(new TimeOutEvent(gameId, game.getLobby().getId()));
 
         nextQuestion(gameId);
     }
@@ -113,7 +115,7 @@ public class GameService {
         if (isCorrect) {
             gameLogService.rightAnswer(game.getId(), userGame.getId(), requestDto.getMessageId());
 
-            eventPublisher.publishEvent(new RightAnswerEvent(game.getId(), userGame.getId(), userGame.getUser().getNickname(),requestDto.getMessageId()));
+            eventPublisher.publishEvent(new RightAnswerEvent(game.getId(), userGame.getId(), game.getLobby().getId(), userGame.getUser().getNickname(), requestDto.getMessageId()));
 
             userGame.increaseScoreBy(1); // 현재 1점으로 고정
 

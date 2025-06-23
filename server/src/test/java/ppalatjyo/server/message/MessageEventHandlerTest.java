@@ -53,7 +53,7 @@ class MessageEventHandlerTest {
         messageEventHandler.handleChatMessageSentEvent(event);
 
         // then
-        verify(messageBrokerService).publish(any(PublicationDto.class));
+        verify(messageBrokerService).publish(anyString(), any(PublicationDto.class));
     }
 
     @Test
@@ -75,6 +75,6 @@ class MessageEventHandlerTest {
         messageEventHandler.handleSystemMessageSentEvent(event);
 
         // then
-        verify(messageBrokerService).publish(any(PublicationDto.class));
+        verify(messageBrokerService).publish(anyString(), any(PublicationDto.class));
     }
 }

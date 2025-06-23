@@ -25,18 +25,16 @@ class MessageBrokerServiceTest {
     @DisplayName("메시지 발행")
     void publish() {
         // given
-        String destination = "destination";
+        String destination = "/destination";
         TestPublicationDataDto dataDto = new TestPublicationDataDto();
         dataDto.setNickname("nickname");
         dataDto.setContent("content");
-        PublicationDto<TestPublicationDataDto> requestDto = new PublicationDto<>();
-        requestDto.setDestination(destination);
-        requestDto.setData(dataDto);
+        PublicationDto<TestPublicationDataDto> requestDto = new PublicationDto<>(dataDto);
 
         // when
-        messageBrokerService.publish(requestDto);
+        messageBrokerService.publish(destination, requestDto);
 
         // then
-        verify(simpMessagingTemplate).convertAndSend("/topic/" + destination, dataDto);
+        verify(simpMessagingTemplate).convertAndSend("/topic" + destination, dataDto);
     }
 }

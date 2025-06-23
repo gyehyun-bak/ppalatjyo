@@ -26,11 +26,9 @@ public class MessageEventHandler {
 
         MessageDto messageDto = MessageDto.chatMessage(message);
 
-        PublicationDto<MessageDto> publicationDto = new PublicationDto<>();
-        publicationDto.setDestination("lobbies/" + message.getLobby().getId() + "/messages/new");
-        publicationDto.setData(messageDto);
+        PublicationDto<MessageDto> publicationDto = new PublicationDto<>(messageDto);
 
-        messageBrokerService.publish(publicationDto);
+        messageBrokerService.publish(getDestination(message.getLobby().getId()),publicationDto);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -39,10 +37,14 @@ public class MessageEventHandler {
 
         MessageDto messageDto = MessageDto.systemMessage(message);
 
-        PublicationDto<MessageDto> publicationDto = new PublicationDto<>();
-        publicationDto.setDestination("lobbies/" + message.getLobby().getId() + "/messages/new");
-        publicationDto.setData(messageDto);
+        PublicationDto<MessageDto> publicationDto = new PublicationDto<>(messageDto);
 
-        messageBrokerService.publish(publicationDto);
+        messageBrokerService.publish(getDestination(message.getLobby().getId()), publicationDto);
+    }
+
+    private String getDestination(Long lobbyId) {
+        String MESSAGE_EVENT_DESTINATION_PREFIX = "/lobbies/";
+        String MESSAGE_EVENT_DESTINATION_SUFFIX = "/messages/new";
+        return MESSAGE_EVENT_DESTINATION_PREFIX + lobbyId + MESSAGE_EVENT_DESTINATION_SUFFIX;
     }
 }

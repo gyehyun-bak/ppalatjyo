@@ -7,4 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class TimeOutEvent {
     private Long gameId;
+    private Long lobbyId;
 }

@@ -26,10 +26,8 @@ import ppalatjyo.server.quiz.domain.Question;
  */
 @Component
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class GameEventHandler {
 
-    private final GameRepository gameRepository;
     private final MessageBrokerService messageBrokerService;
     private final GameService gameService;
     private final SchedulerService schedulerService;
@@ -37,17 +35,16 @@ public class GameEventHandler {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleGameStartedEvent(GameStartedEvent event) {
         Long gameId = event.getGameId();
-        Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
 
-        GameStartedEventDto messageDto = GameStartedEventDto.create(game);
-        PublicationDto<GameStartedEventDto> dto = new PublicationDto<>(messageDto);
+        GameStartedEventDto eventDto = GameStartedEventDto.create(event);
+        PublicationDto<GameStartedEventDto> dto = new PublicationDto<>(eventDto);
 
-        messageBrokerService.publish(getDestination(game.getLobby().getId()), dto);
+        messageBrokerService.publish(getDestination(event.getLobbyId()), dto);
 
-        schedulerService.runAfterMinutes(game.getOptions().getSecPerQuestion(),
+        schedulerService.runAfterMinutes(event.getSecPerQuestion(),
                 () -> gameService.end(gameId));
 
-        presentQuestion(game, game.getCurrentQuestion(), getDestination(game.getLobby().getId()));
+        presentQuestion(event);
     }
 
     /**
@@ -55,43 +52,40 @@ public class GameEventHandler {
      * 발급을 기준으로 타임 아웃 카운트가 시작됩니다.
      * 타임 아웃 호출 시점에 동일한 Question인 경우 실제로 타임 아웃 처리됩니다.
      */
-    public void presentQuestion(Game game, Question question, String destination) {
-        PresentQuestionEventDto messageDto = PresentQuestionEventDto.create(question);
+    public void presentQuestion(GameStartedEvent event) {
+        PresentQuestionEventDto messageDto = new PresentQuestionEventDto(event.getCurrentQuestionId(), event.getCurrentQuestionContent());
         PublicationDto<PresentQuestionEventDto> dto = new PublicationDto<>(messageDto);
 
-        messageBrokerService.publish(destination, dto);
+        messageBrokerService.publish(getDestination(event.getLobbyId()), dto);
 
-        schedulerService.runAfterSecondes(game.getOptions().getSecPerQuestion(),
-                () -> gameService.timeOut(game.getId(), question.getId()));
+        schedulerService.runAfterSecondes(event.getSecPerQuestion(),
+                () -> gameService.timeOut(event.getGameId(), event.getCurrentQuestionId()));
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleGameEndedEvent(GameEndedEvent gameEndedEvent) {
-        Long gameId = gameEndedEvent.getGameId();
-        Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
+    public void handleGameEndedEvent(GameEndedEvent event) {
+        Long gameId = event.getGameId();
 
         GameEventDto data = GameEventDto.ended(gameId);
         PublicationDto<GameEventDto> dto = new PublicationDto<>(data);
 
-        messageBrokerService.publish(getDestination(game.getLobby().getId()), dto);
+        messageBrokerService.publish(getDestination(event.getLobbyId()), dto);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleTimeOutEvent(TimeOutEvent event) {
-        Game game = gameRepository.findById(event.getGameId()).orElseThrow(GameNotFoundException::new);
         GameEventDto data = GameEventDto.timeOut(event.getGameId());
         PublicationDto<GameEventDto> dto = new PublicationDto<>(data);
 
-        messageBrokerService.publish(getDestination(game.getLobby().getId()), dto);
+        messageBrokerService.publish(getDestination(event.getLobbyId()), dto);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleRightAnswer(RightAnswerEvent event) {
-        Game game = gameRepository.findById(event.getGameId()).orElseThrow(GameNotFoundException::new);
         GameEventDto data = GameEventDto.rightAnswer(event.getGameId(), event.getUserId(), event.getNickname(), event.getMessageId());
         PublicationDto<GameEventDto> dto = new PublicationDto<>(data);
 
-        messageBrokerService.publish(getDestination(game.getLobby().getId()), dto);
+        messageBrokerService.publish(getDestination(event.getLobbyId()), dto);
     }
 
     private String getDestination(Long lobbyId) {
