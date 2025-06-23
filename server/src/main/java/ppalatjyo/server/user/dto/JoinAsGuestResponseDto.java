@@ -6,6 +6,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class JoinAsGuestResponseDto {
-    private String accessToken;
-    private String refreshToken;
+    private long userId;
 }
