@@ -55,7 +55,8 @@ public class GameEventHandler {
 
         // 대기 시간을 두고 문제를 제시합니다.
         NewQuestionDto newQuestionDto = new NewQuestionDto(event.getFirstQuestionId(), event.getFirstQuestionContent());
-        schedulerService.runAfterSecondes(SECONDS_BEFORE_FIRST_QUESTION, () -> publishNewQuestion(event.getLobbyId(), gameId, event.getSecPerQuestion(), newQuestionDto));
+        schedulerService.runAfterSecondes(SECONDS_BEFORE_FIRST_QUESTION,
+                () -> publishNewQuestion(event.getLobbyId(), gameId, event.getSecPerQuestion(), newQuestionDto));
     }
 
     /**
@@ -76,12 +77,15 @@ public class GameEventHandler {
     /**
      * 다음 문제를 제시하는 이벤트에 대해 메시지를 발행합니다.
      * <p> 게임 시작 시 문제 발행과 로직이 동일합니다.
+     * <p> 다음 문제 발행 전까지 정해진 시간만큼 대기합니다.
      * <p> {@code publishNewQuestion()} 으로 위임합니다.
      */
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleNextQuestionEvent(NextQuestionEvent event) {
         NewQuestionDto newQuestionDto = new NewQuestionDto(event.getQuestionId(), event.getQuestionContent());
-        publishNewQuestion(event.getGameId(), event.getLobbyId(), event.getSecPerQuestion(), newQuestionDto);
+
+        schedulerService.runAfterSecondes(SECONDS_BEFORE_NEXT_QUESTION,
+                () -> publishNewQuestion(event.getGameId(), event.getLobbyId(), event.getSecPerQuestion(), newQuestionDto));
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -109,8 +113,8 @@ public class GameEventHandler {
     }
 
     private String getDestination(Long lobbyId) {
-        String GAME_EVENT_DESTINATION_PREFIX = "/lobbies/";
-        String GAME_EVENT_DESTINATION_SUFFIX = "/games/events";
+        final String GAME_EVENT_DESTINATION_PREFIX = "/lobbies/";
+        final String GAME_EVENT_DESTINATION_SUFFIX = "/games/events";
 
         return GAME_EVENT_DESTINATION_PREFIX + lobbyId + GAME_EVENT_DESTINATION_SUFFIX;
     }
