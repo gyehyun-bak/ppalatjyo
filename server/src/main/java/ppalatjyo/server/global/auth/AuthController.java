@@ -10,25 +10,17 @@ import ppalatjyo.server.global.dto.ResponseDto;
 import ppalatjyo.server.global.auth.dto.GuestLoginRequestDto;
 import ppalatjyo.server.global.auth.dto.SignUpAsGuestResponseDto;
 import ppalatjyo.server.global.dto.error.ResponseErrorDto;
-import ppalatjyo.server.global.security.jwt.JwtTokenProvider;
-import ppalatjyo.server.user.UserService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final UserService userService;
     private final AuthService authService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/sign-up/guest")
     public ResponseEntity<ResponseDto<SignUpAsGuestResponseDto>> guestLogin(@RequestBody GuestLoginRequestDto requestDto, HttpServletResponse response) {
-        long userId = userService.joinAsGuest(requestDto.getNickname());
-        String accessToken = jwtTokenProvider.createAccessToken(userId);
-        String refreshToken = jwtTokenProvider.createRefreshToken(userId);
-        storeRefreshTokenInCookie(response, refreshToken, jwtTokenProvider.getRefreshTokenMaxAgeInSeconds());
-        return ResponseDto.ok(new SignUpAsGuestResponseDto(accessToken));
+        return ResponseDto.ok(authService.singUpAsGuest(requestDto.getNickname(), response));
     }
 
     @GetMapping("/tokens")
@@ -39,13 +31,5 @@ public class AuthController {
         }
 
         return ResponseDto.ok(authService.reissue(refreshToken, response));
-    }
-
-    private void storeRefreshTokenInCookie(HttpServletResponse response, String refreshToken, int maxAgeInSeconds) {
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setMaxAge(maxAgeInSeconds);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
     }
 }
