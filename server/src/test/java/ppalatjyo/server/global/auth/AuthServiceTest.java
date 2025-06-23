@@ -17,7 +17,6 @@ import ppalatjyo.server.global.auth.repository.RefreshTokenRepository;
 import ppalatjyo.server.global.security.jwt.JwtTokenProvider;
 import ppalatjyo.server.user.UserRepository;
 import ppalatjyo.server.user.UserService;
-import ppalatjyo.server.user.domain.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -80,6 +79,7 @@ class AuthServiceTest {
         // then
         ArgumentCaptor<RefreshToken> captor = ArgumentCaptor.forClass(RefreshToken.class);
         verify(refreshTokenRepository).save(captor.capture());
+        verify(refreshTokenRepository).deleteByRefreshToken(anyString());
 
         RefreshToken refreshToken = captor.getValue();
         assertThat(refreshToken).isNotNull();

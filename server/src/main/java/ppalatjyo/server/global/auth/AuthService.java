@@ -46,12 +46,18 @@ public class AuthService {
             throw new UserNotFoundException();
         }
 
+        deleteOldRefreshToken(oldRefreshToken);
+
         String accessToken = jwtTokenProvider.createAccessToken(userId);
         String refreshToken = createAndSaveRefreshToken(userId);
 
         storeRefreshTokenInCookie(response, refreshToken);
 
         return new TokenReissueResponseDto(accessToken);
+    }
+
+    private void deleteOldRefreshToken(String refreshToken) {
+        refreshTokenRepository.deleteByRefreshToken(refreshToken);
     }
 
     private String createAndSaveRefreshToken(long userId) {

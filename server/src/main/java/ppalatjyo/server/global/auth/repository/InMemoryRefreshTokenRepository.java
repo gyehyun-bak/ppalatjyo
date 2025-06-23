@@ -21,4 +21,9 @@ public class InMemoryRefreshTokenRepository implements RefreshTokenRepository {
     public Optional<RefreshToken> findByUserId(Long userId) {
         return Optional.ofNullable(store.get(userId));
     }
+
+    @Override
+    public void deleteByRefreshToken(String refreshToken) {
+        store.entrySet().removeIf(entry -> entry.getValue().getRefreshToken().equals(refreshToken));
+    }
 }
