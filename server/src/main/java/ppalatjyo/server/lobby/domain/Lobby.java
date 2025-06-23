@@ -2,6 +2,7 @@ package ppalatjyo.server.lobby.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.global.audit.BaseEntity;
 import ppalatjyo.server.lobby.exception.LobbyAlreadyDeletedException;
 import ppalatjyo.server.quiz.domain.Quiz;
@@ -40,8 +41,11 @@ public class Lobby extends BaseEntity {
     private Quiz quiz;
 
     @Builder.Default
-    @OneToMany(mappedBy = "lobby", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL)
     private List<UserLobby> userLobbies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "lobby")
+    private List<Game> games;
 
     public static Lobby createLobby(String name, User host, Quiz quiz, LobbyOptions options) {
         Lobby lobby = Lobby.builder()
@@ -52,7 +56,7 @@ public class Lobby extends BaseEntity {
                 .options(options)
                 .build();
 
-        UserLobby userLobby = UserLobby.join(host, lobby);
+        UserLobby.join(host, lobby);
 
         return lobby;
     }

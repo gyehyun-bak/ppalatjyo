@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
 import ppalatjyo.server.lobby.dto.MessageToLobbyRequestDto;
@@ -18,6 +19,7 @@ import ppalatjyo.server.user.UserRepository;
 import ppalatjyo.server.user.domain.User;
 import ppalatjyo.server.userlobby.UserLobbyService;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -223,8 +225,10 @@ class LobbyServiceTest {
         long lobbyId = 1L;
 
         Lobby lobby = Mockito.mock(Lobby.class);
+        Game game = Mockito.mock(Game.class);
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
         when(lobby.isEmpty()).thenReturn(true);
+        when(lobby.getGames()).thenReturn(List.of(game));
 
         // when
         lobbyService.leaveLobby(userId, lobbyId);
@@ -232,6 +236,7 @@ class LobbyServiceTest {
         // then
         verify(userLobbyService).leave(userId, lobbyId);
         verify(lobbyRepository).findById(lobbyId);
+        verify(game).end();
         verify(lobby).delete();
     }
 }
