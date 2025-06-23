@@ -16,6 +16,9 @@ import ppalatjyo.server.message.MessageNotFoundException;
 import ppalatjyo.server.message.MessageService;
 import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.message.MessageRepository;
+import ppalatjyo.server.quiz.domain.Question;
+import ppalatjyo.server.quiz.exception.QuestionNotFoundException;
+import ppalatjyo.server.quiz.repository.QuestionRepository;
 import ppalatjyo.server.usergame.UserGame;
 import ppalatjyo.server.usergame.UserGameNotFoundException;
 import ppalatjyo.server.usergame.UserGameRepository;
@@ -29,6 +32,7 @@ public class GameService {
     private final LobbyRepository lobbyRepository;
     private final UserGameRepository userGameRepository;
     private final MessageRepository messageRepository;
+    private final QuestionRepository questionRepository;
     private final GameRepository gameRepository;
     private final GameLogService gameLogService;
     private final MessageService messageService;
@@ -44,10 +48,7 @@ public class GameService {
 
         messageService.sendSystemMessage("게임이 시작되었습니다.", lobbyId);
 
-        eventPublisher.publishEvent(new GameStartedEvent(
-                game.getId(),
-                game.getOptions().getMinPerGame(),
-                game.getOptions().getSecPerQuestion()));
+        eventPublisher.publishEvent(new GameStartedEvent(game.getId()));
     }
 
     public void nextQuestion(Long gameId) {
@@ -75,10 +76,24 @@ public class GameService {
         eventPublisher.publishEvent(new GameEndedEvent(game.getId()));
     }
 
-    public void timeOut(Long gameId) {
+    /**
+     * 문제가 제시되고 정해진 시간이 지나면 호출됩니다. 현재 게임이 이미 종료되었거나, 타임 아웃된 문제가 현재 문제가 아니라면(이미 다음
+     * 문제로 넘어갔다면) 조기에 리턴됩니다. 타임 아웃이 확인되면 이벤트를 발행하고 내부 {@code nextQuestion()}을 호출합니다.
+     *
+     * @param gameId 게임 ID
+     * @param questionId 타임 아웃된 문제 ID
+     */
+    public void timeOut(Long gameId, Long questionId) {
         Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
 
         if (game.isEnded()) {
+            return;
+        }
+
+        Question currentQuestion = game.getCurrentQuestion();
+        Question timedOutQuestion = questionRepository.findById(questionId).orElseThrow(QuestionNotFoundException::new);
+
+        if (!currentQuestion.equals(timedOutQuestion)) {
             return;
         }
 
@@ -86,12 +101,7 @@ public class GameService {
 
         eventPublisher.publishEvent(new TimeOutEvent(gameId));
 
-        if (game.hasNextQuestion()) {
-            nextQuestion(gameId);
-            return;
-        }
-
-        end(gameId);
+        nextQuestion(gameId);
     }
 
     public void submitAnswer(SubmitAnswerRequestDto requestDto) {

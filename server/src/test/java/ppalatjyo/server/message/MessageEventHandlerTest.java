@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ppalatjyo.server.global.websocket.MessageBrokerService;
-import ppalatjyo.server.global.websocket.dto.MessagePublicationDto;
+import ppalatjyo.server.global.websocket.dto.PublicationDto;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.message.event.ChatMessageSentEvent;
@@ -53,7 +53,7 @@ class MessageEventHandlerTest {
         messageEventHandler.handleChatMessageSentEvent(event);
 
         // then
-        verify(messageBrokerService).publish(any(MessagePublicationDto.class));
+        verify(messageBrokerService).publish(any(PublicationDto.class));
     }
 
     @Test
@@ -75,6 +75,6 @@ class MessageEventHandlerTest {
         messageEventHandler.handleSystemMessageSentEvent(event);
 
         // then
-        verify(messageBrokerService).publish(any(MessagePublicationDto.class));
+        verify(messageBrokerService).publish(any(PublicationDto.class));
     }
 }

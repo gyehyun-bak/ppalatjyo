@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import ppalatjyo.server.global.websocket.MessageBrokerService;
-import ppalatjyo.server.global.websocket.dto.MessagePublicationDto;
+import ppalatjyo.server.global.websocket.dto.PublicationDto;
 import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.message.event.ChatMessageSentEvent;
 import ppalatjyo.server.message.event.SystemMessageSentEvent;
@@ -26,7 +26,7 @@ public class MessageEventHandler {
 
         MessageDto messageDto = MessageDto.chatMessage(message);
 
-        MessagePublicationDto<MessageDto> publicationDto = new MessagePublicationDto<>();
+        PublicationDto<MessageDto> publicationDto = new PublicationDto<>();
         publicationDto.setDestination("lobbies/" + message.getLobby().getId() + "/messages/new");
         publicationDto.setData(messageDto);
 
@@ -39,7 +39,7 @@ public class MessageEventHandler {
 
         MessageDto messageDto = MessageDto.systemMessage(message);
 
-        MessagePublicationDto<MessageDto> publicationDto = new MessagePublicationDto<>();
+        PublicationDto<MessageDto> publicationDto = new PublicationDto<>();
         publicationDto.setDestination("lobbies/" + message.getLobby().getId() + "/messages/new");
         publicationDto.setData(messageDto);
 

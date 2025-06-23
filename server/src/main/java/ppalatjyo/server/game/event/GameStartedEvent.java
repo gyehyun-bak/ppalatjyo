@@ -7,6 +7,4 @@ import lombok.Data;
 @AllArgsConstructor
 public class GameStartedEvent {
     private Long gameId;
-    private Integer minPerGame;
-    private Integer secPerQuestion;
 }
