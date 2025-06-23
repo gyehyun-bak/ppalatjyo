@@ -18,11 +18,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserLobbyService userLobbyService;
 
-    public JoinAsGuestResponseDto joinAsGuest(String nickname) {
+    public long joinAsGuest(String nickname) {
         User guest = User.createGuest(nickname);
-        userRepository.save(guest);
-
-        return new JoinAsGuestResponseDto("", "");
+        User saved = userRepository.save(guest);
+        return saved.getId();
     }
 
     public JoinAsMemberResponseDto joinAsMember(String nickname, String oAuthEmail, String oAuthProvider) {
