@@ -7,13 +7,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
+import ppalatjyo.server.global.websocket.aop.SendAfterCommitDto;
 import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.message.domain.Message;
 import ppalatjyo.server.message.domain.MessageType;
-import ppalatjyo.server.message.event.ChatMessageSentEvent;
-import ppalatjyo.server.message.event.SystemMessageSentEvent;
 import ppalatjyo.server.user.UserRepository;
 import ppalatjyo.server.user.domain.User;
 
@@ -31,8 +29,6 @@ class MessageServiceTest {
     private UserRepository userRepository;
     @Mock
     private LobbyRepository lobbyRepository;
-    @Mock
-    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private MessageService messageService;
@@ -50,18 +46,20 @@ class MessageServiceTest {
         when(lobbyRepository.findById(anyLong())).thenReturn(Optional.of(lobby));
 
         // when
-        messageService.sendChatMessage(content, 1L, 1L);
+        SendAfterCommitDto<MessageResponseDto> dto = messageService.sendChatMessage(content, 1L, 1L);
 
         // then
         ArgumentCaptor<Message> captor = ArgumentCaptor.forClass(Message.class);
         verify(messageRepository, times(1)).save(captor.capture());
-        verify(eventPublisher, times(1)).publishEvent(any(ChatMessageSentEvent.class));
 
         Message message = captor.getValue();
         assertThat(message.getContent()).isEqualTo(content);
         assertThat(message.getUser()).isEqualTo(user);
         assertThat(message.getLobby()).isEqualTo(lobby);
         assertThat(message.getType()).isEqualTo(MessageType.CHAT);
+
+        assertThat(dto.getDestination()).isEqualTo("/lobbies/" + 1L + "/messages");
+        assertThat(dto.getData()).isInstanceOf(MessageResponseDto.class);
     }
 
     @Test
@@ -75,16 +73,18 @@ class MessageServiceTest {
         when(lobbyRepository.findById(anyLong())).thenReturn(Optional.of(lobby));
 
         // when
-        messageService.sendSystemMessage(content, 1L);
+        SendAfterCommitDto<MessageResponseDto> dto = messageService.sendSystemMessage(content, 1L);
 
         // then
         ArgumentCaptor<Message> captor = ArgumentCaptor.forClass(Message.class);
         verify(messageRepository, times(1)).save(captor.capture());
-        verify(eventPublisher, times(1)).publishEvent(any(SystemMessageSentEvent.class));
 
         Message message = captor.getValue();
         assertThat(message.getContent()).isEqualTo(content);
         assertThat(message.getLobby()).isEqualTo(lobby);
         assertThat(message.getType()).isEqualTo(MessageType.SYSTEM);
+
+        assertThat(dto.getDestination()).isEqualTo("/lobbies/" + 1L + "/messages");
+        assertThat(dto.getData()).isInstanceOf(MessageResponseDto.class);
     }
 }

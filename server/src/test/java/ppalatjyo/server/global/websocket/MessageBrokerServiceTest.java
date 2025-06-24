@@ -26,15 +26,12 @@ class MessageBrokerServiceTest {
     void publish() {
         // given
         String destination = "/destination";
-        TestPublicationDataDto dataDto = new TestPublicationDataDto();
-        dataDto.setNickname("nickname");
-        dataDto.setContent("content");
-        PublicationDto<TestPublicationDataDto> requestDto = new PublicationDto<>(dataDto);
+        Object data = new Object();
 
         // when
-        messageBrokerService.publish(destination, requestDto);
+        messageBrokerService.publish(destination, data);
 
         // then
-        verify(simpMessagingTemplate).convertAndSend("/topic" + destination, dataDto);
+        verify(simpMessagingTemplate).convertAndSend("/topic" + destination, data);
     }
 }
