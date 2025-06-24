@@ -12,15 +12,15 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class MessageDto {
+public class MessageResponseDto {
     private MessageType type;
     private Long userId;
     private String nickname;
     private String content;
     private LocalDateTime sentAt;
 
-    public static MessageDto chatMessage(Message message) {
-        return MessageDto.builder()
+    public static MessageResponseDto chatMessage(Message message) {
+        return MessageResponseDto.builder()
                 .type(message.getType())
                 .content(message.getContent())
                 .userId(message.getUser().getId())
@@ -29,8 +29,8 @@ public class MessageDto {
                 .build();
     }
 
-    public static MessageDto systemMessage(Message message) {
-        return MessageDto.builder()
+    public static MessageResponseDto systemMessage(Message message) {
+        return MessageResponseDto.builder()
                 .type(message.getType())
                 .content(message.getContent())
                 .sentAt(message.getCreatedAt())
