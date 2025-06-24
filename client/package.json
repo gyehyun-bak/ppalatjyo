@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.10",
+    "@tanstack/react-query": "^5.81.2",
     "@types/jsdom": "^21.1.7",
     "axios": "^1.10.0",
     "jsdom": "^26.1.0",
