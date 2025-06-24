@@ -17,15 +17,14 @@ public class MessageBrokerService {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     /**
-     * 주어진 destination으로 메시지를 발행합니다.
+     * 주어진 destination으로 data를 발행합니다.
      *
      * @param destination "/topic" 뒤에 붙을 문자열
-     * @param dto 발행 메시지 Dto
-     * @param <T> 실제 데이터 타입
+     * @param data 발행 데이터
      */
-    public <T> void publish(String destination, PublicationDto<T> dto){
+    public void publish(String destination, Object data){
         try {
-            simpMessagingTemplate.convertAndSend(TOPIC_PREFIX + destination, dto.getData());
+            simpMessagingTemplate.convertAndSend(TOPIC_PREFIX + destination, data);
         } catch (MessagingException ex) {
             log.error("Error sending message to {} {}", destination, ex.getMessage(), ex);
         }

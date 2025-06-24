@@ -1,6 +1,7 @@
 package ppalatjyo.server.global.websocket.aop;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -8,11 +9,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import ppalatjyo.server.global.websocket.MessageBrokerService;
-import ppalatjyo.server.global.websocket.dto.PublicationDto;
 
 @Aspect
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class SendAfterCommitAspect {
 
     private final MessageBrokerService messageBrokerService;
@@ -34,7 +35,7 @@ public class SendAfterCommitAspect {
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                 @Override
                 public void afterCommit() {
-                    messageBrokerService.publish(destination, new PublicationDto<>(data));
+                    messageBrokerService.publish(destination, data);
                 }
             });
         }
