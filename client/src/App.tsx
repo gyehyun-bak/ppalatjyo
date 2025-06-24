@@ -1,13 +1,15 @@
-import './App.css'
+import { Routes, useNavigate, useHref } from 'react-router';
+import './App.css';
+import { HeroUIProvider } from '@heroui/react';
 
 function App() {
-  return (
-    <>
-        <h1 className={"text-3xl font-bold underline"}>
-            Hello World
-        </h1>
-    </>
-  )
+    const navigate = useNavigate();
+
+    return (
+        <HeroUIProvider navigate={navigate} useHref={useHref}>
+            <Routes></Routes>
+        </HeroUIProvider>
+    );
 }
 
-export default App
+export default App;
