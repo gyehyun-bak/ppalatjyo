@@ -1,17 +1,15 @@
-import { Routes, useNavigate, useHref, Route } from 'react-router';
+import { Routes, Route } from 'react-router';
 import './App.css';
-import { HeroUIProvider } from '@heroui/react';
 import Landing from './page/Landing';
+import RootLayout from './layout/RootLayout';
 
 function App() {
-    const navigate = useNavigate();
-
     return (
-        <HeroUIProvider navigate={navigate} useHref={useHref}>
-            <Routes>
+        <Routes>
+            <Route element={<RootLayout />}>
                 <Route path="/landing" element={<Landing />} />
-            </Routes>
-        </HeroUIProvider>
+            </Route>
+        </Routes>
     );
 }
 

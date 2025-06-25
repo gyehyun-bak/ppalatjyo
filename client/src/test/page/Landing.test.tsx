@@ -1,7 +1,13 @@
-describe('NicknameInput 컴포넌트', () => {
+vi.mock('./api/auth');
+vi.mock('react-router', () => ({
+    ...vi.importActual('react-router'),
+    useNavigate: () => vi.fn(),
+}));
+vi.mock('@heroui/react');
+
+describe('게스트로 가입', () => {
     it('닉네임 입력 후 "계속하기" 클릭 시 게스트 가입 요청을 보내야 한다', async () => {
         // given
-        // 컴포넌트 렌더
         // when
         // 닉네임 입력 + 버튼 클릭
         // then
