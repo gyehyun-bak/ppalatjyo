@@ -8,7 +8,14 @@ export default function RootLayout() {
     return (
         <HeroUIProvider navigate={navigate} useHref={useHref}>
             <ToastProvider />
-            <Outlet />
+            <div
+                className="flex min-w-screen justify-center bg-neutral-200"
+                style={{ height: '100dvh' }}
+            >
+                <div className="flex h-full w-full max-w-md bg-white">
+                    <Outlet />
+                </div>
+            </div>
         </HeroUIProvider>
     );
 }
