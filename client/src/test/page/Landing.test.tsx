@@ -17,7 +17,7 @@ describe('NicknameInput 컴포넌트', () => {
         // accessToken 저장과 페이지 이동 검증
     });
 
-    it('오류 응답이 반환되면 오류 토스트를 띄워야 한다', () => {
+    it('오류 응답이 반환되면 오류 토스트를 띄워야 한다', async () => {
         // given
         // 오류 응답 mock
         // when
