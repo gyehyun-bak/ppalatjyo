@@ -1,6 +1,5 @@
 vi.mock('./api/auth');
 vi.mock('react-router', () => ({
-    ...vi.importActual('react-router'),
     useNavigate: () => vi.fn(),
 }));
 vi.mock('@heroui/react');
