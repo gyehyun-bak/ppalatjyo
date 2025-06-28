@@ -1,8 +1,22 @@
 import { useState } from "react";
-import { Input } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
+import { useNavigate } from "react-router";
 
 export default function Landing() {
+    const MAX_LENGTH = 10;
     const [nickname, setNickname] = useState("");
+    const navigate = useNavigate();
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (value.length <= MAX_LENGTH) {
+            setNickname(value);
+        }
+    };
+
+    const handleContinue = async () => {
+        navigate("/home");
+    };
 
     return (
         <div>
@@ -10,11 +24,15 @@ export default function Landing() {
             <Input
                 label="닉네임"
                 type="string"
-                isClearable
                 value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                onClear={() => setNickname("")}
+                onChange={(e) => handleChange(e)}
+                endContent={
+                    <div className="pointer-events-none flex-none items-center text-default-400 text-small">
+                        {nickname.length}/{MAX_LENGTH}
+                    </div>
+                }
             />
+            <Button onPress={handleContinue}>계속하기</Button>
         </div>
     );
 }
