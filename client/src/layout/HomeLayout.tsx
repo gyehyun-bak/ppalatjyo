@@ -7,7 +7,7 @@ export default function HomeLayout() {
         <div className="flex flex-col size-full">
             <Navbar>
                 <NavbarBrand>
-                    <span>빨랐죠</span>
+                    <span className="text-primary font-bold">빨랐죠</span>
                     <Logo size={22} />
                 </NavbarBrand>
             </Navbar>
