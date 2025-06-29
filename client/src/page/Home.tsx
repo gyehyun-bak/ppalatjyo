@@ -34,7 +34,7 @@ export default function Home() {
                 새로고침
             </Button>
             <Button aria-label="create-lobby" onPress={handleCreateLobby}>
-                새로 만들기
+                로비 만들기
             </Button>
             {data && data.data && data.data.lobbies.length > 0 ? (
                 <ul>
