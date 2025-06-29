@@ -1,26 +1,26 @@
-import { useQuery } from '@tanstack/react-query';
-import { getLobbies } from '../api/lobby.api';
-import LobbyItem from '../components/lobby/LobbyItem';
-import { addToast, Button } from '@heroui/react';
-import { useNavigate } from 'react-router';
+import { useQuery } from "@tanstack/react-query";
+import { getLobbies } from "../api/lobby.api";
+import LobbyItem from "../components/lobby/LobbyItem";
+import { addToast, Button } from "@heroui/react";
+import { useNavigate } from "react-router";
 
-export default function Home() {
+export default function HomePage() {
     const navigate = useNavigate();
 
     const { data, isPending, refetch, isError } = useQuery({
-        queryKey: ['lobbies'],
+        queryKey: ["lobbies"],
         queryFn: getLobbies,
     });
 
     if (isError) {
         addToast({
-            title: '로비를 불러오는 중 문제가 발생하였습니다.',
-            color: 'danger',
+            title: "로비를 불러오는 중 문제가 발생하였습니다.",
+            color: "danger",
         });
     }
 
     const handleCreateLobby = () => {
-        navigate('/lobbies/create');
+        navigate("/lobbies/create");
     };
 
     return (

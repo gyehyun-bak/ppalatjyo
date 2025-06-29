@@ -17,7 +17,7 @@ public class GameStartedEvent {
     private Long lobbyId;
     private Integer minPerGame;
     private Integer secPerQuestion;
-    private Integer totalQuestion;
+    private Integer totalQuestions;
     private LocalDateTime startedAt;
     private Long firstQuestionId;
     private String firstQuestionContent;
@@ -28,7 +28,7 @@ public class GameStartedEvent {
                 .lobbyId(game.getLobby().getId())
                 .minPerGame(game.getOptions().getMinPerGame())
                 .secPerQuestion(game.getOptions().getSecPerQuestion())
-                .totalQuestion(game.getQuiz().getQuestions().size())
+                .totalQuestions(game.getQuiz().getQuestions().size())
                 .startedAt(game.getStartedAt())
                 .firstQuestionId(game.getCurrentQuestion().getId())
                 .firstQuestionContent(game.getCurrentQuestion().getContent())

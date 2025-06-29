@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event";
-import Landing from "../../page/Landing";
+import LandingPage from "../../page/LandingPage";
 import { renderWithWrapper } from "../utils/renderWithWrapper";
 import "@testing-library/jest-dom";
 import { screen, waitFor } from "@testing-library/react";
@@ -42,7 +42,7 @@ describe("Landing", () => {
 
     it("닉네임 인풋이 렌더링 된다", () => {
         // given
-        renderWithWrapper(<Landing />);
+        renderWithWrapper(<LandingPage />);
 
         // when
         const input = screen.getByLabelText("닉네임");
@@ -53,7 +53,7 @@ describe("Landing", () => {
 
     it("계속하기 버튼이 렌더링 된다", () => {
         // given
-        renderWithWrapper(<Landing />);
+        renderWithWrapper(<LandingPage />);
 
         // when
         const button = screen.getByRole("button", { name: "계속하기" });
@@ -80,7 +80,7 @@ describe("Landing", () => {
             })
         );
 
-        renderWithWrapper(<Landing />);
+        renderWithWrapper(<LandingPage />);
 
         const input = screen.getByLabelText("닉네임");
         const button = screen.getByRole("button", { name: "계속하기" });
@@ -123,7 +123,7 @@ describe("Landing", () => {
             })
         );
 
-        renderWithWrapper(<Landing />);
+        renderWithWrapper(<LandingPage />);
 
         const input = screen.getByLabelText("닉네임");
         const button = screen.getByRole("button", { name: "계속하기" });

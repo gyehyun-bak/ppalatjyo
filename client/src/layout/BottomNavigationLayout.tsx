@@ -1,6 +1,6 @@
-import { Button, ButtonGroup } from '@heroui/react';
-import { CircleUserRound, Home, MessageCircleQuestionMark } from 'lucide-react';
-import { Outlet, useNavigate } from 'react-router';
+import { Button, ButtonGroup } from "@heroui/react";
+import { CircleUserRound, Home, MessageCircleQuestionMark } from "lucide-react";
+import { Outlet, useNavigate } from "react-router";
 
 export default function BottomNavigationLayout() {
     return (
@@ -12,7 +12,7 @@ export default function BottomNavigationLayout() {
                         <Home />
                         <span className="text-xs">홈</span>
                     </BottomNavButton>
-                    <BottomNavButton destination="/quiz">
+                    <BottomNavButton destination="/quizzes">
                         <MessageCircleQuestionMark />
                         <span className="text-xs">퀴즈</span>
                     </BottomNavButton>
