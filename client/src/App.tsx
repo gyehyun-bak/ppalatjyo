@@ -5,6 +5,7 @@ import RootLayout from "./layout/RootLayout";
 import HomePage from "./page/HomePage";
 import HomeLayout from "./layout/HomeLayout";
 import BottomNavigationLayout from "./layout/BottomNavigationLayout";
+import QuizPage from "./page/QuizPage";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                     <Route element={<HomeLayout />}>
                         <Route path="/home" element={<HomePage />} />
                     </Route>
+                    <Route path="/quizzes" element={<QuizPage />} />
                 </Route>
             </Route>
         </Routes>
