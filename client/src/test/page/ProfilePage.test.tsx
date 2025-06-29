@@ -1,0 +1,82 @@
+import { screen, waitFor } from "@testing-library/dom";
+import ProfilePage from "../../page/ProfilePage";
+import { renderWithWrapper } from "../utils/renderWithWrapper";
+import { baseUrl, server } from "../../mocks/server";
+import { http, HttpResponse } from "msw";
+import type { ResponseDto } from "../../types/api/ResponseDto";
+import type { UserResponseDto } from "../../types/api/user/UserResponseDto";
+import "@testing-library/jest-dom";
+import userEvent from "@testing-library/user-event";
+
+const { mockNavigate } = vi.hoisted(() => ({
+    mockNavigate: vi.fn(),
+}));
+
+vi.mock("react-router", async () => {
+    const actual = await vi.importActual<typeof import("react-router")>(
+        "react-router"
+    );
+    return {
+        ...actual,
+        useNavigate: () => mockNavigate,
+    };
+});
+
+describe("ProfilePage", () => {
+    it("사용자 데이터를 불러와 표시한다", async () => {
+        // given
+        server.use(
+            http.get<never, never, ResponseDto<UserResponseDto>>(
+                baseUrl + "/users/me",
+                async () => {
+                    return HttpResponse.json({
+                        success: true,
+                        status: 200,
+                        data: {
+                            id: 1,
+                            nickname: "user1",
+                        },
+                    });
+                }
+            )
+        );
+
+        // when
+        renderWithWrapper(<ProfilePage />);
+
+        // then
+        await waitFor(() => {
+            expect(screen.getByText(/user1/)).toBeInTheDocument();
+        });
+    });
+
+    it("<닉네임 변경 버튼>을 누르면 닉네임 변경 페이지로 이동한다", async () => {
+        // given
+        renderWithWrapper(<ProfilePage />);
+        const editNicknameButton = screen.getByLabelText("edit-nickname");
+        const user = userEvent.setup();
+
+        // when
+        await user.click(editNicknameButton);
+
+        // then
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith("/profile/edit/nickname");
+        });
+    });
+
+    it("<로그아웃 버튼>을 누르면 로그아웃 페이지로 이동한다", async () => {
+        // given
+        renderWithWrapper(<ProfilePage />);
+        const logOutButton = screen.getByLabelText("log-out");
+        const user = userEvent.setup();
+
+        // when
+        await user.click(logOutButton);
+
+        // then
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith("/logout");
+        });
+    });
+});
