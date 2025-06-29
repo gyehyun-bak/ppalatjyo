@@ -12,7 +12,7 @@ public class GameInfoDto {
     private Long gameId;
     private Integer minPerGame;
     private Integer secPerQuestion;
-    private Integer totalQuestion;
+    private Integer totalQuestions;
     private LocalDateTime startedAt;
 
     public static GameInfoDto create(GameStartedEvent event) {
@@ -20,7 +20,7 @@ public class GameInfoDto {
                 .gameId(event.getGameId())
                 .minPerGame(event.getMinPerGame())
                 .secPerQuestion(event.getSecPerQuestion())
-                .totalQuestion(event.getTotalQuestion())
+                .totalQuestions(event.getTotalQuestions())
                 .startedAt(event.getStartedAt())
                 .build();
     }
