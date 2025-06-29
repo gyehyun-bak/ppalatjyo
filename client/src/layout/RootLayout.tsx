@@ -12,7 +12,7 @@ export default function RootLayout() {
                 className="flex min-w-screen justify-center bg-neutral-200"
                 style={{ height: '100dvh' }}
             >
-                <div className="flex h-full w-full max-w-md bg-white">
+                <div className="flex overflow-hidden h-full w-full max-w-md bg-white relative">
                     <Outlet />
                 </div>
             </div>
