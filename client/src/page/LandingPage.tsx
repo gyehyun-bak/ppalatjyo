@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { postSignUpGuest } from "../api/auth.api";
 import type { JoinAsGuestRequestDto } from "../types/api/auth/JoinAsGuestRequestDto";
 
-export default function Landing() {
+export default function LandingPage() {
     const MAX_LENGTH = 10;
     const [nickname, setNickname] = useState("");
     const navigate = useNavigate();
