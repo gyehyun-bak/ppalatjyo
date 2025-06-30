@@ -37,8 +37,8 @@ public class AuthService {
     }
 
     public TokenReissueResponseDto reissue(String oldRefreshToken, HttpServletResponse response) {
-        if (!jwtTokenProvider.validateToken(oldRefreshToken)) {
-            throw new JwtValidationException("Invalid token");
+        if (oldRefreshToken == null || !jwtTokenProvider.validateToken(oldRefreshToken)) {
+            throw new RefreshTokenException("Refresh Token is null or invalid");
         }
 
         long userId = Long.parseLong(jwtTokenProvider.getUserIdFromToken(oldRefreshToken));

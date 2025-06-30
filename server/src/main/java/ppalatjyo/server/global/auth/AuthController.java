@@ -25,11 +25,6 @@ public class AuthController {
 
     @GetMapping("/tokens")
     public ResponseEntity<?> reissueTokens(@CookieValue(value = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
-        if (refreshToken == null) {
-            ResponseErrorDto errorDto = ResponseErrorDto.commonError("RefreshToken Not Found", "/api/auth/tokens");
-            return ResponseDto.error(HttpStatus.UNAUTHORIZED, errorDto);
-        }
-
         return ResponseDto.ok(authService.reissue(refreshToken, response));
     }
 }
