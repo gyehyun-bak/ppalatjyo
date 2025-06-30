@@ -86,10 +86,11 @@ class GameServiceTest {
 
         // then
         ArgumentCaptor<Game> captor = ArgumentCaptor.forClass(Game.class);
-        verify(gameRepository, times(1)).save(captor.capture());
-        verify(gameLogService, times(1)).started(any());
-        verify(messageService, times(1)).sendSystemMessage(any(), any());
-        verify(schedulerService, times(1)).runAfterSeconds(anyInt(), any(Runnable.class));
+        verify(gameRepository).save(captor.capture());
+        verify(gameLogService).started(any());
+        verify(messageService).sendSystemMessage(any(), any());
+        verify(schedulerService).runAfterSeconds(anyInt(), any(Runnable.class));
+        verify(schedulerService).runAfterMinutes(anyInt(), any(Runnable.class));
 
         Game game = captor.getValue();
         assertThat(game).isNotNull();
@@ -136,6 +137,7 @@ class GameServiceTest {
 
         // then
         assertThat(game.getCurrentQuestionIndex()).isEqualTo(1);
+        verify(schedulerService).runAfterSeconds(anyInt(), any(Runnable.class));
     }
 
     @Test
@@ -272,7 +274,7 @@ class GameServiceTest {
         gameService.submitAnswer(requestDto);
 
         // then
-        verify(gameLogService, times(1)).wrongAnswer(any(), any(), any());
+        verify(gameLogService).wrongAnswer(any(), any(), any());
         verify(eventPublisher, never()).publishEvent(any(RightAnswerEvent.class));
         verify(userGameRepository, never()).findByGameIdOrderByScoreDesc(any());
     }
