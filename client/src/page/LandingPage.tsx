@@ -1,13 +1,14 @@
-import { useState } from "react";
-import { addToast, Button, Input } from "@heroui/react";
-import { useNavigate } from "react-router";
-import { useMutation } from "@tanstack/react-query";
-import { postSignUpGuest } from "../api/auth.api";
-import type { JoinAsGuestRequestDto } from "../types/api/auth/JoinAsGuestRequestDto";
+import { useState } from 'react';
+import { addToast, Button } from '@heroui/react';
+import { useNavigate } from 'react-router';
+import { useMutation } from '@tanstack/react-query';
+import { postSignUpGuest } from '../api/auth.api';
+import type { JoinAsGuestRequestDto } from '../types/api/auth/JoinAsGuestRequestDto';
+import Input from '../components/common/Input';
 
 export default function LandingPage() {
     const MAX_LENGTH = 10;
-    const [nickname, setNickname] = useState("");
+    const [nickname, setNickname] = useState('');
     const navigate = useNavigate();
 
     const { mutate, isPending } = useMutation({
@@ -16,34 +17,27 @@ export default function LandingPage() {
         },
         onSuccess: (data) => {
             if (data.data) {
-                localStorage.setItem("accessToken", data.data.accessToken);
-                navigate("/home");
+                localStorage.setItem('accessToken', data.data.accessToken);
+                navigate('/home');
             }
         },
         onError: () => {
             addToast({
-                title: "문제가 발생하였습니다.",
-                color: "danger",
+                title: '문제가 발생하였습니다.',
+                color: 'danger',
             });
         },
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        if (value.length <= MAX_LENGTH) {
-            setNickname(value);
-        }
-    };
-
     const validateNickname = () => {
-        return nickname.trim() != "";
+        return nickname.trim() != '';
     };
 
     const handleContinue = async () => {
         if (validateNickname()) {
             mutate({ nickname });
         } else {
-            mutate({ nickname: "익명" });
+            mutate({ nickname: '익명' });
         }
     };
 
@@ -54,13 +48,10 @@ export default function LandingPage() {
                 label="닉네임"
                 type="string"
                 value={nickname}
-                onChange={(e) => handleChange(e)}
+                onChange={(e) => setNickname(e.target.value)}
                 placeholder="익명"
-                endContent={
-                    <div className="pointer-events-none flex-none items-center text-default-400 text-small">
-                        {nickname.length}/{MAX_LENGTH}
-                    </div>
-                }
+                maxLength={MAX_LENGTH}
+                showLength={true}
             />
             <Button
                 color="primary"
