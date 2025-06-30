@@ -19,7 +19,7 @@ export default function Input({
         <div className="flex flex-col items-end">
             <HeroInput {...rest} value={currentValue} maxLength={maxLength} />
             {showLength && maxLength !== undefined && (
-                <div className="text-sm text-gray-400 select-none">
+                <div className="text-sm text-neutral-400 select-none">
                     {currentValue.length} / {maxLength}
                 </div>
             )}
