@@ -1,5 +1,17 @@
+import LobbyCreatePage from '../../../page/lobby/LobbyCreatePage';
+import { renderWithWrapper } from '../../utils/renderWithWrapper';
+
+vi.mock('zustand');
+
 describe('LobbyCreatePage', () => {
-    it('useLobbyStore에서 기존 설정을 불러온다', () => {});
+    it('useLobbyStore에서 기존 설정을 불러온다', () => {
+        // given
+
+        // when
+        renderWithWrapper(<LobbyCreatePage />);
+
+        // then
+    });
     it('쿼리 파라미터에 quizId가 있으면, 퀴즈 정보를 불러와 선택한 퀴즈에 표시한다', () => {});
     it('<퀴즈 선택하기> 버튼을 클릭하면, 현재 설정을 저장하고 "/quizzes"로 이동한다', () => {});
     it('모든 필수 입력 필드가 채워지지 않으면 <로비 만들기> 버튼이 비활성화된다', () => {});
