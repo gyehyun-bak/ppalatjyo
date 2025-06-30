@@ -1,4 +1,4 @@
-describe('CreateLobbyPage', () => {
+describe('LobbyCreatePage', () => {
     it('useLobbyStore에서 기존 설정을 불러온다', () => {});
     it('쿼리 파라미터에 quizId가 있으면, 퀴즈 정보를 불러와 선택한 퀴즈에 표시한다', () => {});
     it('<퀴즈 선택하기> 버튼을 클릭하면, 현재 설정을 저장하고 "/quizzes"로 이동한다', () => {});
