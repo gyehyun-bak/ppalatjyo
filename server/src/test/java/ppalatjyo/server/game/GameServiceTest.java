@@ -43,25 +43,15 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class GameServiceTest {
 
-    @Mock
-    private GameRepository gameRepository;
-    @Mock
-    private UserGameRepository userGameRepository;
-    @Mock
-    private GameLogService gameLogService;
-    @Mock
-    private LobbyRepository lobbyRepository;
-    @Mock
-    private QuestionRepository questionRepository;
-    @Mock
-    private MessageRepository messageRepository;
-    @Mock
-    private MessageService messageService;
-    @Mock
-    private SchedulerService schedulerService;
+    @Mock private GameRepository gameRepository;
+    @Mock private UserGameRepository userGameRepository;
+    @Mock private LobbyRepository lobbyRepository;
+    @Mock private QuestionRepository questionRepository;
+    @Mock private MessageRepository messageRepository;
+    @Mock private MessageService messageService;
+    @Mock private SchedulerService schedulerService;
 
-    @InjectMocks
-    private GameService gameService;
+    @InjectMocks private GameService gameService;
 
     @Test
     @DisplayName("게임 시작")
@@ -86,7 +76,6 @@ class GameServiceTest {
         // then
         ArgumentCaptor<Game> captor = ArgumentCaptor.forClass(Game.class);
         verify(gameRepository).save(captor.capture());
-        verify(gameLogService).started(any());
         verify(messageService).sendSystemMessage(any(), any());
         verify(schedulerService).runAfterSeconds(anyInt(), any(Runnable.class));
         verify(schedulerService).runAfterMinutes(anyInt(), any(Runnable.class));
@@ -236,6 +225,7 @@ class GameServiceTest {
 
         // then
         verify(userGameRepository).findByGameIdOrderByScoreDesc(gameId);
+        verify(messageService).sendSystemMessage(any(), any());
         assertThat(userGame.getScore()).isEqualTo(1);
         assertThat(dto.getDestination()).isEqualTo("/lobbies/null/games/events");
         assertThat(dto.getData().getType()).isEqualTo(GameEventType.CORRECT);

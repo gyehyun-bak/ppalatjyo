@@ -42,7 +42,6 @@ public class GameService {
     private final MessageRepository messageRepository;
     private final QuestionRepository questionRepository;
     private final GameRepository gameRepository;
-    private final GameLogService gameLogService;
     private final MessageService messageService;
     private final SchedulerService schedulerService;
 
@@ -51,16 +50,13 @@ public class GameService {
         Lobby lobby = lobbyRepository.findById(lobbyId).orElseThrow(LobbyNotFoundException::new);
 
         Game game = Game.start(lobby);
-
         gameRepository.save(game);
-        gameLogService.started(game.getId());
-
-        messageService.sendSystemMessage("게임이 시작되었습니다.", lobbyId);
 
         GameInfoDto gameInfoDto = GameInfoDto.create(game);
         GameEventDto gameEventDto = GameEventDto.started(gameInfoDto);
 
         NewQuestionDto newQuestionDto = new NewQuestionDto(game.getCurrentQuestion().getId(), game.getCurrentQuestion().getContent());
+        messageService.sendSystemMessage("게임이 시작되었습니다.", lobbyId);
         schedulerService.runAfterSeconds(SECONDS_BEFORE_FIRST_QUESTION,
                 () -> publishNewQuestion(game.getId(), lobby.getId(), game.getOptions().getSecPerQuestion(), newQuestionDto));
         schedulerService.runAfterMinutes(game.getOptions().getMinPerGame(), () -> end(game.getId()));
@@ -146,6 +142,7 @@ public class GameService {
         }
 
         userGame.increaseScoreBy(1); // 현재 1점으로 고정
+        messageService.sendSystemMessage(userGame.getUser().getNickname() + "님이 정답을 맞히셨습니다.", game.getLobby().getId());
 
         updateLeaderboard(requestDto.getLobbyId(), requestDto.getGameId()); // 리더보드(점수보드) 업데이트
         nextQuestion(requestDto.getGameId());
