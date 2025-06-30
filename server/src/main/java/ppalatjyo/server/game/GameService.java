@@ -1,19 +1,15 @@
 package ppalatjyo.server.game;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.game.dto.*;
-import ppalatjyo.server.game.event.LeaderboardUpdateEvent;
-import ppalatjyo.server.game.event.*;
 import ppalatjyo.server.game.exception.GameNotFoundException;
 import ppalatjyo.server.global.scheduler.SchedulerService;
 import ppalatjyo.server.global.websocket.aop.SendAfterCommit;
 import ppalatjyo.server.global.websocket.aop.SendAfterCommitDto;
 import ppalatjyo.server.lobby.exception.LobbyNotFoundException;
-import ppalatjyo.server.gamelog.GameLogService;
 import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.message.MessageNotFoundException;
