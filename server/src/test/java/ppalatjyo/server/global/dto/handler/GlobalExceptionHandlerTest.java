@@ -4,8 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import ppalatjyo.server.TestSecurityConfig;
+import ppalatjyo.server.global.docs.RestDocsTestController;
+import ppalatjyo.server.global.dto.ResponseDtoTestController;
+import ppalatjyo.server.global.security.SecurityConfig;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -16,9 +22,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@WebMvcTest(controllers = {GlobalExceptionHandler.class, ResponseDtoTestController.class})
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@Import(TestSecurityConfig.class)
 class GlobalExceptionHandlerTest {
     @Autowired
     private MockMvc mockMvc;
