@@ -63,13 +63,13 @@ public class GameService {
 
         NewQuestionDto newQuestionDto = new NewQuestionDto(game.getCurrentQuestion().getId(), game.getCurrentQuestion().getContent());
         schedulerService.runAfterSeconds(SECONDS_BEFORE_FIRST_QUESTION,
-                () -> publishNewQuestion(lobby.getId(), game.getOptions().getSecPerQuestion(), newQuestionDto));
+                () -> publishNewQuestion(lobby.getId(), newQuestionDto));
 
         return new SendAfterCommitDto<>("/lobbies/" + lobby.getId(), gameEventDto);
     }
 
     @SendAfterCommit
-    public SendAfterCommitDto<GameEventDto> publishNewQuestion(long lobbyId, int secPerQuestion, NewQuestionDto newQuestionDto) {
+    public SendAfterCommitDto<GameEventDto> publishNewQuestion(long lobbyId, NewQuestionDto newQuestionDto) {
         GameEventDto gameEventDto = GameEventDto.newQuestion(newQuestionDto);
 
         return new SendAfterCommitDto<>("/lobbies/" + lobbyId, gameEventDto);

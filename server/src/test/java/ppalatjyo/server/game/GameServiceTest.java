@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.game.dto.GameEventDto;
+import ppalatjyo.server.game.dto.NewQuestionDto;
 import ppalatjyo.server.game.dto.SubmitAnswerRequestDto;
 import ppalatjyo.server.game.event.LeaderboardUpdateEvent;
 import ppalatjyo.server.game.event.RightAnswerEvent;
@@ -98,6 +99,27 @@ class GameServiceTest {
         assertThat(game.getUserGames().size()).isEqualTo(2);
         assertThat(game.getCurrentQuestionIndex()).isEqualTo(0);
         assertThat(game.getCurrentQuestion()).isEqualTo(question);
+    }
+
+    @Test
+    @DisplayName("새 문제 제시")
+    void publishNewQuestion() {
+        // given
+        long lobbyId = 1L;
+        long questionId = 1L;
+        String content = "content";
+        NewQuestionDto newQuestionDto = new NewQuestionDto(questionId, content);
+
+        // when
+        SendAfterCommitDto<GameEventDto> dto = gameService.publishNewQuestion(lobbyId, newQuestionDto);
+
+        // then
+        String destination = dto.getDestination();
+        GameEventDto data = dto.getData();
+        assertThat(destination).isEqualTo("/lobbies/" + lobbyId);
+        assertThat(data).isNotNull();
+        assertThat(data.getNewQuestion().getQuestionId()).isEqualTo(questionId);
+        assertThat(data.getNewQuestion().getContent()).isEqualTo(content);
     }
 
     @Test
