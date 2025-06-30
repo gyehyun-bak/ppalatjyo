@@ -66,7 +66,7 @@ class GameServiceTest {
     private GameService gameService;
 
     @Test
-    @DisplayName("Game 시작")
+    @DisplayName("게임 시작")
     void start() {
         // given
         Long lobbyId = 1L;
@@ -113,7 +113,7 @@ class GameServiceTest {
         NewQuestionDto newQuestionDto = new NewQuestionDto(questionId, content);
 
         // when
-        SendAfterCommitDto<GameEventDto> dto = gameService.publishNewQuestion(lobbyId, newQuestionDto);
+        SendAfterCommitDto<GameEventDto> dto = gameService.publishNewQuestion(1L, lobbyId, 10, newQuestionDto);
 
         // then
         String destination = dto.getDestination();
@@ -122,6 +122,7 @@ class GameServiceTest {
         assertThat(data).isNotNull();
         assertThat(data.getNewQuestion().getQuestionId()).isEqualTo(questionId);
         assertThat(data.getNewQuestion().getContent()).isEqualTo(content);
+        verify(schedulerService).runAfterSeconds(anyInt(), any(Runnable.class));
     }
 
     @Test
@@ -191,11 +192,11 @@ class GameServiceTest {
         when(questionRepository.findById(currentQuestion.getId())).thenReturn(Optional.of(currentQuestion));
 
         // when
-        gameService.timeOut(gameId, currentQuestion.getId());
+        SendAfterCommitDto<GameEventDto> dto = gameService.timeOut(gameId, currentQuestion.getId());
 
         // then
-        verify(gameLogService).timeOut(gameId);
-        verify(eventPublisher).publishEvent(any(TimeOutEvent.class));
+        assertThat(dto.getDestination()).isEqualTo("/lobbies/null");
+        assertThat(dto.getData().getType()).isEqualTo(GameEventType.TIME_OUT);
     }
 
     @Test

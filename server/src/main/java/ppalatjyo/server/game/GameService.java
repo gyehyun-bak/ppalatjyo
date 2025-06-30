@@ -63,15 +63,18 @@ public class GameService {
 
         NewQuestionDto newQuestionDto = new NewQuestionDto(game.getCurrentQuestion().getId(), game.getCurrentQuestion().getContent());
         schedulerService.runAfterSeconds(SECONDS_BEFORE_FIRST_QUESTION,
-                () -> publishNewQuestion(lobby.getId(), newQuestionDto));
+                () -> publishNewQuestion(game.getId(), lobby.getId(), game.getOptions().getSecPerQuestion(), newQuestionDto));
         schedulerService.runAfterMinutes(game.getOptions().getMinPerGame(), () -> end(game.getId()));
 
         return new SendAfterCommitDto<>("/lobbies/" + lobby.getId(), gameEventDto);
     }
 
     @SendAfterCommit
-    public SendAfterCommitDto<GameEventDto> publishNewQuestion(long lobbyId, NewQuestionDto newQuestionDto) {
+    public SendAfterCommitDto<GameEventDto> publishNewQuestion(long gameId, long lobbyId, int secPerQuestion, NewQuestionDto newQuestionDto) {
         GameEventDto gameEventDto = GameEventDto.newQuestion(newQuestionDto);
+
+        schedulerService.runAfterSeconds(secPerQuestion,
+                () -> timeOut(gameId, newQuestionDto.getQuestionId()));
 
         return new SendAfterCommitDto<>("/lobbies/" + lobbyId, gameEventDto);
     }
@@ -88,7 +91,7 @@ public class GameService {
 
         NewQuestionDto newQuestionDto = new NewQuestionDto(game.getCurrentQuestion().getId(), game.getCurrentQuestion().getContent());
         schedulerService.runAfterSeconds(SECONDS_BEFORE_NEXT_QUESTION,
-                () -> publishNewQuestion(game.getLobby().getId(), newQuestionDto));
+                () -> publishNewQuestion(game.getId(), game.getLobby().getId(), game.getOptions().getSecPerQuestion(), newQuestionDto));
     }
 
     @SendAfterCommit
@@ -111,25 +114,25 @@ public class GameService {
      * @param gameId     게임 ID
      * @param questionId 타임 아웃된 문제 ID
      */
-    public void timeOut(Long gameId, Long questionId) {
+    @SendAfterCommit
+    public SendAfterCommitDto<GameEventDto> timeOut(Long gameId, Long questionId) {
         Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
 
         if (game.isEnded()) {
-            return;
+            return null;
         }
 
         Question currentQuestion = game.getCurrentQuestion();
         Question timedOutQuestion = questionRepository.findById(questionId).orElseThrow(QuestionNotFoundException::new);
 
         if (!currentQuestion.equals(timedOutQuestion)) {
-            return;
+            return null;
         }
 
-        gameLogService.timeOut(gameId);
-
-        eventPublisher.publishEvent(TimeOutEvent.create(game, timedOutQuestion));
-
         nextQuestion(gameId);
+
+        AnswerInfoDto answerInfoDto = AnswerInfoDto.create(timedOutQuestion);
+        return new SendAfterCommitDto<>("/lobbies/" + game.getLobby().getId(), GameEventDto.timeOut(answerInfoDto));
     }
 
     public void submitAnswer(SubmitAnswerRequestDto requestDto) {
