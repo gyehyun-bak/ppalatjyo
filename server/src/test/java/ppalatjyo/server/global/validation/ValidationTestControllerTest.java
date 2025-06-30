@@ -7,8 +7,12 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ppalatjyo.server.TestSecurityConfig;
+import ppalatjyo.server.global.auth.AuthController;
+import ppalatjyo.server.global.docs.RestDocsTestController;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +26,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
-@SpringBootTest
+@WebMvcTest(controllers = ValidationTestController.class)
+@Import(TestSecurityConfig.class)
 class ValidationTestControllerTest {
 
     @Autowired

@@ -2,7 +2,7 @@ package ppalatjyo.server.game.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import ppalatjyo.server.game.event.GameStartedEvent;
+import ppalatjyo.server.game.domain.Game;
 
 import java.time.LocalDateTime;
 
@@ -15,13 +15,13 @@ public class GameInfoDto {
     private Integer totalQuestions;
     private LocalDateTime startedAt;
 
-    public static GameInfoDto create(GameStartedEvent event) {
+    public static GameInfoDto create(Game game) {
         return GameInfoDto.builder()
-                .gameId(event.getGameId())
-                .minPerGame(event.getMinPerGame())
-                .secPerQuestion(event.getSecPerQuestion())
-                .totalQuestions(event.getTotalQuestions())
-                .startedAt(event.getStartedAt())
+                .gameId(game.getId())
+                .minPerGame(game.getOptions().getMinPerGame())
+                .secPerQuestion(game.getOptions().getSecPerQuestion())
+                .totalQuestions(game.getQuiz().getQuestions().size())
+                .startedAt(game.getStartedAt())
                 .build();
     }
 }

@@ -1,17 +1,15 @@
 package ppalatjyo.server.game;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.game.domain.Game;
-import ppalatjyo.server.game.dto.LeaderboardItemDto;
-import ppalatjyo.server.game.event.LeaderboardUpdateEvent;
-import ppalatjyo.server.game.dto.SubmitAnswerRequestDto;
-import ppalatjyo.server.game.event.*;
+import ppalatjyo.server.game.dto.*;
 import ppalatjyo.server.game.exception.GameNotFoundException;
+import ppalatjyo.server.global.scheduler.SchedulerService;
+import ppalatjyo.server.global.websocket.aop.SendAfterCommit;
+import ppalatjyo.server.global.websocket.aop.SendAfterCommitDto;
 import ppalatjyo.server.lobby.exception.LobbyNotFoundException;
-import ppalatjyo.server.gamelog.GameLogService;
 import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.message.MessageNotFoundException;
@@ -32,28 +30,44 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GameService {
 
+    private final int SECONDS_BEFORE_FIRST_QUESTION = 10;
+    private final int SECONDS_BEFORE_NEXT_QUESTION = 5;
+
     private final LobbyRepository lobbyRepository;
     private final UserGameRepository userGameRepository;
     private final MessageRepository messageRepository;
     private final QuestionRepository questionRepository;
     private final GameRepository gameRepository;
-    private final GameLogService gameLogService;
     private final MessageService messageService;
-    private final ApplicationEventPublisher eventPublisher;
+    private final SchedulerService schedulerService;
 
-    public void start(Long lobbyId) {
+    @SendAfterCommit
+    public SendAfterCommitDto<GameEventDto> start(Long lobbyId) {
         Lobby lobby = lobbyRepository.findById(lobbyId).orElseThrow(LobbyNotFoundException::new);
 
         Game game = Game.start(lobby);
-
         gameRepository.save(game);
-        gameLogService.started(game.getId());
 
+        GameInfoDto gameInfoDto = GameInfoDto.create(game);
+        GameEventDto gameEventDto = GameEventDto.started(gameInfoDto);
+
+        NewQuestionDto newQuestionDto = new NewQuestionDto(game.getCurrentQuestion().getId(), game.getCurrentQuestion().getContent());
         messageService.sendSystemMessage("게임이 시작되었습니다.", lobbyId);
+        schedulerService.runAfterSeconds(SECONDS_BEFORE_FIRST_QUESTION,
+                () -> publishNewQuestion(game.getId(), lobby.getId(), game.getOptions().getSecPerQuestion(), newQuestionDto));
+        schedulerService.runAfterMinutes(game.getOptions().getMinPerGame(), () -> end(game.getId()));
 
-        GameStartedEvent event = GameStartedEvent.create(game);
+        return new SendAfterCommitDto<>(getDestination(lobbyId), gameEventDto);
+    }
 
-        eventPublisher.publishEvent(event);
+    @SendAfterCommit
+    public SendAfterCommitDto<GameEventDto> publishNewQuestion(long gameId, long lobbyId, int secPerQuestion, NewQuestionDto newQuestionDto) {
+        GameEventDto gameEventDto = GameEventDto.newQuestion(newQuestionDto);
+
+        schedulerService.runAfterSeconds(secPerQuestion,
+                () -> timeOut(gameId, newQuestionDto.getQuestionId()));
+
+        return new SendAfterCommitDto<>(getDestination(lobbyId), gameEventDto);
     }
 
     public void nextQuestion(Long gameId) {
@@ -66,19 +80,22 @@ public class GameService {
 
         game.nextQuestion();
 
-        eventPublisher.publishEvent(NextQuestionEvent.create(game));
+        NewQuestionDto newQuestionDto = new NewQuestionDto(game.getCurrentQuestion().getId(), game.getCurrentQuestion().getContent());
+        schedulerService.runAfterSeconds(SECONDS_BEFORE_NEXT_QUESTION,
+                () -> publishNewQuestion(game.getId(), game.getLobby().getId(), game.getOptions().getSecPerQuestion(), newQuestionDto));
     }
 
-    public void end(Long gameId) {
+    @SendAfterCommit
+    public SendAfterCommitDto<GameEventDto> end(Long gameId) {
         Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
 
         if (game.isEnded()) {
-            return;
+            return null;
         }
 
         game.end();
 
-        eventPublisher.publishEvent(new GameEndedEvent(game.getId(), game.getLobby().getId()));
+        return new SendAfterCommitDto<>(getDestination(game.getLobby().getId()), GameEventDto.ended());
     }
 
     /**
@@ -88,55 +105,64 @@ public class GameService {
      * @param gameId     게임 ID
      * @param questionId 타임 아웃된 문제 ID
      */
-    public void timeOut(Long gameId, Long questionId) {
+    @SendAfterCommit
+    public SendAfterCommitDto<GameEventDto> timeOut(Long gameId, Long questionId) {
         Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
 
         if (game.isEnded()) {
-            return;
+            return null;
         }
 
         Question currentQuestion = game.getCurrentQuestion();
         Question timedOutQuestion = questionRepository.findById(questionId).orElseThrow(QuestionNotFoundException::new);
 
         if (!currentQuestion.equals(timedOutQuestion)) {
-            return;
+            return null;
         }
 
-        gameLogService.timeOut(gameId);
-
-        eventPublisher.publishEvent(TimeOutEvent.create(game, timedOutQuestion));
-
         nextQuestion(gameId);
+
+        AnswerInfoDto answerInfoDto = AnswerInfoDto.create(timedOutQuestion);
+        return new SendAfterCommitDto<>(getDestination(game.getLobby().getId()), GameEventDto.timeOut(answerInfoDto));
     }
 
-    public void submitAnswer(SubmitAnswerRequestDto requestDto) {
+    @SendAfterCommit
+    public SendAfterCommitDto<GameEventDto> submitAnswer(SubmitAnswerRequestDto requestDto) {
         Game game = gameRepository.findById(requestDto.getGameId()).orElseThrow(GameNotFoundException::new);
         UserGame userGame = userGameRepository.findById(requestDto.getUserGameId()).orElseThrow(UserGameNotFoundException::new);
         Message message = messageRepository.findById(requestDto.getMessageId()).orElseThrow(MessageNotFoundException::new);
         Question currentQuestion = game.getCurrentQuestion();
-        boolean isCorrect = currentQuestion.isCorrect(message.getContent());
-        if (isCorrect) {
-            gameLogService.rightAnswer(game.getId(), userGame.getId(), requestDto.getMessageId());
 
-            eventPublisher.publishEvent(RightAnswerEvent.create(game, message, currentQuestion));
-
-            userGame.increaseScoreBy(1); // 현재 1점으로 고정
-
-            updateLeaderboard(requestDto.getLobbyId(), requestDto.getGameId()); // 리더보드(점수보드) 업데이트
-
-            nextQuestion(requestDto.getGameId());
-        } else {
-            gameLogService.wrongAnswer(game.getId(), userGame.getId(), requestDto.getMessageId());
+        if (!currentQuestion.isCorrect(message.getContent())) {
+            return null;
         }
+
+        userGame.increaseScoreBy(1); // 현재 1점으로 고정
+        messageService.sendSystemMessage(userGame.getUser().getNickname() + "님이 정답을 맞히셨습니다.", game.getLobby().getId());
+
+        updateLeaderboard(requestDto.getLobbyId(), requestDto.getGameId()); // 리더보드(점수보드) 업데이트
+        nextQuestion(requestDto.getGameId());
+
+        AnswerInfoDto answerInfoDto = AnswerInfoDto.create(currentQuestion, userGame.getUser(), message);
+        return new SendAfterCommitDto<>(getDestination(game.getLobby().getId()), GameEventDto.correct(answerInfoDto));
     }
 
-    private void updateLeaderboard(long gameId, long lobbyId) {
+    @SendAfterCommit
+    private SendAfterCommitDto<LeaderboardUpdateDto> updateLeaderboard(long gameId, long lobbyId) {
         List<UserGame> userGames = userGameRepository.findByGameIdOrderByScoreDesc(gameId);
 
         List<LeaderboardItemDto> leaderboard = userGames.stream()
                 .map(LeaderboardItemDto::create)
                 .toList();
 
-        eventPublisher.publishEvent(new LeaderboardUpdateEvent(lobbyId, leaderboard));
+        String destination = "/lobbies/" + lobbyId + "/games/leaderboard/update";
+        return new SendAfterCommitDto<>(destination, new LeaderboardUpdateDto(leaderboard));
+    }
+
+    private String getDestination(Long lobbyId) {
+        final String GAME_EVENT_DESTINATION_PREFIX = "/lobbies/";
+        final String GAME_EVENT_DESTINATION_SUFFIX = "/games/events";
+
+        return GAME_EVENT_DESTINATION_PREFIX + lobbyId + GAME_EVENT_DESTINATION_SUFFIX;
     }
 }
