@@ -1,16 +1,40 @@
+import { screen } from '@testing-library/dom';
 import LobbyCreatePage from '../../../page/lobby/LobbyCreatePage';
+import { useLobbyCreateStore } from '../../../store/useLobbyCreateStore';
 import { renderWithWrapper } from '../../utils/renderWithWrapper';
+import '@testing-library/jest-dom';
 
 vi.mock('zustand');
 
 describe('LobbyCreatePage', () => {
-    it('useLobbyStore에서 기존 설정을 불러온다', () => {
+    it('useLobbyStore에서 기존 설정을 불러온다', async () => {
         // given
+        const prevName = '테스트 로비';
+        const prevMaxUsers = 11;
+        const prevMinPerGame = 22;
+        const prevSecPerQuestion = 33;
+
+        const { setName, setMaxUsers, setMinPerGame, setSecPerQuestion } =
+            useLobbyCreateStore.getState();
+        setName(prevName);
+        setMaxUsers(prevMaxUsers);
+        setMinPerGame(prevMinPerGame);
+        setSecPerQuestion(prevSecPerQuestion);
 
         // when
         renderWithWrapper(<LobbyCreatePage />);
 
         // then
+        expect(screen.getByLabelText('로비 이름')).toHaveValue(prevName);
+        expect(screen.getByLabelText('최대 인원')).toHaveValue(
+            String(prevMaxUsers)
+        );
+        expect(screen.getByLabelText('게임 시간 (분)')).toHaveValue(
+            String(prevMinPerGame)
+        );
+        expect(screen.getByLabelText('문제당 제한 시간 (초)')).toHaveValue(
+            String(prevSecPerQuestion)
+        );
     });
     it('쿼리 파라미터에 quizId가 있으면, 퀴즈 정보를 불러와 선택한 퀴즈에 표시한다', () => {});
     it('<퀴즈 선택하기> 버튼을 클릭하면, 현재 설정을 저장하고 "/quizzes"로 이동한다', () => {});
