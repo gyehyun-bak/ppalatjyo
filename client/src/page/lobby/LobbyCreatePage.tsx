@@ -1,7 +1,11 @@
-import { NumberInput } from '@heroui/react';
+import { Button, NumberInput } from '@heroui/react';
 import Input from '../../components/common/Input';
 import { useLobbyCreateStore } from '../../store/useLobbyCreateStore';
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router';
+import { getQuiz } from '../../api/quiz.api';
+import QuizItem from '../../components/quiz/QuizItem';
 
 export default function LobbyCreatePage() {
     const store = useLobbyCreateStore();
@@ -11,6 +15,15 @@ export default function LobbyCreatePage() {
     const [maxUsers, setMaxUsers] = useState(store.maxUsers);
     const [minPerGame, setMinPerGame] = useState(store.minPerGame);
     const [secPerQuestion, setSecPerQuestion] = useState(store.secPerQuestion);
+
+    const [searchParams] = useSearchParams();
+    const quizId = searchParams.get('quizId');
+
+    const { data, isPending, isSuccess } = useQuery({
+        enabled: quizId !== null,
+        queryKey: ['quiz', quizId],
+        queryFn: () => getQuiz(Number(quizId)),
+    });
 
     return (
         <form>
@@ -41,6 +54,11 @@ export default function LobbyCreatePage() {
                 value={secPerQuestion}
                 onValueChange={setSecPerQuestion}
             />
+            {isSuccess && data?.data ? (
+                <QuizItem quiz={data.data} />
+            ) : (
+                <Button isLoading={isPending}>퀴즈 선택하기</Button>
+            )}
         </form>
     );
 }
