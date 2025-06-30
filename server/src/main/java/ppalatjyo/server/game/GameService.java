@@ -44,7 +44,6 @@ public class GameService {
     private final GameRepository gameRepository;
     private final GameLogService gameLogService;
     private final MessageService messageService;
-    private final ApplicationEventPublisher eventPublisher;
     private final SchedulerService schedulerService;
 
     @SendAfterCommit
@@ -66,7 +65,7 @@ public class GameService {
                 () -> publishNewQuestion(game.getId(), lobby.getId(), game.getOptions().getSecPerQuestion(), newQuestionDto));
         schedulerService.runAfterMinutes(game.getOptions().getMinPerGame(), () -> end(game.getId()));
 
-        return new SendAfterCommitDto<>("/lobbies/" + lobby.getId(), gameEventDto);
+        return new SendAfterCommitDto<>(getDestination(lobbyId), gameEventDto);
     }
 
     @SendAfterCommit
@@ -76,7 +75,7 @@ public class GameService {
         schedulerService.runAfterSeconds(secPerQuestion,
                 () -> timeOut(gameId, newQuestionDto.getQuestionId()));
 
-        return new SendAfterCommitDto<>("/lobbies/" + lobbyId, gameEventDto);
+        return new SendAfterCommitDto<>(getDestination(lobbyId), gameEventDto);
     }
 
     public void nextQuestion(Long gameId) {
@@ -104,7 +103,7 @@ public class GameService {
 
         game.end();
 
-        return new SendAfterCommitDto<>("/lobbies/" + game.getLobby().getId(), GameEventDto.ended());
+        return new SendAfterCommitDto<>(getDestination(game.getLobby().getId()), GameEventDto.ended());
     }
 
     /**
@@ -132,37 +131,45 @@ public class GameService {
         nextQuestion(gameId);
 
         AnswerInfoDto answerInfoDto = AnswerInfoDto.create(timedOutQuestion);
-        return new SendAfterCommitDto<>("/lobbies/" + game.getLobby().getId(), GameEventDto.timeOut(answerInfoDto));
+        return new SendAfterCommitDto<>(getDestination(game.getLobby().getId()), GameEventDto.timeOut(answerInfoDto));
     }
 
-    public void submitAnswer(SubmitAnswerRequestDto requestDto) {
+    @SendAfterCommit
+    public SendAfterCommitDto<GameEventDto> submitAnswer(SubmitAnswerRequestDto requestDto) {
         Game game = gameRepository.findById(requestDto.getGameId()).orElseThrow(GameNotFoundException::new);
         UserGame userGame = userGameRepository.findById(requestDto.getUserGameId()).orElseThrow(UserGameNotFoundException::new);
         Message message = messageRepository.findById(requestDto.getMessageId()).orElseThrow(MessageNotFoundException::new);
         Question currentQuestion = game.getCurrentQuestion();
-        boolean isCorrect = currentQuestion.isCorrect(message.getContent());
-        if (isCorrect) {
-            gameLogService.rightAnswer(game.getId(), userGame.getId(), requestDto.getMessageId());
 
-            eventPublisher.publishEvent(RightAnswerEvent.create(game, message, currentQuestion));
-
-            userGame.increaseScoreBy(1); // 현재 1점으로 고정
-
-            updateLeaderboard(requestDto.getLobbyId(), requestDto.getGameId()); // 리더보드(점수보드) 업데이트
-
-            nextQuestion(requestDto.getGameId());
-        } else {
-            gameLogService.wrongAnswer(game.getId(), userGame.getId(), requestDto.getMessageId());
+        if (!currentQuestion.isCorrect(message.getContent())) {
+            return null;
         }
+
+        userGame.increaseScoreBy(1); // 현재 1점으로 고정
+
+        updateLeaderboard(requestDto.getLobbyId(), requestDto.getGameId()); // 리더보드(점수보드) 업데이트
+        nextQuestion(requestDto.getGameId());
+
+        AnswerInfoDto answerInfoDto = AnswerInfoDto.create(currentQuestion, userGame.getUser(), message);
+        return new SendAfterCommitDto<>(getDestination(game.getLobby().getId()), GameEventDto.correct(answerInfoDto));
     }
 
-    private void updateLeaderboard(long gameId, long lobbyId) {
+    @SendAfterCommit
+    private SendAfterCommitDto<LeaderboardUpdateDto> updateLeaderboard(long gameId, long lobbyId) {
         List<UserGame> userGames = userGameRepository.findByGameIdOrderByScoreDesc(gameId);
 
         List<LeaderboardItemDto> leaderboard = userGames.stream()
                 .map(LeaderboardItemDto::create)
                 .toList();
 
-        eventPublisher.publishEvent(new LeaderboardUpdateEvent(lobbyId, leaderboard));
+        String destination = "/lobbies/" + lobbyId + "/games/leaderboard/update";
+        return new SendAfterCommitDto<>(destination, new LeaderboardUpdateDto(leaderboard));
+    }
+
+    private String getDestination(Long lobbyId) {
+        final String GAME_EVENT_DESTINATION_PREFIX = "/lobbies/";
+        final String GAME_EVENT_DESTINATION_SUFFIX = "/games/events";
+
+        return GAME_EVENT_DESTINATION_PREFIX + lobbyId + GAME_EVENT_DESTINATION_SUFFIX;
     }
 }

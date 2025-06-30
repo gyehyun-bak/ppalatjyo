@@ -56,8 +56,6 @@ class GameServiceTest {
     @Mock
     private MessageRepository messageRepository;
     @Mock
-    private ApplicationEventPublisher eventPublisher;
-    @Mock
     private MessageService messageService;
     @Mock
     private SchedulerService schedulerService;
@@ -118,7 +116,7 @@ class GameServiceTest {
         // then
         String destination = dto.getDestination();
         GameEventDto data = dto.getData();
-        assertThat(destination).isEqualTo("/lobbies/" + lobbyId);
+        assertThat(destination).isEqualTo("/lobbies/" + lobbyId + "/games/events");
         assertThat(data).isNotNull();
         assertThat(data.getNewQuestion().getQuestionId()).isEqualTo(questionId);
         assertThat(data.getNewQuestion().getContent()).isEqualTo(content);
@@ -175,7 +173,7 @@ class GameServiceTest {
 
         // then
         assertThat(game.isEnded()).isTrue();
-        assertThat(dto.getDestination()).isEqualTo("/lobbies/null");
+        assertThat(dto.getDestination()).isEqualTo("/lobbies/null/games/events");
         assertThat(dto.getData().getType()).isEqualTo(GameEventType.GAME_ENDED);
     }
 
@@ -195,7 +193,7 @@ class GameServiceTest {
         SendAfterCommitDto<GameEventDto> dto = gameService.timeOut(gameId, currentQuestion.getId());
 
         // then
-        assertThat(dto.getDestination()).isEqualTo("/lobbies/null");
+        assertThat(dto.getDestination()).isEqualTo("/lobbies/null/games/events");
         assertThat(dto.getData().getType()).isEqualTo(GameEventType.TIME_OUT);
     }
 
@@ -234,14 +232,14 @@ class GameServiceTest {
         when(userGameRepository.findByGameIdOrderByScoreDesc(gameId)).thenReturn(List.of(userGame));
 
         // when
-        gameService.submitAnswer(requestDto);
+        SendAfterCommitDto<GameEventDto> dto = gameService.submitAnswer(requestDto);
 
         // then
-        verify(gameLogService, times(1)).rightAnswer(any(), any(), any());
-        verify(eventPublisher).publishEvent(any(RightAnswerEvent.class));
         verify(userGameRepository).findByGameIdOrderByScoreDesc(gameId);
-        verify(eventPublisher).publishEvent(any(LeaderboardUpdateEvent.class));
         assertThat(userGame.getScore()).isEqualTo(1);
+        assertThat(dto.getDestination()).isEqualTo("/lobbies/null/games/events");
+        assertThat(dto.getData().getType()).isEqualTo(GameEventType.CORRECT);
+        assertThat(dto.getData().getAnswerInfo().getCorrectUserNickname()).isEqualTo("user");
     }
 
     @Test
@@ -277,11 +275,10 @@ class GameServiceTest {
         when(messageRepository.findById(messageId)).thenReturn(Optional.of(message));
 
         // when
-        gameService.submitAnswer(requestDto);
+        SendAfterCommitDto<GameEventDto> dto = gameService.submitAnswer(requestDto);
 
         // then
-        verify(gameLogService).wrongAnswer(any(), any(), any());
-        verify(eventPublisher, never()).publishEvent(any(RightAnswerEvent.class));
+        assertThat(dto).isNull();
         verify(userGameRepository, never()).findByGameIdOrderByScoreDesc(any());
     }
 
