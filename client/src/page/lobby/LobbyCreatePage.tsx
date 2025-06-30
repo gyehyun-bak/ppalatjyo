@@ -3,12 +3,13 @@ import Input from '../../components/common/Input';
 import { useLobbyCreateStore } from '../../store/useLobbyCreateStore';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { getQuiz } from '../../api/quiz.api';
 import QuizItem from '../../components/quiz/QuizItem';
 
 export default function LobbyCreatePage() {
     const store = useLobbyCreateStore();
+    const navigate = useNavigate();
 
     const [name, setName] = useState(store.name);
     const [password, setPassword] = useState('');
@@ -19,15 +20,38 @@ export default function LobbyCreatePage() {
     const [searchParams] = useSearchParams();
     const quizId = searchParams.get('quizId');
 
-    const { data, isPending, isSuccess } = useQuery({
+    const { data, isLoading, isSuccess } = useQuery({
         enabled: quizId !== null,
         queryKey: ['quiz', quizId],
         queryFn: () => getQuiz(Number(quizId)),
     });
 
+    const handleSelectQuiz = () => {
+        store.setName(name);
+        store.setMaxUsers(maxUsers);
+        store.setMinPerGame(minPerGame);
+        store.setSecPerQuestion(secPerQuestion);
+
+        navigate('/quizzes');
+    };
+
+    const isFormValid =
+        name.trim() !== '' &&
+        maxUsers > 0 &&
+        minPerGame > 0 &&
+        secPerQuestion > 0 &&
+        !!data?.data;
+
+    const handleCreateLobby = async () => {};
+
     return (
         <form>
-            <Input label={'로비 이름'} value={name} onValueChange={setName} />
+            <Input
+                required
+                label={'로비 이름'}
+                value={name}
+                onValueChange={setName}
+            />
             <Input
                 label={'비밀번호'}
                 value={password}
@@ -57,8 +81,17 @@ export default function LobbyCreatePage() {
             {isSuccess && data?.data ? (
                 <QuizItem quiz={data.data} />
             ) : (
-                <Button isLoading={isPending}>퀴즈 선택하기</Button>
+                <Button
+                    aria-label="select-quiz"
+                    isLoading={isLoading}
+                    onPress={handleSelectQuiz}
+                >
+                    퀴즈 선택하기
+                </Button>
             )}
+            <Button onPress={handleCreateLobby} isDisabled={!isFormValid}>
+                로비 만들기
+            </Button>
         </form>
     );
 }
