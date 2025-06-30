@@ -9,11 +9,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import ppalatjyo.server.game.domain.Game;
+import ppalatjyo.server.game.dto.GameEventDto;
 import ppalatjyo.server.game.dto.SubmitAnswerRequestDto;
 import ppalatjyo.server.game.event.LeaderboardUpdateEvent;
 import ppalatjyo.server.game.event.RightAnswerEvent;
 import ppalatjyo.server.game.event.TimeOutEvent;
 import ppalatjyo.server.gamelog.GameLogService;
+import ppalatjyo.server.global.scheduler.SchedulerService;
+import ppalatjyo.server.global.websocket.aop.SendAfterCommitDto;
 import ppalatjyo.server.lobby.LobbyRepository;
 import ppalatjyo.server.lobby.domain.Lobby;
 import ppalatjyo.server.lobby.domain.LobbyOptions;
@@ -27,7 +30,6 @@ import ppalatjyo.server.quiz.repository.QuestionRepository;
 import ppalatjyo.server.user.domain.User;
 import ppalatjyo.server.usergame.UserGame;
 import ppalatjyo.server.usergame.UserGameRepository;
-import ppalatjyo.server.usergame.UserGameService;
 import ppalatjyo.server.userlobby.UserLobby;
 
 import java.util.List;
@@ -55,6 +57,8 @@ class GameServiceTest {
     private ApplicationEventPublisher eventPublisher;
     @Mock
     private MessageService messageService;
+    @Mock
+    private SchedulerService schedulerService;
 
     @InjectMocks
     private GameService gameService;
@@ -77,13 +81,14 @@ class GameServiceTest {
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
 
         // when
-        gameService.start(lobbyId);
+        SendAfterCommitDto<GameEventDto> dto = gameService.start(lobbyId);
 
         // then
         ArgumentCaptor<Game> captor = ArgumentCaptor.forClass(Game.class);
         verify(gameRepository, times(1)).save(captor.capture());
         verify(gameLogService, times(1)).started(any());
         verify(messageService, times(1)).sendSystemMessage(any(), any());
+        verify(schedulerService, times(1)).runAfterSeconds(anyInt(), any(Runnable.class));
 
         Game game = captor.getValue();
         assertThat(game).isNotNull();

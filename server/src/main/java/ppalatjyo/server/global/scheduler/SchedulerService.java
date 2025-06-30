@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +18,7 @@ public class SchedulerService {
      * @param seconds   대시 시간(초)
      * @param task      실행할 작업
      */
-    public void runAfterSecondes(int seconds, Runnable task) {
+    public void runAfterSeconds(int seconds, Runnable task) {
         Instant executionTime = Instant.now().plusSeconds(seconds);
         taskScheduler.schedule(task, executionTime);
     }

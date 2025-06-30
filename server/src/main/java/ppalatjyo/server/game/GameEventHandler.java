@@ -52,7 +52,7 @@ public class GameEventHandler {
 
         // 대기 시간을 두고 문제를 제시합니다.
         NewQuestionDto newQuestionDto = new NewQuestionDto(event.getFirstQuestionId(), event.getFirstQuestionContent());
-        schedulerService.runAfterSecondes(SECONDS_BEFORE_FIRST_QUESTION,
+        schedulerService.runAfterSeconds(SECONDS_BEFORE_FIRST_QUESTION,
                 () -> publishNewQuestion(event.getLobbyId(), gameId, event.getSecPerQuestion(), newQuestionDto));
     }
 
@@ -67,7 +67,7 @@ public class GameEventHandler {
 
         messageBrokerService.publish(getDestination(lobbyId), dto);
 
-        schedulerService.runAfterSecondes(secPerQuestion,
+        schedulerService.runAfterSeconds(secPerQuestion,
                 () -> gameService.timeOut(gameId, newQuestionDto.getQuestionId()));
     }
 
@@ -81,7 +81,7 @@ public class GameEventHandler {
     public void handleNextQuestionEvent(NextQuestionEvent event) {
         NewQuestionDto newQuestionDto = new NewQuestionDto(event.getQuestionId(), event.getQuestionContent());
 
-        schedulerService.runAfterSecondes(SECONDS_BEFORE_NEXT_QUESTION,
+        schedulerService.runAfterSeconds(SECONDS_BEFORE_NEXT_QUESTION,
                 () -> publishNewQuestion(event.getGameId(), event.getLobbyId(), event.getSecPerQuestion(), newQuestionDto));
     }
 

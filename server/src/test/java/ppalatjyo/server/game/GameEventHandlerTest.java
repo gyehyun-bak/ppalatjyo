@@ -37,7 +37,7 @@ class GameEventHandlerTest {
         // then
         verify(messageBrokerService, times(1)).publish(anyString(), any());
         verify(schedulerService).runAfterMinutes(anyInt(), any(Runnable.class));
-        verify(schedulerService).runAfterSecondes(anyInt(), any(Runnable.class));
+        verify(schedulerService).runAfterSeconds(anyInt(), any(Runnable.class));
     }
 
     @Test
@@ -89,7 +89,7 @@ class GameEventHandlerTest {
         gameEventHandler.handleNextQuestionEvent(event);
 
         // then
-        verify(schedulerService).runAfterSecondes(anyInt(), any());
+        verify(schedulerService).runAfterSeconds(anyInt(), any());
     }
 
     @Test
