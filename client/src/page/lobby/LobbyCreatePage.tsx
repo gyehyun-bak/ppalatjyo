@@ -1,11 +1,13 @@
-import { Button, NumberInput } from '@heroui/react';
+import { addToast, Button, NumberInput } from '@heroui/react';
 import Input from '../../components/common/Input';
 import { useLobbyCreateStore } from '../../store/useLobbyCreateStore';
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router';
 import { getQuiz } from '../../api/quiz.api';
 import QuizItem from '../../components/quiz/QuizItem';
+import { createLobby } from '../../api/lobby.api';
+import type { CreateLobbyRequestDto } from '../../types/api/lobby/CreateLobbyRequestDto';
 
 export default function LobbyCreatePage() {
     const store = useLobbyCreateStore();
@@ -26,6 +28,21 @@ export default function LobbyCreatePage() {
         queryFn: () => getQuiz(Number(quizId)),
     });
 
+    const { mutate } = useMutation({
+        mutationFn: (data: CreateLobbyRequestDto) => createLobby(data),
+        onSuccess: (response) => {
+            if (response.data) {
+                navigate(`/lobbies/${response.data.id}`);
+            } else {
+                console.error('로비 생성 실패');
+            }
+        },
+        onError: (error) => {
+            console.error('로비 생성 중 오류 발생:', error);
+            addToast({ title: '로비 생성에 실패했습니다.', color: 'danger' });
+        },
+    });
+
     const handleSelectQuiz = () => {
         store.setName(name);
         store.setMaxUsers(maxUsers);
@@ -42,7 +59,20 @@ export default function LobbyCreatePage() {
         secPerQuestion > 0 &&
         !!data?.data;
 
-    const handleCreateLobby = async () => {};
+    const handleCreateLobby = async () => {
+        if (!isFormValid || quizId === null) {
+            return;
+        }
+
+        mutate({
+            name,
+            password,
+            maxUsers,
+            minPerGame,
+            secPerQuestion,
+            quizId,
+        });
+    };
 
     return (
         <form>
