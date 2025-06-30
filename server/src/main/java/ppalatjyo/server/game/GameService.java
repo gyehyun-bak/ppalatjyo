@@ -91,16 +91,17 @@ public class GameService {
                 () -> publishNewQuestion(game.getLobby().getId(), newQuestionDto));
     }
 
-    public void end(Long gameId) {
+    @SendAfterCommit
+    public SendAfterCommitDto<GameEventDto> end(Long gameId) {
         Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
 
         if (game.isEnded()) {
-            return;
+            return null;
         }
 
         game.end();
 
-        eventPublisher.publishEvent(new GameEndedEvent(game.getId(), game.getLobby().getId()));
+        return new SendAfterCommitDto<>("/lobbies/" + game.getLobby().getId(), GameEventDto.ended());
     }
 
     /**

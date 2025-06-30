@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import ppalatjyo.server.game.domain.Game;
 import ppalatjyo.server.game.dto.GameEventDto;
+import ppalatjyo.server.game.dto.GameEventType;
 import ppalatjyo.server.game.dto.NewQuestionDto;
 import ppalatjyo.server.game.dto.SubmitAnswerRequestDto;
 import ppalatjyo.server.game.event.LeaderboardUpdateEvent;
@@ -161,16 +162,20 @@ class GameServiceTest {
     @DisplayName("게임 종료")
     void endGame() {
         // given
+        Long lobbyId = 123L;
+
         Long gameId = 1L;
         Game game = createGame(LobbyOptions.defaultOptions());
 
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
 
         // when
-        gameService.end(gameId);
+        SendAfterCommitDto<GameEventDto> dto = gameService.end(gameId);
 
         // then
         assertThat(game.isEnded()).isTrue();
+        assertThat(dto.getDestination()).isEqualTo("/lobbies/null");
+        assertThat(dto.getData().getType()).isEqualTo(GameEventType.GAME_ENDED);
     }
 
     @Test
