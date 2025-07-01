@@ -19,10 +19,12 @@ import ppalatjyo.server.domain.userlobby.UserLobby;
 import ppalatjyo.server.domain.userlobby.UserLobbyRepository;
 import ppalatjyo.server.domain.userlobby.UserLobbyService;
 import ppalatjyo.server.domain.userlobby.event.UserLeftLobbyEvent;
+import ppalatjyo.server.domain.userlobby.exception.LobbyIsFullException;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,6 +59,8 @@ class UserLobbyServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
+        when(userLobbyRepository.existsByUserIdAndLobbyIdAndLeftAtIsNull(userId, lobbyId)).thenReturn(false);
+        when(userLobbyRepository.countByLobbyIdAndLeftAtIsNull(lobbyId)).thenReturn(1);
 
         // when
         userLobbyService.join(userId, lobbyId);
@@ -70,6 +74,31 @@ class UserLobbyServiceTest {
         assertThat(userLobby.getUser()).isEqualTo(user);
         assertThat(userLobby.getLobby()).isEqualTo(lobby);
         assertThat(userLobby.getJoinedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("참가 시 로비가 이미 가득 찼으면 예외 발생")
+    void shouldThrowExceptionWhenLobbyIsFull() {
+        // given
+        Long userId = 1L;
+        Long lobbyId = 1L;
+
+        int maxUsers = 10;
+        LobbyOptions options = LobbyOptions.createOptions(maxUsers, 10, 10);
+
+        User host = User.createMember("host", "email", "provider");
+        Lobby lobby = Lobby.createLobby("lobby", host, Quiz.createQuiz("quiz", host), options);
+        User user = User.createGuest("user");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
+        when(userLobbyRepository.existsByUserIdAndLobbyIdAndLeftAtIsNull(userId, lobbyId)).thenReturn(false);
+        when(userLobbyRepository.countByLobbyIdAndLeftAtIsNull(lobbyId)).thenReturn(maxUsers);
+
+        // when
+        // then
+        assertThatThrownBy(() -> userLobbyService.join(userId, lobbyId))
+                .isInstanceOf(LobbyIsFullException.class);
     }
 
     @Test

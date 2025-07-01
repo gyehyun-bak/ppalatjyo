@@ -9,4 +9,8 @@ public interface UserLobbyRepository extends JpaRepository<UserLobby, Long> {
     Optional<UserLobby> findByUserIdAndLobbyId(Long userId, Long lobbyId);
 
     List<UserLobby> findByUserId(Long userId);
+
+    int countByLobbyIdAndLeftAtIsNull(Long lobbyId);
+
+    boolean existsByUserIdAndLobbyIdAndLeftAtIsNull(Long userId, Long lobbyId);
 }

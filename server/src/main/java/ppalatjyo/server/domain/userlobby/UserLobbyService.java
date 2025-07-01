@@ -12,6 +12,8 @@ import ppalatjyo.server.domain.user.domain.User;
 import ppalatjyo.server.domain.user.exception.UserNotFoundException;
 import ppalatjyo.server.domain.userlobby.event.UserJoinedLobbyEvent;
 import ppalatjyo.server.domain.userlobby.event.UserLeftLobbyEvent;
+import ppalatjyo.server.domain.userlobby.exception.LobbyIsFullException;
+import ppalatjyo.server.domain.userlobby.exception.UserLobbyNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +25,22 @@ public class UserLobbyService {
     private final UserLobbyRepository userLobbyRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public void join(Long userId, Long lobbyId) {
+    /**
+     * Lobby에 User가 참가합니다. Lobby가 이미 가득찬 경우 {@link LobbyIsFullException} 예외를 반환합니다.
+     */
+    public void join(Long userId, Long lobbyId) throws LobbyIsFullException {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Lobby lobby = lobbyRepository.findById(lobbyId).orElseThrow(LobbyNotFoundException::new);
+
+        boolean alreadyJoined = userLobbyRepository.existsByUserIdAndLobbyIdAndLeftAtIsNull(userId, lobbyId);
+        if (alreadyJoined) {
+            return; // 이미 참가 중인 유저인 경우 무시합니다.
+        }
+
+        int currentTotalUsers = userLobbyRepository.countByLobbyIdAndLeftAtIsNull(lobbyId);
+        if (currentTotalUsers == lobby.getOptions().getMaxUsers()) {
+            throw new LobbyIsFullException();
+        }
 
         UserLobby userLobby = UserLobby.join(user, lobby);
 
