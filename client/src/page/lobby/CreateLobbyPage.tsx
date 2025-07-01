@@ -33,8 +33,6 @@ export default function CreateLobbyPage() {
         onSuccess: (response) => {
             if (response.data) {
                 navigate(`/lobbies/${response.data.id}`);
-            } else {
-                console.error('로비 생성 실패');
             }
         },
         onError: (error) => {
