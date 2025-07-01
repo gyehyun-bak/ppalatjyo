@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ppalatjyo.server.domain.game.GameService;
 import ppalatjyo.server.domain.game.domain.Game;
 import ppalatjyo.server.domain.lobby.domain.Lobby;
 import ppalatjyo.server.domain.lobby.domain.LobbyOptions;
@@ -17,6 +18,7 @@ import ppalatjyo.server.domain.quiz.domain.Quiz;
 import ppalatjyo.server.domain.quiz.repository.QuizRepository;
 import ppalatjyo.server.domain.user.UserRepository;
 import ppalatjyo.server.domain.user.domain.User;
+import ppalatjyo.server.domain.userlobby.UserLobbyRepository;
 import ppalatjyo.server.domain.userlobby.UserLobbyService;
 
 import java.util.List;
@@ -28,17 +30,12 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class LobbyServiceTest {
 
-    @Mock
-    private LobbyRepository lobbyRepository;
-
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private QuizRepository quizRepository;
-
-    @Mock
-    private MessageService messageService;
+    @Mock private LobbyRepository lobbyRepository;
+    @Mock private UserRepository userRepository;
+    @Mock private QuizRepository quizRepository;
+    @Mock private MessageService messageService;
+    @Mock private UserLobbyRepository userLobbyRepository;
+    @Mock private GameService gameService;
 
     @InjectMocks
     private LobbyService lobbyService;
@@ -117,7 +114,25 @@ class LobbyServiceTest {
         lobbyService.delete(lobbyId);
 
         // then
-        assertThat(lobby.getDeletedAt()).isNotNull();
+        assertThat(lobby.isDeleted()).isTrue();
+    }
+
+    @Test
+    @DisplayName("빈 로비 삭제 메서드")
+    void deleteIfEmpty() {
+        // given
+        Long lobbyId = 1L;
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Lobby lobby = Lobby.create("lobby", User.createGuest("host"), quiz, LobbyOptions.defaultOptions());
+        when(userLobbyRepository.countByLobbyIdAndLeftAtIsNull(lobbyId)).thenReturn(0);
+        when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
+
+        // when
+        lobbyService.deleteIfEmpty(lobbyId);
+
+        // then
+        verify(gameService).endGamesByLobbyId(lobbyId);
+        assertThat(lobby.isDeleted()).isTrue();
     }
 
     @Test
