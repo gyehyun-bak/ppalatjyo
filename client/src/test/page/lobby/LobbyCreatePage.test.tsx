@@ -9,22 +9,10 @@ import type { ResponseDto } from '../../../types/api/ResponseDto';
 import type { QuizResponseDto } from '../../../types/api/quiz/QuizResponseDto';
 import userEvent from '@testing-library/user-event';
 import type { Lobby } from '../../../types/lobby/Lobby';
+import { mockNavigate } from '../../../../__mocks__/react-router';
 
 vi.mock('zustand');
-
-const { mockNavigate } = vi.hoisted(() => ({
-    mockNavigate: vi.fn(),
-}));
-
-vi.mock('react-router', async () => {
-    const actual = await vi.importActual<typeof import('react-router')>(
-        'react-router'
-    );
-    return {
-        ...actual,
-        useNavigate: () => mockNavigate,
-    };
-});
+vi.mock('react-router');
 
 describe('LobbyCreatePage', () => {
     it('useLobbyStore에서 기존 설정을 불러온다', async () => {
