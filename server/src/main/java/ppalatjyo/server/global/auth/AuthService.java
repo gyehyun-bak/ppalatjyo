@@ -9,11 +9,10 @@ import ppalatjyo.server.global.auth.domain.RefreshToken;
 import ppalatjyo.server.global.auth.dto.SignUpAsGuestResponseDto;
 import ppalatjyo.server.global.auth.dto.TokenReissueResponseDto;
 import ppalatjyo.server.global.auth.repository.RefreshTokenRepository;
-import ppalatjyo.server.global.security.exception.JwtValidationException;
 import ppalatjyo.server.global.security.jwt.JwtTokenProvider;
-import ppalatjyo.server.user.UserRepository;
-import ppalatjyo.server.user.UserService;
-import ppalatjyo.server.user.exception.UserNotFoundException;
+import ppalatjyo.server.domain.user.UserRepository;
+import ppalatjyo.server.domain.user.UserService;
+import ppalatjyo.server.domain.user.exception.UserNotFoundException;
 
 @Service
 @RequiredArgsConstructor

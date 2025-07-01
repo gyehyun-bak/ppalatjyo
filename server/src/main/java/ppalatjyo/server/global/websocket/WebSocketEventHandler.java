@@ -7,7 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import ppalatjyo.server.global.security.userdetails.CustomUserDetails;
-import ppalatjyo.server.user.UserService;
+import ppalatjyo.server.domain.user.UserService;
 
 @Component
 @RequiredArgsConstructor
