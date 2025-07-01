@@ -28,6 +28,10 @@ public class Lobby extends BaseEntity {
     private String name;
     private String password;
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private LobbyStatus status = LobbyStatus.WAITING;
+
     @Embedded
     private LobbyOptions options;
 
