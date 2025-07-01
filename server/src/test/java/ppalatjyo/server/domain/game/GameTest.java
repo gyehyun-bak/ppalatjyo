@@ -6,6 +6,7 @@ import ppalatjyo.server.domain.game.domain.Game;
 import ppalatjyo.server.domain.game.exception.GameAlreadyEndedException;
 import ppalatjyo.server.domain.lobby.domain.Lobby;
 import ppalatjyo.server.domain.lobby.domain.LobbyOptions;
+import ppalatjyo.server.domain.lobby.domain.LobbyStatus;
 import ppalatjyo.server.domain.quiz.domain.Answer;
 import ppalatjyo.server.domain.quiz.domain.Question;
 import ppalatjyo.server.domain.quiz.domain.Quiz;
@@ -41,6 +42,8 @@ class GameTest {
         assertThat(game.isEnded()).isFalse();
 
         assertThat(game.getUserGames().size()).isEqualTo(1);
+
+        assertThat(lobby.getStatus()).isEqualTo(LobbyStatus.IN_GAME);
     }
 
     @Test
@@ -61,6 +64,7 @@ class GameTest {
         // then
         assertThat(game.isEnded()).isTrue();
         assertThat(game.getEndedAt()).isNotNull();
+        assertThat(lobby.getStatus()).isEqualTo(LobbyStatus.WAITING);
     }
 
     @Test
