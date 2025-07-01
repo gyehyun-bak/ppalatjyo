@@ -1,5 +1,5 @@
 import { screen, waitFor } from '@testing-library/dom';
-import LobbyCreatePage from '../../../page/lobby/LobbyCreatePage';
+import CreateLobbyPage from '../../../page/lobby/CreateLobbyPage';
 import { useLobbyCreateStore } from '../../../store/useLobbyCreateStore';
 import { renderWithWrapper } from '../../utils/renderWithWrapper';
 import '@testing-library/jest-dom';
@@ -9,24 +9,12 @@ import type { ResponseDto } from '../../../types/api/ResponseDto';
 import type { QuizResponseDto } from '../../../types/api/quiz/QuizResponseDto';
 import userEvent from '@testing-library/user-event';
 import type { Lobby } from '../../../types/lobby/Lobby';
+import { mockNavigate } from '../../../../__mocks__/react-router';
 
 vi.mock('zustand');
+vi.mock('react-router');
 
-const { mockNavigate } = vi.hoisted(() => ({
-    mockNavigate: vi.fn(),
-}));
-
-vi.mock('react-router', async () => {
-    const actual = await vi.importActual<typeof import('react-router')>(
-        'react-router'
-    );
-    return {
-        ...actual,
-        useNavigate: () => mockNavigate,
-    };
-});
-
-describe('LobbyCreatePage', () => {
+describe('CreateLobbyPage', () => {
     it('useLobbyStore에서 기존 설정을 불러온다', async () => {
         // given
         const prevName = '테스트 로비';
@@ -42,7 +30,7 @@ describe('LobbyCreatePage', () => {
         setSecPerQuestion(prevSecPerQuestion);
 
         // when
-        renderWithWrapper(<LobbyCreatePage />);
+        renderWithWrapper(<CreateLobbyPage />);
 
         // then
         expect(screen.getByLabelText('로비 이름')).toHaveValue(prevName);
@@ -81,7 +69,7 @@ describe('LobbyCreatePage', () => {
         );
 
         // when
-        renderWithWrapper(<LobbyCreatePage />, {
+        renderWithWrapper(<CreateLobbyPage />, {
             route: `/lobbies/create?quizId=${quizId}`,
         });
 
@@ -93,7 +81,7 @@ describe('LobbyCreatePage', () => {
 
     it('쿼리 파라미터에 quizId가 없으면, 퀴즈 선택하기 버튼이 표시된다', async () => {
         // when
-        renderWithWrapper(<LobbyCreatePage />);
+        renderWithWrapper(<CreateLobbyPage />);
 
         // then
         await waitFor(() => {
@@ -110,7 +98,7 @@ describe('LobbyCreatePage', () => {
         setMinPerGame(5);
         setSecPerQuestion(30);
 
-        renderWithWrapper(<LobbyCreatePage />);
+        renderWithWrapper(<CreateLobbyPage />);
 
         const selectQuizButton = screen.getByLabelText('select-quiz');
         const user = userEvent.setup();
@@ -131,7 +119,7 @@ describe('LobbyCreatePage', () => {
 
     it('모든 필수 입력 필드가 채워지지 않으면 <로비 만들기> 버튼이 비활성화된다', () => {
         // given
-        renderWithWrapper(<LobbyCreatePage />);
+        renderWithWrapper(<CreateLobbyPage />);
 
         const createLobbyButton = screen.getByRole('button', {
             name: '로비 만들기',
@@ -186,7 +174,7 @@ describe('LobbyCreatePage', () => {
             )
         );
 
-        renderWithWrapper(<LobbyCreatePage />, {
+        renderWithWrapper(<CreateLobbyPage />, {
             route: `/lobbies/create?quizId=${quizId}`,
         });
         const createLobbyButton = screen.getByRole('button', {
