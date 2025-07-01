@@ -15,8 +15,8 @@ import ppalatjyo.server.global.auth.dto.SignUpAsGuestResponseDto;
 import ppalatjyo.server.global.auth.dto.TokenReissueResponseDto;
 import ppalatjyo.server.global.auth.repository.RefreshTokenRepository;
 import ppalatjyo.server.global.security.jwt.JwtTokenProvider;
-import ppalatjyo.server.user.UserRepository;
-import ppalatjyo.server.user.UserService;
+import ppalatjyo.server.domain.user.UserRepository;
+import ppalatjyo.server.domain.user.UserService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;

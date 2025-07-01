@@ -2,8 +2,8 @@ package ppalatjyo.server.global.security.userdetails;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ppalatjyo.server.user.domain.User;
-import ppalatjyo.server.user.domain.UserRole;
+import ppalatjyo.server.domain.user.domain.User;
+import ppalatjyo.server.domain.user.domain.UserRole;
 
 import java.util.Collection;
 import java.util.List;
