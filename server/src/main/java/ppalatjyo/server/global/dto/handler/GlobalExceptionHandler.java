@@ -8,9 +8,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ppalatjyo.server.global.dto.ResponseDto;
 import ppalatjyo.server.global.dto.error.FieldErrorDto;
-import ppalatjyo.server.global.dto.error.ResponseErrorDto;
+import ppalatjyo.server.global.dto.error.ErrorResponseDto;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -30,16 +29,16 @@ public class GlobalExceptionHandler {
      * @return 400 상태를 갖는 표준 ResponseDto
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ResponseDto<Void>> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponseDto> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
         Map<String, FieldErrorDto> errorMap = ex.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.toMap(
                         FieldError::getField,
                         FieldErrorDto::toDto
                 ));
 
-        ResponseErrorDto responseErrorDto = ResponseErrorDto.validationError(request.getRequestURI(), errorMap);
+        ErrorResponseDto errorResponseDto = ErrorResponseDto.validationError(request.getRequestURI(), errorMap);
 
-        return ResponseDto.error(HttpStatus.BAD_REQUEST, responseErrorDto);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseDto);
     }
 
     /**
@@ -52,9 +51,9 @@ public class GlobalExceptionHandler {
      * @return 404 상태를 갖는 표준 ResponseDto
      */
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ResponseDto<Void>> handleNoSuchElementException(NoSuchElementException ex, HttpServletRequest request) {
-        ResponseErrorDto errorDto = ResponseErrorDto.commonError(ex.getMessage(), request.getRequestURI());
-        return ResponseDto.error(HttpStatus.NOT_FOUND, errorDto);
+    public ResponseEntity<ErrorResponseDto> handleNoSuchElementException(NoSuchElementException ex, HttpServletRequest request) {
+        ErrorResponseDto errorDto = ErrorResponseDto.commonError(ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDto);
     }
 
     /**
@@ -65,9 +64,9 @@ public class GlobalExceptionHandler {
      * @return 500 상태를 갖는 표준 ResponseDto
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ResponseDto<Void>> handleException(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponseDto> handleException(Exception ex, HttpServletRequest request) {
         log.error(ex.getMessage(), ex);
-        ResponseErrorDto errorDto = ResponseErrorDto.commonError("Server Error", request.getRequestURI());
-        return ResponseDto.error(HttpStatus.INTERNAL_SERVER_ERROR, errorDto);
+        ErrorResponseDto errorDto = ErrorResponseDto.commonError("Server Error", request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDto);
     }
 }
