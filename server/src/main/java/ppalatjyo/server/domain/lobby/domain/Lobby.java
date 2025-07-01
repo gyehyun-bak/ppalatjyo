@@ -133,4 +133,8 @@ public class Lobby extends BaseEntity {
     public boolean isCorrectPassword(String inputPassword) {
         return isProtected() && password.equals(inputPassword);
     }
+
+    public void changeStatus(LobbyStatus status) {
+        this.status = status;
+    }
 }
