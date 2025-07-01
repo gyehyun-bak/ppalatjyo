@@ -165,4 +165,8 @@ public class GameService {
 
         return GAME_EVENT_DESTINATION_PREFIX + lobbyId + GAME_EVENT_DESTINATION_SUFFIX;
     }
+
+    public void endGamesByLobbyId(long lobbyId) {
+        gameRepository.findByLobbyId(lobbyId).forEach(Game::end);
+    }
 }
