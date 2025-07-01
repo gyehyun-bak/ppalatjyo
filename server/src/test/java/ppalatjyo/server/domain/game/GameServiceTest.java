@@ -266,6 +266,21 @@ class GameServiceTest {
         assertThat(dto).isNull();
         verify(userGameRepository, never()).findByGameIdOrderByScoreDesc(any());
     }
+    
+    @Test
+    @DisplayName("lobbyId로 게임 전부 종료")
+    void endGamesByLobbyId() {
+        // given
+        Long lobbyId = 1L;
+        Game game = mock(Game.class);
+        when(gameRepository.findByLobbyId(lobbyId)).thenReturn(List.of(game));
+
+        // when
+        gameService.endGamesByLobbyId(lobbyId);
+        
+        // then
+        verify(game).end();
+    }
 
     private Game createGame(LobbyOptions options) {
         Lobby lobby = Lobby.create("lobby", User.createGuest("host"), createQuiz(), options);
