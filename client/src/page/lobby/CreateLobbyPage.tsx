@@ -9,7 +9,7 @@ import QuizItem from '../../components/quiz/QuizItem';
 import { createLobby } from '../../api/lobby.api';
 import type { CreateLobbyRequestDto } from '../../types/api/lobby/CreateLobbyRequestDto';
 
-export default function LobbyCreatePage() {
+export default function CreateLobbyPage() {
     const store = useLobbyCreateStore();
     const navigate = useNavigate();
 

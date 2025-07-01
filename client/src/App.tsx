@@ -8,7 +8,7 @@ import BottomNavigationLayout from './layout/BottomNavigationLayout';
 import QuizPage from './page/QuizPage';
 import ProfilePage from './page/ProfilePage';
 import AuthenticationLayout from './layout/AuthenticationLayout';
-import LobbyCreatePage from './page/lobby/LobbyCreatePage';
+import CreateLobbyPage from './page/lobby/CreateLobbyPage';
 
 function App() {
     return (
@@ -27,7 +27,7 @@ function App() {
 
                     <Route
                         path="/lobbies/create"
-                        element={<LobbyCreatePage />}
+                        element={<CreateLobbyPage />}
                     />
                 </Route>
             </Route>
