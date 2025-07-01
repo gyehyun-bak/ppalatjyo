@@ -16,6 +16,7 @@ import ppalatjyo.server.domain.userlobby.dto.JoinLobbyRequestDto;
 import ppalatjyo.server.domain.userlobby.event.UserJoinedLobbyEvent;
 import ppalatjyo.server.domain.userlobby.event.UserLeftLobbyEvent;
 import ppalatjyo.server.domain.userlobby.exception.LobbyIsFullException;
+import ppalatjyo.server.domain.userlobby.exception.LobbyIsInGameException;
 import ppalatjyo.server.domain.userlobby.exception.UserLobbyNotFoundException;
 import ppalatjyo.server.domain.userlobby.exception.WrongLobbyPasswordException;
 
@@ -35,16 +36,21 @@ public class UserLobbyService {
 
     /**
      * Lobby에 User가 참가합니다.
+     * <p>현재 게임이 진행 중인 경우 {@link LobbyIsInGameException}을 던집니다.
      * <p>비밀번호가 설정된 Lobby에 제공된 비밀번호가 맞지 않는 경우 {@link WrongLobbyPasswordException}을 던집니다.
      * <p>Lobby가 이미 가득찬 경우 {@link LobbyIsFullException}을 던집니다.
      */
-    public void join(JoinLobbyRequestDto requestDto) throws LobbyIsFullException, WrongLobbyPasswordException {
+    public void join(JoinLobbyRequestDto requestDto) throws LobbyIsInGameException, LobbyIsFullException, WrongLobbyPasswordException {
         long userId = requestDto.getUserId();
         long lobbyId = requestDto.getLobbyId();
         String password = requestDto.getPassword();
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Lobby lobby = lobbyRepository.findById(lobbyId).orElseThrow(LobbyNotFoundException::new);
+
+        if (lobby.isInGame()) {
+            throw new LobbyIsInGameException();
+        }
 
         if (lobby.isProtected()) {
             if (password == null || !lobby.isCorrectPassword(password)) {

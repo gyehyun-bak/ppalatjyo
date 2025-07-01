@@ -137,4 +137,8 @@ public class Lobby extends BaseEntity {
     public void changeStatus(LobbyStatus status) {
         this.status = status;
     }
+
+    public boolean isInGame() {
+        return status == LobbyStatus.IN_GAME;
+    }
 }
