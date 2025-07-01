@@ -43,4 +43,15 @@ public class ErrorResponseDto {
 
         return ResponseEntity.status(status).body(response);
     }
+
+    public static ResponseEntity<ErrorResponseDto> create(HttpStatus status, String message, String path, Map<String, FieldErrorDto> fieldErrors) {
+        ErrorResponseDto response = ErrorResponseDto.builder()
+                .message(message)
+                .path(path)
+                .timestamp(LocalDateTime.now())
+                .fieldErrors(fieldErrors)
+                .build();
+
+        return ResponseEntity.status(status).body(response);
+    }
 }

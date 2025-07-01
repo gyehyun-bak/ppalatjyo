@@ -30,15 +30,13 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDto> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        Map<String, FieldErrorDto> errorMap = ex.getBindingResult().getFieldErrors().stream()
+        Map<String, FieldErrorDto> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.toMap(
                         FieldError::getField,
                         FieldErrorDto::toDto
                 ));
 
-        ErrorResponseDto errorResponseDto = ErrorResponseDto.validationError(request.getRequestURI(), errorMap);
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseDto);
+        return ErrorResponseDto.create(HttpStatus.BAD_REQUEST, "Validation Fail", request.getRequestURI(), fieldErrors);
     }
 
     /**
@@ -52,8 +50,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ErrorResponseDto> handleNoSuchElementException(NoSuchElementException ex, HttpServletRequest request) {
-        ErrorResponseDto errorDto = ErrorResponseDto.commonError(ex.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDto);
+        return ErrorResponseDto.create(HttpStatus.NOT_FOUND, ex.getMessage(), request.getRequestURI());
     }
 
     /**
@@ -66,7 +63,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleException(Exception ex, HttpServletRequest request) {
         log.error(ex.getMessage(), ex);
-        ErrorResponseDto errorDto = ErrorResponseDto.commonError("Server Error", request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDto);
+        return ErrorResponseDto.create(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", request.getRequestURI());
     }
 }
