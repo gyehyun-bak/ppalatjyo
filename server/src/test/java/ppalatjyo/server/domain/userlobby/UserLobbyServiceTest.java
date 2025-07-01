@@ -9,16 +9,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
+import ppalatjyo.server.domain.game.domain.Game;
 import ppalatjyo.server.domain.lobby.LobbyRepository;
 import ppalatjyo.server.domain.lobby.LobbyService;
 import ppalatjyo.server.domain.lobby.domain.Lobby;
 import ppalatjyo.server.domain.lobby.domain.LobbyOptions;
+import ppalatjyo.server.domain.quiz.domain.Question;
 import ppalatjyo.server.domain.quiz.domain.Quiz;
 import ppalatjyo.server.domain.user.UserRepository;
 import ppalatjyo.server.domain.user.domain.User;
 import ppalatjyo.server.domain.userlobby.dto.JoinLobbyRequestDto;
 import ppalatjyo.server.domain.userlobby.event.UserLeftLobbyEvent;
 import ppalatjyo.server.domain.userlobby.exception.LobbyIsFullException;
+import ppalatjyo.server.domain.userlobby.exception.LobbyIsInGameException;
 import ppalatjyo.server.domain.userlobby.exception.WrongLobbyPasswordException;
 
 import java.util.Optional;
@@ -68,6 +71,29 @@ class UserLobbyServiceTest {
         assertThat(userLobby.getUser()).isEqualTo(user);
         assertThat(userLobby.getLobby()).isEqualTo(lobby);
         assertThat(userLobby.getJoinedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("참가 시 게임 중이면 예외 발생")
+    void shouldThrowExceptionWhenLobbyIsInGame() {
+        // given
+        Long userId = 1L;
+        Long lobbyId = 1L;
+
+        User host = User.createMember("host", "email", "provider");
+        Lobby lobby = Lobby.create("lobby", host, Quiz.createQuiz("quiz", host), LobbyOptions.defaultOptions());
+        Question.create(lobby.getQuiz(), "question");
+        User user = User.createGuest("user");
+
+        Game game = Game.start(lobby); // 게임 시작
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
+
+        // when
+        // then
+        assertThatThrownBy(() -> userLobbyService.join(new JoinLobbyRequestDto(userId, lobbyId)))
+                .isInstanceOf(LobbyIsInGameException.class);
     }
 
     @Test

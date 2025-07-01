@@ -4,6 +4,7 @@ package ppalatjyo.server.domain.game.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import ppalatjyo.server.domain.game.exception.GameAlreadyEndedException;
+import ppalatjyo.server.domain.lobby.domain.LobbyStatus;
 import ppalatjyo.server.global.audit.BaseEntity;
 import ppalatjyo.server.domain.lobby.domain.Lobby;
 import ppalatjyo.server.domain.quiz.domain.Question;
@@ -50,6 +51,8 @@ public class Game extends BaseEntity {
     private GameOptions options;
 
     public static Game start(Lobby lobby) {
+        lobby.changeStatus(LobbyStatus.IN_GAME);
+
         Game game = Game.builder()
                 .lobby(lobby)
                 .quiz(lobby.getQuiz())
@@ -75,6 +78,7 @@ public class Game extends BaseEntity {
         }
 
         endedAt = LocalDateTime.now();
+        lobby.changeStatus(LobbyStatus.WAITING);
     }
 
     public boolean isEnded() {

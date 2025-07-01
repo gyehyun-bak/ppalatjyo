@@ -28,6 +28,10 @@ public class Lobby extends BaseEntity {
     private String name;
     private String password;
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private LobbyStatus status = LobbyStatus.WAITING;
+
     @Embedded
     private LobbyOptions options;
 
@@ -128,5 +132,13 @@ public class Lobby extends BaseEntity {
      */
     public boolean isCorrectPassword(String inputPassword) {
         return isProtected() && password.equals(inputPassword);
+    }
+
+    public void changeStatus(LobbyStatus status) {
+        this.status = status;
+    }
+
+    public boolean isInGame() {
+        return status == LobbyStatus.IN_GAME;
     }
 }

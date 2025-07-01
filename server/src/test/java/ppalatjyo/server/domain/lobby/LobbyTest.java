@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ppalatjyo.server.domain.lobby.domain.Lobby;
 import ppalatjyo.server.domain.lobby.domain.LobbyOptions;
+import ppalatjyo.server.domain.lobby.domain.LobbyStatus;
 import ppalatjyo.server.domain.lobby.exception.LobbyAlreadyDeletedException;
 import ppalatjyo.server.domain.quiz.domain.Quiz;
 import ppalatjyo.server.domain.user.domain.User;
@@ -34,6 +35,7 @@ class LobbyTest {
         assertThat(lobby.getName()).isEqualTo(name);
         assertThat(lobby.getHost()).isEqualTo(host);
         assertThat(lobby.getQuiz()).isEqualTo(quiz);
+        assertThat(lobby.getStatus()).isEqualTo(LobbyStatus.WAITING);
         assertThat(lobby.getOptions().getMaxUsers()).isEqualTo(maxUsers);
         assertThat(lobby.getOptions().getMinPerGame()).isEqualTo(minPerGame);
         assertThat(lobby.getOptions().getSecPerQuestion()).isEqualTo(secPerQuestion);
@@ -61,6 +63,7 @@ class LobbyTest {
         assertThat(lobby.getName()).isEqualTo(name);
         assertThat(lobby.getHost()).isEqualTo(host);
         assertThat(lobby.getQuiz()).isEqualTo(quiz);
+        assertThat(lobby.getStatus()).isEqualTo(LobbyStatus.WAITING);
         assertThat(lobby.getOptions().getMaxUsers()).isEqualTo(maxUsers);
         assertThat(lobby.getOptions().getMinPerGame()).isEqualTo(minPerGame);
         assertThat(lobby.getOptions().getSecPerQuestion()).isEqualTo(secPerQuestion);
