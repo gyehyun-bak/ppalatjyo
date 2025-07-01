@@ -16,6 +16,7 @@ import ppalatjyo.server.domain.user.UserRepository;
 import ppalatjyo.server.domain.user.domain.User;
 import ppalatjyo.server.domain.user.exception.UserNotFoundException;
 import ppalatjyo.server.domain.userlobby.UserLobbyService;
+import ppalatjyo.server.domain.userlobby.exception.LobbyIsFullException;
 
 @Service
 @RequiredArgsConstructor
@@ -65,8 +66,10 @@ public class LobbyService {
         messageService.sendChatMessage(requestDto.getContent(), requestDto.getUserId(), requestDto.getLobbyId());
     }
 
-    // UserLobbyService로 위임
-    public void joinLobby(long userId, long lobbyId) {
+    /**
+     * Lobby에 참가합니다. {@link UserLobbyService}로 위임합니다. 로비가 이미 가득 찬 경우 {@link LobbyIsFullException}을 던집니다.
+     */
+    public void joinLobby(long userId, long lobbyId) throws LobbyIsFullException {
         userLobbyService.join(userId, lobbyId);
     }
 

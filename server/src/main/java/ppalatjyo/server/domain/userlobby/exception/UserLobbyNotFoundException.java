@@ -1,4 +1,4 @@
-package ppalatjyo.server.domain.userlobby;
+package ppalatjyo.server.domain.userlobby.exception;
 
 import java.util.NoSuchElementException;
 
