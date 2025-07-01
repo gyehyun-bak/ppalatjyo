@@ -1,4 +1,4 @@
-package ppalatjyo.server.global.dto.error;
+package ppalatjyo.server.global.error;
 
 import lombok.*;
 import org.springframework.validation.FieldError;

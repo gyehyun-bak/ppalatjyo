@@ -1,4 +1,4 @@
-package ppalatjyo.server.global.dto.handler;
+package ppalatjyo.server.global.error;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -8,8 +8,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ppalatjyo.server.global.dto.error.FieldErrorDto;
-import ppalatjyo.server.global.dto.error.ErrorResponseDto;
 
 import java.util.Map;
 import java.util.NoSuchElementException;

@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import ppalatjyo.server.global.dto.error.ErrorResponseDto;
+import ppalatjyo.server.global.error.ErrorResponseDto;
 
 import java.io.IOException;
 

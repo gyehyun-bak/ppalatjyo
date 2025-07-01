@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ppalatjyo.server.global.dto.error.ErrorResponseDto;
+import ppalatjyo.server.global.error.ErrorResponseDto;
 
 @RestControllerAdvice(assignableTypes = {AuthController.class})
 public class AuthControllerAdvice {
