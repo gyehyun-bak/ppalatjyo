@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import ppalatjyo.server.domain.lobby.domain.Lobby;
 import ppalatjyo.server.domain.lobby.domain.LobbyOptions;
 import ppalatjyo.server.domain.user.domain.User;
-import ppalatjyo.server.domain.userlobby.UserLobby;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,7 +15,7 @@ class UserLobbyTest {
     void join() {
         // given
         User user = User.createGuest("user");
-        Lobby lobby = Lobby.createLobby("lobby", user, null, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, null, LobbyOptions.defaultOptions());
 
         // when
         UserLobby userLobby = UserLobby.join(user, lobby);
@@ -33,7 +32,7 @@ class UserLobbyTest {
     void leave() {
         // given
         User user = User.createGuest("user");
-        Lobby lobby = Lobby.createLobby("lobby", user, null, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, null, LobbyOptions.defaultOptions());
         UserLobby userLobby = UserLobby.join(user, lobby);
 
         // when

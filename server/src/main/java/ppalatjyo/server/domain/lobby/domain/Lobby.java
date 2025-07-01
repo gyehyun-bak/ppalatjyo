@@ -26,6 +26,7 @@ public class Lobby extends BaseEntity {
     private Long id;
 
     private String name;
+    private String password;
 
     @Embedded
     private LobbyOptions options;
@@ -47,9 +48,24 @@ public class Lobby extends BaseEntity {
     @OneToMany(mappedBy = "lobby")
     private List<Game> games;
 
-    public static Lobby createLobby(String name, User host, Quiz quiz, LobbyOptions options) {
+    public static Lobby create(String name, User host, Quiz quiz, LobbyOptions options) {
         Lobby lobby = Lobby.builder()
                 .name(name)
+                .host(host)
+                .quiz(quiz)
+                .userLobbies(new ArrayList<>())
+                .options(options)
+                .build();
+
+        UserLobby.join(host, lobby);
+
+        return lobby;
+    }
+
+    public static Lobby withPassword(String name, String password, User host, Quiz quiz, LobbyOptions options) {
+        Lobby lobby = Lobby.builder()
+                .name(name)
+                .password(password)
                 .host(host)
                 .quiz(quiz)
                 .userLobbies(new ArrayList<>())
@@ -90,10 +106,27 @@ public class Lobby extends BaseEntity {
     }
 
     /**
-     * Lobby에 참여한 유저가 남지 않았는지 확인하는 메서드.
+     * Lobby에 참여한 유저가 남지 않았는지 확인합니다.
      * @return Lobby가 비었으면 true | 아니면 false
      */
     public boolean isEmpty() {
         return userLobbies.stream().allMatch(UserLobby::isLeft);
+    }
+
+    /**
+     * 비밀번호가 설정된 채팅방인지 확인합니다.
+     * @return true이면 비밀번호가 있음
+     */
+    public boolean isProtected() {
+        return password != null && !password.isBlank();
+    }
+
+    /**
+     * 입력한 비밀번호가 맞는지 확인합니다.
+     * @param inputPassword 사용자가 입력한 비밀번호
+     * @return 비밀번호가 일치하면 true
+     */
+    public boolean isCorrectPassword(String inputPassword) {
+        return isProtected() && password.equals(inputPassword);
     }
 }

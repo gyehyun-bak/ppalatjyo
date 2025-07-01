@@ -26,7 +26,7 @@ class GameTest {
         Question question = Question.create(quiz, "question1");
         Answer.createAnswer(question, "answer1");
 
-        Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, quiz, LobbyOptions.defaultOptions());
 
         // when
         Game game = Game.start(lobby);
@@ -52,7 +52,7 @@ class GameTest {
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question.create(quiz,"question1");
 
-        Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, quiz, LobbyOptions.defaultOptions());
         Game game = Game.start(lobby);
 
         // when
@@ -72,7 +72,7 @@ class GameTest {
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question.create(quiz,"question1");
 
-        Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, quiz, LobbyOptions.defaultOptions());
         Game game = Game.start(lobby);
         game.end();
 
@@ -89,7 +89,7 @@ class GameTest {
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question.create(quiz, "question1");
         Question.create(quiz, "question2");
-        Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, quiz, LobbyOptions.defaultOptions());
 
         // when
         Game game = Game.start(lobby);
@@ -105,7 +105,7 @@ class GameTest {
         User user = User.createGuest("user");
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question.create(quiz, "question1");
-        Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, quiz, LobbyOptions.defaultOptions());
 
         // when
         Game game = Game.start(lobby);
@@ -124,7 +124,7 @@ class GameTest {
         Question.create(quiz,"question1");
         Question.create(quiz, "question2");
 
-        Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, quiz, LobbyOptions.defaultOptions());
         Game game = Game.start(lobby);
 
         // when
@@ -143,7 +143,7 @@ class GameTest {
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         Question.create(quiz,"question1");
 
-        Lobby lobby = Lobby.createLobby("lobby", user, quiz, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, quiz, LobbyOptions.defaultOptions());
         Game game = Game.start(lobby);
 
         // when

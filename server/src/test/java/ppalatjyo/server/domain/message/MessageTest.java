@@ -22,7 +22,7 @@ class MessageTest {
         // given
         String content = "content";
         User user = User.createGuest("user");
-        Lobby lobby = Lobby.createLobby("lobby", user, null, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, null, LobbyOptions.defaultOptions());
 
         // when
         Message message = Message.chatMessage(content, user, lobby);
@@ -39,7 +39,7 @@ class MessageTest {
         // given
         String content = "content";
         User user = User.createGuest("user");
-        Lobby lobby = Lobby.createLobby("lobby", user, getQuiz(), LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, getQuiz(), LobbyOptions.defaultOptions());
         Game game = Game.start(lobby);
 
         // when
@@ -58,7 +58,7 @@ class MessageTest {
         // given
         String content = "content";
         User user = User.createGuest("user");
-        Lobby lobby = Lobby.createLobby("lobby", user, getQuiz(), LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, getQuiz(), LobbyOptions.defaultOptions());
 
         // when
         Message message = Message.systemMessage(content, lobby);
