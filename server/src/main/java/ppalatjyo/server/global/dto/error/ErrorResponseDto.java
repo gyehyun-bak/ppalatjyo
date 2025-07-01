@@ -15,7 +15,7 @@ public class ErrorResponseDto {
     private String message;
     private String path;
     private LocalDateTime timestamp;
-    private Map<String, FieldErrorDto> data;
+    private Map<String, FieldErrorDto> fieldErrors;
 
     public static ErrorResponseDto commonError(String message, String path) {
         return ErrorResponseDto.builder()
@@ -25,12 +25,12 @@ public class ErrorResponseDto {
                 .build();
     }
 
-    public static ErrorResponseDto validationError(String path, Map<String, FieldErrorDto> data) {
+    public static ErrorResponseDto validationError(String path, Map<String, FieldErrorDto> fieldErrors) {
         return ErrorResponseDto.builder()
                 .message("Validation Error.")
                 .path(path)
                 .timestamp(LocalDateTime.now())
-                .data(data)
+                .fieldErrors(fieldErrors)
                 .build();
     }
 
