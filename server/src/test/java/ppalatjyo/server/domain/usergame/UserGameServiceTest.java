@@ -12,9 +12,6 @@ import ppalatjyo.server.domain.lobby.domain.LobbyOptions;
 import ppalatjyo.server.domain.quiz.domain.Question;
 import ppalatjyo.server.domain.quiz.domain.Quiz;
 import ppalatjyo.server.domain.user.domain.User;
-import ppalatjyo.server.domain.usergame.UserGame;
-import ppalatjyo.server.domain.usergame.UserGameRepository;
-import ppalatjyo.server.domain.usergame.UserGameService;
 
 import java.util.Optional;
 
@@ -36,7 +33,7 @@ class UserGameServiceTest {
         // given
         User user = User.createGuest("user");
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("m", "email", "password"));
-        Lobby lobby = Lobby.createLobby(
+        Lobby lobby = Lobby.create(
                 "lobby",
                 user,
                 quiz,

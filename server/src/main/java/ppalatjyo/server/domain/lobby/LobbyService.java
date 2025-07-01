@@ -33,7 +33,7 @@ public class LobbyService {
         User host = userRepository.findById(hostId).orElseThrow(UserNotFoundException::new);
         Quiz quiz = quizRepository.findById(quizId).orElseThrow(QuizNotFoundException::new);
 
-        Lobby lobby = Lobby.createLobby(name, host, quiz, options);
+        Lobby lobby = Lobby.create(name, host, quiz, options);
         lobbyRepository.save(lobby);
     }
 

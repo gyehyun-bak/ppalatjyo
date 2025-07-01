@@ -9,7 +9,6 @@ import ppalatjyo.server.domain.quiz.domain.Answer;
 import ppalatjyo.server.domain.quiz.domain.Question;
 import ppalatjyo.server.domain.quiz.domain.Quiz;
 import ppalatjyo.server.domain.user.domain.User;
-import ppalatjyo.server.domain.usergame.UserGame;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,7 +19,7 @@ class UserGameTest {
     void join() {
         // given
         User user = User.createGuest("guest");
-        Lobby lobby = Lobby.createLobby("lobby", user, getQuiz(), LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, getQuiz(), LobbyOptions.defaultOptions());
         Game game = Game.start(lobby);
 
         // when
@@ -37,7 +36,7 @@ class UserGameTest {
     void increaseScoreBy() {
         // given
         User user = User.createGuest("guest");
-        Lobby lobby = Lobby.createLobby("lobby", user, getQuiz(), LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", user, getQuiz(), LobbyOptions.defaultOptions());
         Game game = Game.start(lobby);
         UserGame userGame = UserGame.join(user, game);
 

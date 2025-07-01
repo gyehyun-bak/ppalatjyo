@@ -9,8 +9,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ppalatjyo.server.domain.game.domain.Game;
-import ppalatjyo.server.domain.lobby.LobbyRepository;
-import ppalatjyo.server.domain.lobby.LobbyService;
 import ppalatjyo.server.domain.lobby.domain.Lobby;
 import ppalatjyo.server.domain.lobby.domain.LobbyOptions;
 import ppalatjyo.server.domain.lobby.dto.MessageToLobbyRequestDto;
@@ -50,7 +48,7 @@ class LobbyServiceTest {
 
     @Test
     @DisplayName("Lobby 생성")
-    void createLobby() {
+    void create() {
         // given
         String name = "lobby";
         User host = User.createGuest("host");
@@ -89,7 +87,7 @@ class LobbyServiceTest {
         User host = User.createGuest("host");
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         LobbyOptions options = LobbyOptions.createOptions(10, 10, 10);
-        Lobby lobby = Lobby.createLobby(name, host, quiz, options);
+        Lobby lobby = Lobby.create(name, host, quiz, options);
 
         long lobbyId = 1L;
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
@@ -113,7 +111,7 @@ class LobbyServiceTest {
         User host = User.createGuest("host");
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         LobbyOptions options = LobbyOptions.defaultOptions();
-        Lobby lobby = Lobby.createLobby(name, host, quiz, options);
+        Lobby lobby = Lobby.create(name, host, quiz, options);
 
         long lobbyId = 1L;
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
@@ -134,7 +132,7 @@ class LobbyServiceTest {
         User newHost = User.createGuest("newHost");
         Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
         LobbyOptions options = LobbyOptions.defaultOptions();
-        Lobby lobby = Lobby.createLobby(name, oldHost, quiz, options);
+        Lobby lobby = Lobby.create(name, oldHost, quiz, options);
 
         long lobbyId = 1L;
         long newHostId = 1L;
@@ -154,7 +152,7 @@ class LobbyServiceTest {
         // given
         Quiz oldQuiz = Quiz.createQuiz("oldQuiz", User.createMember("n", "e", "p"));
         Quiz newQuiz = Quiz.createQuiz("newQuiz", User.createMember("n", "e", "p"));
-        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), oldQuiz, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", User.createGuest("host"), oldQuiz, LobbyOptions.defaultOptions());
 
         long newQuizId = 1L;
         long lobbyId = 1L;

@@ -7,8 +7,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ppalatjyo.server.domain.game.GameRepository;
-import ppalatjyo.server.domain.game.GameService;
 import ppalatjyo.server.domain.game.domain.Game;
 import ppalatjyo.server.domain.game.dto.GameEventDto;
 import ppalatjyo.server.domain.game.dto.GameEventType;
@@ -62,7 +60,7 @@ class GameServiceTest {
         Quiz quiz = Quiz.createQuiz("quiz", host);
         Question question = Question.create(quiz, "question");
 
-        Lobby lobby = Lobby.createLobby("lobby", host, quiz, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", host, quiz, LobbyOptions.defaultOptions());
         UserLobby.join(participant, lobby);
 
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
@@ -194,7 +192,7 @@ class GameServiceTest {
         Answer.createAnswer(question1, answer);
 
         Long lobbyId = 1L;
-        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), quiz, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", User.createGuest("host"), quiz, LobbyOptions.defaultOptions());
 
         Long gameId = 1L;
         Game game = Game.start(lobby);
@@ -240,7 +238,7 @@ class GameServiceTest {
         Question question1 = Question.create(quiz, "question1");
         Answer.createAnswer(question1, answer);
 
-        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), quiz, LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", User.createGuest("host"), quiz, LobbyOptions.defaultOptions());
 
         Long gameId = 1L;
         Game game = Game.start(lobby);
@@ -270,7 +268,7 @@ class GameServiceTest {
     }
 
     private Game createGame(LobbyOptions options) {
-        Lobby lobby = Lobby.createLobby("lobby", User.createGuest("host"), createQuiz(), options);
+        Lobby lobby = Lobby.create("lobby", User.createGuest("host"), createQuiz(), options);
         return Game.start(lobby);
     }
 

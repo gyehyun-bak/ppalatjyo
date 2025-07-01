@@ -15,9 +15,6 @@ import ppalatjyo.server.domain.lobby.domain.LobbyOptions;
 import ppalatjyo.server.domain.quiz.domain.Quiz;
 import ppalatjyo.server.domain.user.UserRepository;
 import ppalatjyo.server.domain.user.domain.User;
-import ppalatjyo.server.domain.userlobby.UserLobby;
-import ppalatjyo.server.domain.userlobby.UserLobbyRepository;
-import ppalatjyo.server.domain.userlobby.UserLobbyService;
 import ppalatjyo.server.domain.userlobby.event.UserLeftLobbyEvent;
 import ppalatjyo.server.domain.userlobby.exception.LobbyIsFullException;
 
@@ -54,7 +51,7 @@ class UserLobbyServiceTest {
         Long lobbyId = 1L;
 
         User host = User.createMember("host", "email", "provider");
-        Lobby lobby = Lobby.createLobby("lobby", host, Quiz.createQuiz("quiz", host), LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", host, Quiz.createQuiz("quiz", host), LobbyOptions.defaultOptions());
         User user = User.createGuest("user");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -87,7 +84,7 @@ class UserLobbyServiceTest {
         LobbyOptions options = LobbyOptions.createOptions(maxUsers, 10, 10);
 
         User host = User.createMember("host", "email", "provider");
-        Lobby lobby = Lobby.createLobby("lobby", host, Quiz.createQuiz("quiz", host), options);
+        Lobby lobby = Lobby.create("lobby", host, Quiz.createQuiz("quiz", host), options);
         User user = User.createGuest("user");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -109,7 +106,7 @@ class UserLobbyServiceTest {
         Long lobbyId = 1L;
 
         User host = User.createMember("host", "email", "provider");
-        Lobby lobby = Lobby.createLobby("lobby", host, Quiz.createQuiz("quiz", host), LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", host, Quiz.createQuiz("quiz", host), LobbyOptions.defaultOptions());
         User user = User.createGuest("user");
 
         UserLobby userLobby = UserLobby.join(user, lobby);
