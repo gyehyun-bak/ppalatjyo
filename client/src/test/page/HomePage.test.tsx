@@ -30,6 +30,8 @@ describe('Home', () => {
                                 quiz: {
                                     id: 1,
                                     title: '퀴즈 1',
+                                    authorNickname: '',
+                                    totalQuestions: 0,
                                 },
                                 host: { id: 1, nickname: '사용자1' },
                                 currentUserCount: 1111,
@@ -45,6 +47,8 @@ describe('Home', () => {
                                 quiz: {
                                     id: 2,
                                     title: '퀴즈 2',
+                                    authorNickname: '',
+                                    totalQuestions: 0,
                                 },
                                 host: { id: 2, nickname: '사용자2' },
                                 currentUserCount: 2222,
@@ -90,6 +94,8 @@ describe('Home', () => {
                                 quiz: {
                                     id: 1,
                                     title: '퀴즈 1',
+                                    authorNickname: '',
+                                    totalQuestions: 0,
                                 },
                                 host: { id: 1, nickname: '사용자1' },
                                 currentUserCount: 1111,
@@ -122,6 +128,8 @@ describe('Home', () => {
                                 quiz: {
                                     id: 1,
                                     title: '퀴즈 1',
+                                    authorNickname: '',
+                                    totalQuestions: 0,
                                 },
                                 host: { id: 1, nickname: '사용자1' },
                                 currentUserCount: 1111,

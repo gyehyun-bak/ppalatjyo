@@ -156,6 +156,8 @@ describe('CreateLobbyPage', () => {
                     quiz: {
                         id: 0,
                         title: '',
+                        authorNickname: '',
+                        totalQuestions: 0,
                     },
                 });
             }),
