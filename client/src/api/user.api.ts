@@ -1,6 +1,6 @@
-import type { UserResponseDto } from '../types/api/user/UserResponseDto';
+import type { UserResponse } from './types/user/UserResponse';
 import { api } from './axios';
 
-export const getMe = async (): Promise<UserResponseDto> => {
-    return (await api.get<UserResponseDto>('/users/me')).data;
+export const getMe = async (): Promise<UserResponse> => {
+    return (await api.get<UserResponse>('/users/me')).data;
 };

@@ -5,9 +5,9 @@ import { renderWithWrapper } from '../../utils/renderWithWrapper';
 import '@testing-library/jest-dom';
 import { baseUrl, server } from '../../../mocks/server';
 import { http, HttpResponse } from 'msw';
-import type { QuizResponseDto } from '../../../types/api/quiz/QuizResponseDto';
+import type { QuizResponse } from '../../../api/types/quiz/QuizResponse';
 import userEvent from '@testing-library/user-event';
-import type { Lobby } from '../../../types/lobby/Lobby';
+import type { LobbyResponse } from '../../../api/types/lobby/LobbyResponse';
 import { mockNavigate } from '../../../../__mocks__/react-router';
 
 vi.mock('zustand');
@@ -50,7 +50,7 @@ describe('CreateLobbyPage', () => {
         const quizTitle = '테스트 퀴즈';
 
         server.use(
-            http.get<never, never, QuizResponseDto>(
+            http.get<never, never, QuizResponse>(
                 `${baseUrl}/quizzes/${quizId}`,
                 () => {
                     return HttpResponse.json({
@@ -139,7 +139,7 @@ describe('CreateLobbyPage', () => {
         const secPerQuestion = 30;
 
         server.use(
-            http.post<never, never, Lobby>(`${baseUrl}/lobbies`, () => {
+            http.post<never, never, LobbyResponse>(`${baseUrl}/lobbies`, () => {
                 return HttpResponse.json({
                     id: lobbyId,
                     name: '',
@@ -159,7 +159,7 @@ describe('CreateLobbyPage', () => {
                     },
                 });
             }),
-            http.get<never, never, QuizResponseDto>(
+            http.get<never, never, QuizResponse>(
                 `${baseUrl}/quizzes/${quizId}`,
                 () => {
                     return HttpResponse.json({

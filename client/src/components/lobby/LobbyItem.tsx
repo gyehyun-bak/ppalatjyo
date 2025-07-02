@@ -1,7 +1,7 @@
-import type { Lobby } from '../../types/lobby/Lobby';
+import type { LobbyResponse } from '../../api/types/lobby/LobbyResponse';
 
 interface LobbyItemProps {
-    lobby: Lobby;
+    lobby: LobbyResponse;
 }
 
 export default function LobbyItem({ lobby }: LobbyItemProps) {

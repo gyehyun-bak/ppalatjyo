@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Input from '../../components/common/Input';
 import { useMutation } from '@tanstack/react-query';
 import { createQuiz } from '../../api/quiz.api';
-import type { CreateQuizRequestDto } from '../../types/api/quiz/CreateQuizRequestDto';
+import type { CreateQuizRequest } from '../../api/types/quiz/CreateQuizRequest';
 import { useNavigate } from 'react-router';
 
 export default function CreateQuizPage() {
@@ -16,7 +16,7 @@ export default function CreateQuizPage() {
     );
 
     const { mutate } = useMutation({
-        mutationFn: (data: CreateQuizRequestDto) => createQuiz(data),
+        mutationFn: (data: CreateQuizRequest) => createQuiz(data),
         onSuccess: (data) => {
             if (data) {
                 navigate(`/quizzes/${data.id}`);
@@ -27,7 +27,7 @@ export default function CreateQuizPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const data: CreateQuizRequestDto = {
+        const data: CreateQuizRequest = {
             title,
             description,
             visibility,

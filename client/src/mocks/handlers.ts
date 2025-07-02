@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
-import type { JoinAsGuestRequestDto } from '../types/api/auth/JoinAsGuestRequestDto';
-import type { JoinAsGuestResponseDto } from '../types/api/auth/JoinAsGuestResponseDto';
+import type { JoinAsGuestRequest } from '../api/types/auth/JoinAsGuestRequest';
+import type { JoinAsGuestResponse } from '../api/types/auth/JoinAsGuestResponse';
 import { baseUrl } from './server';
 
 export const handlers = [
@@ -11,7 +11,7 @@ export const handlers = [
             lastName: 'Maverick',
         });
     }),
-    http.post<never, JoinAsGuestRequestDto, JoinAsGuestResponseDto>(
+    http.post<never, JoinAsGuestRequest, JoinAsGuestResponse>(
         baseUrl + '/auth/sign-up/guest',
         async ({ request }) => {
             const body = await request.json();

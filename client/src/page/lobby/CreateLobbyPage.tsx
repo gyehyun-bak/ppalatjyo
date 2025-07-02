@@ -7,7 +7,7 @@ import { useNavigate, useSearchParams } from 'react-router';
 import { getQuiz } from '../../api/quiz.api';
 import QuizItem from '../../components/quiz/QuizItem';
 import { createLobby } from '../../api/lobby.api';
-import type { CreateLobbyRequestDto } from '../../types/api/lobby/CreateLobbyRequestDto';
+import type { CreateLobbyRequest } from '../../api/types/lobby/CreateLobbyRequest';
 
 export default function CreateLobbyPage() {
     const store = useLobbyCreateStore();
@@ -29,7 +29,7 @@ export default function CreateLobbyPage() {
     });
 
     const { mutate } = useMutation({
-        mutationFn: (data: CreateLobbyRequestDto) => createLobby(data),
+        mutationFn: (data: CreateLobbyRequest) => createLobby(data),
         onSuccess: (data) => {
             navigate(`/lobbies/${data.id}`);
         },

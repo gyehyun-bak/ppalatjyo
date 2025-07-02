@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw';
 import { baseUrl, server } from '../../mocks/server';
 import QuizPage from '../../page/QuizPage';
 import { renderWithWrapper } from '../utils/renderWithWrapper';
-import type { QuizzesResponseDto } from '../../types/api/quiz/QuizzesResponseDto';
+import type { QuizzesResponse } from '../../api/types/quiz/QuizzesResponse';
 import { screen, waitFor } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
@@ -14,7 +14,7 @@ describe('QuizPage', () => {
     it('퀴즈 목록을 불러와 화면에 표시한다', async () => {
         // given
         server.use(
-            http.get<never, never, QuizzesResponseDto>(
+            http.get<never, never, QuizzesResponse>(
                 baseUrl + '/quizzes',
                 async () => {
                     return HttpResponse.json({

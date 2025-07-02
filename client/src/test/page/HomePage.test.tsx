@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { baseUrl, server } from '../../mocks/server';
-import type { LobbiesResponseDto } from '../../types/api/lobby/LobbiesResponseDto';
+import type { LobbiesResponse } from '../../api/types/lobby/LobbiesResponse';
 import { renderWithWrapper } from '../utils/renderWithWrapper';
 import HomePage from '../../page/HomePage';
 import { waitFor, screen } from '@testing-library/dom';
@@ -14,7 +14,7 @@ describe('Home', () => {
     it('로비 목록을 가져와 표시한다', async () => {
         // given
         server.use(
-            http.get<never, never, LobbiesResponseDto>(
+            http.get<never, never, LobbiesResponse>(
                 baseUrl + '/lobbies',
                 async () => {
                     return HttpResponse.json({
@@ -74,7 +74,7 @@ describe('Home', () => {
     it('<새로고침> 버튼을 누르면 로비 목록을 새로고침한다', async () => {
         // given
         server.use(
-            http.get<never, never, LobbiesResponseDto>(
+            http.get<never, never, LobbiesResponse>(
                 baseUrl + '/lobbies',
                 async () => {
                     return HttpResponse.json({
@@ -106,7 +106,7 @@ describe('Home', () => {
 
         // when
         server.use(
-            http.get<never, never, LobbiesResponseDto>(
+            http.get<never, never, LobbiesResponse>(
                 baseUrl + '/lobbies',
                 async () => {
                     return HttpResponse.json({
