@@ -1,13 +1,10 @@
 import type { CreateLobbyRequestDto } from '../types/api/lobby/CreateLobbyRequestDto';
 import type { LobbiesResponseDto } from '../types/api/lobby/LobbiesResponseDto';
-import type { ResponseDto } from '../types/api/ResponseDto';
 import type { Lobby } from '../types/lobby/Lobby';
 import { api } from './axios';
 
-export const getLobbies = async (): Promise<
-    ResponseDto<LobbiesResponseDto>
-> => {
-    return (await api.get<ResponseDto<LobbiesResponseDto>>('/lobbies')).data;
+export const getLobbies = async (): Promise<LobbiesResponseDto> => {
+    return (await api.get<LobbiesResponseDto>('/lobbies')).data;
 };
 
 export const createLobby = async ({
@@ -16,9 +13,9 @@ export const createLobby = async ({
     minPerGame,
     secPerQuestion,
     quizId,
-}: CreateLobbyRequestDto): Promise<ResponseDto<Lobby>> => {
+}: CreateLobbyRequestDto): Promise<Lobby> => {
     return (
-        await api.post<ResponseDto<Lobby>>('/lobbies', {
+        await api.post<Lobby>('/lobbies', {
             name,
             maxUsers,
             minPerGame,
