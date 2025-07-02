@@ -3,7 +3,6 @@ import AuthenticationLayout from '../../layout/AuthenticationLayout';
 import { renderWithWrapper } from '../utils/renderWithWrapper';
 import { baseUrl, server } from '../../mocks/server';
 import { http, HttpResponse } from 'msw';
-import type { ResponseDto } from '../../types/api/ResponseDto';
 import type { TokenReissueResponseDto } from '../../types/api/auth/TokenReissueResponseDto';
 import '@testing-library/jest-dom';
 
@@ -16,15 +15,11 @@ describe('AuthenticationLayout', () => {
         // given: mock token API
         const mockAccessToken = 'new-access-token';
         server.use(
-            http.get<never, never, ResponseDto<TokenReissueResponseDto>>(
+            http.get<never, never, TokenReissueResponseDto>(
                 baseUrl + '/auth/tokens',
                 () => {
                     return HttpResponse.json({
-                        success: true,
-                        status: 200,
-                        data: {
-                            accessToken: mockAccessToken,
-                        },
+                        accessToken: mockAccessToken,
                     });
                 }
             )
@@ -43,14 +38,7 @@ describe('AuthenticationLayout', () => {
         // given
         server.use(
             http.get(baseUrl + '/auth/tokens', () => {
-                return HttpResponse.json(
-                    {
-                        success: false,
-                        status: 403,
-                        data: null,
-                    },
-                    { status: 403 }
-                );
+                return HttpResponse.json({}, { status: 403 });
             })
         );
 

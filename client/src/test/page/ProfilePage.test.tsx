@@ -3,7 +3,6 @@ import ProfilePage from '../../page/ProfilePage';
 import { renderWithWrapper } from '../utils/renderWithWrapper';
 import { baseUrl, server } from '../../mocks/server';
 import { http, HttpResponse } from 'msw';
-import type { ResponseDto } from '../../types/api/ResponseDto';
 import type { UserResponseDto } from '../../types/api/user/UserResponseDto';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
@@ -15,16 +14,12 @@ describe('ProfilePage', () => {
     it('사용자 데이터를 불러와 표시한다', async () => {
         // given
         server.use(
-            http.get<never, never, ResponseDto<UserResponseDto>>(
+            http.get<never, never, UserResponseDto>(
                 baseUrl + '/users/me',
                 async () => {
                     return HttpResponse.json({
-                        success: true,
-                        status: 200,
-                        data: {
-                            id: 1,
-                            nickname: 'user1',
-                        },
+                        id: 1,
+                        nickname: 'user1',
                     });
                 }
             )

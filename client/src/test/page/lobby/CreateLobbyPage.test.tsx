@@ -5,7 +5,6 @@ import { renderWithWrapper } from '../../utils/renderWithWrapper';
 import '@testing-library/jest-dom';
 import { baseUrl, server } from '../../../mocks/server';
 import { http, HttpResponse } from 'msw';
-import type { ResponseDto } from '../../../types/api/ResponseDto';
 import type { QuizResponseDto } from '../../../types/api/quiz/QuizResponseDto';
 import userEvent from '@testing-library/user-event';
 import type { Lobby } from '../../../types/lobby/Lobby';
@@ -51,18 +50,14 @@ describe('CreateLobbyPage', () => {
         const quizTitle = '테스트 퀴즈';
 
         server.use(
-            http.get<never, never, ResponseDto<QuizResponseDto>>(
+            http.get<never, never, QuizResponseDto>(
                 `${baseUrl}/quizzes/${quizId}`,
                 () => {
                     return HttpResponse.json({
-                        success: true,
-                        status: 200,
-                        data: {
-                            id: quizId,
-                            title: quizTitle,
-                            authorNickname: '',
-                            totalQuestions: 0,
-                        },
+                        id: quizId,
+                        title: quizTitle,
+                        authorNickname: '',
+                        totalQuestions: 0,
                     });
                 }
             )
@@ -142,33 +137,36 @@ describe('CreateLobbyPage', () => {
         const maxUsers = 10;
         const minPerGame = 5;
         const secPerQuestion = 30;
-        const mockCreateLobbyResponse = {
-            success: true,
-            status: 201,
-            data: {
-                id: lobbyId,
-            },
-        } as ResponseDto<Lobby>;
 
         server.use(
-            http.post<never, never, ResponseDto<Lobby>>(
-                `${baseUrl}/lobbies`,
-                () => {
-                    return HttpResponse.json(mockCreateLobbyResponse);
-                }
-            ),
-            http.get<never, never, ResponseDto<QuizResponseDto>>(
+            http.post<never, never, Lobby>(`${baseUrl}/lobbies`, () => {
+                return HttpResponse.json({
+                    id: lobbyId,
+                    name: '',
+                    currentUserCount: 0,
+                    options: {
+                        maxUsers: 0,
+                        minPerGame: 0,
+                        secPerQuestion: 0,
+                    },
+                    host: {
+                        id: 0,
+                        nickname: '',
+                    },
+                    quiz: {
+                        id: 0,
+                        title: '',
+                    },
+                });
+            }),
+            http.get<never, never, QuizResponseDto>(
                 `${baseUrl}/quizzes/${quizId}`,
                 () => {
                     return HttpResponse.json({
-                        success: true,
-                        status: 200,
-                        data: {
-                            id: quizId,
-                            title: '테스트 퀴즈',
-                            authorNickname: '',
-                            totalQuestions: 0,
-                        },
+                        id: quizId,
+                        title: '테스트 퀴즈',
+                        authorNickname: '',
+                        totalQuestions: 0,
                     });
                 }
             )
