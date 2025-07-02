@@ -1,11 +1,11 @@
-export interface FieldErrorDto {
+export interface FieldError {
     message: string;
     rejectedValue?: unknown;
 }
 
-export interface ResponseErrorDto {
+export interface ErrorResponse {
     message: string;
     path: string;
     timestamp: string; // LocalDateTime -> ISO String
-    data?: Record<string, FieldErrorDto>;
+    data?: Record<string, FieldError>;
 }

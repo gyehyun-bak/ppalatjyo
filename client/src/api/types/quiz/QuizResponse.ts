@@ -1,4 +1,4 @@
-export interface QuizResponseDto {
+export interface QuizResponse {
     id: number;
     title: string;
     authorNickname: string;

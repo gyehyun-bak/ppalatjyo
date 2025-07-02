@@ -1,4 +1,4 @@
-export interface CreateLobbyRequestDto {
+export interface CreateLobbyRequest {
     name: string;
     password?: string;
     maxUsers: number;

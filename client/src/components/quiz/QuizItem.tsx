@@ -1,7 +1,7 @@
-import type { QuizResponseDto } from "../../types/api/quiz/QuizResponseDto";
+import type { QuizResponse } from '../../api/types/quiz/QuizResponse';
 
 interface QuizItemProps {
-    quiz: QuizResponseDto;
+    quiz: QuizResponse;
 }
 
 export default function QuizItem({ quiz }: QuizItemProps) {

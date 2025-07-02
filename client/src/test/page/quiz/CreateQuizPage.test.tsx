@@ -6,8 +6,7 @@ import CreateQuizPage from '../../../page/quiz/CreateQuizPage';
 import { mockNavigate } from '../../../../__mocks__/react-router';
 import { baseUrl, server } from '../../../mocks/server';
 import { http, HttpResponse } from 'msw';
-import type { ResponseDto } from '../../../types/api/ResponseDto';
-import type { QuizResponseDto } from '../../../types/api/quiz/QuizResponseDto';
+import type { QuizResponse } from '../../../api/types/quiz/QuizResponse';
 
 vi.mock('react-router');
 
@@ -55,19 +54,13 @@ describe('CreateQuizPage', () => {
         const quizId = 123;
 
         server.use(
-            http.post<never, never, ResponseDto<QuizResponseDto>>(
-                `${baseUrl}/quizzes`,
-                () =>
-                    HttpResponse.json({
-                        success: true,
-                        status: 200,
-                        data: {
-                            id: quizId,
-                            title: '테스트 퀴즈',
-                            authorNickname: '',
-                            totalQuestions: 0,
-                        },
-                    })
+            http.post<never, never, QuizResponse>(`${baseUrl}/quizzes`, () =>
+                HttpResponse.json({
+                    id: quizId,
+                    title: '테스트 퀴즈',
+                    authorNickname: '',
+                    totalQuestions: 0,
+                })
             )
         );
 

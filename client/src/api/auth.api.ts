@@ -1,23 +1,16 @@
-import type { JoinAsGuestRequestDto } from '../types/api/auth/JoinAsGuestRequestDto';
-import type { JoinAsGuestResponseDto } from '../types/api/auth/JoinAsGuestResponseDto';
-import type { TokenReissueResponseDto } from '../types/api/auth/TokenReissueResponseDto';
-import type { ResponseDto } from '../types/api/ResponseDto';
+import type { JoinAsGuestRequest } from './types/auth/JoinAsGuestRequest';
+import type { JoinAsGuestResponse } from './types/auth/JoinAsGuestResponse';
+import type { TokenReissueResponse } from './types/auth/TokenReissueResponse';
 import { api } from './axios';
 
 export const postSignUpGuest = async (
-    requestDto: JoinAsGuestRequestDto
-): Promise<ResponseDto<JoinAsGuestResponseDto>> => {
+    requestDto: JoinAsGuestRequest
+): Promise<JoinAsGuestResponse> => {
     return (
-        await api.post<ResponseDto<JoinAsGuestResponseDto>>(
-            '/auth/sign-up/guest',
-            requestDto
-        )
+        await api.post<JoinAsGuestResponse>('/auth/sign-up/guest', requestDto)
     ).data;
 };
 
-export const getNewTokens = async (): Promise<
-    ResponseDto<TokenReissueResponseDto>
-> => {
-    return (await api.get<ResponseDto<JoinAsGuestResponseDto>>('/auth/tokens'))
-        .data;
+export const getNewTokens = async (): Promise<TokenReissueResponse> => {
+    return (await api.get<JoinAsGuestResponse>('/auth/tokens')).data;
 };

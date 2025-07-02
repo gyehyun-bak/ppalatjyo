@@ -3,7 +3,7 @@ import { addToast, Button } from '@heroui/react';
 import { useNavigate } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
 import { postSignUpGuest } from '../api/auth.api';
-import type { JoinAsGuestRequestDto } from '../types/api/auth/JoinAsGuestRequestDto';
+import type { JoinAsGuestRequest } from '../api/types/auth/JoinAsGuestRequest';
 import Input from '../components/common/Input';
 
 export default function LandingPage() {
@@ -12,14 +12,12 @@ export default function LandingPage() {
     const navigate = useNavigate();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: ({ nickname }: JoinAsGuestRequestDto) => {
+        mutationFn: ({ nickname }: JoinAsGuestRequest) => {
             return postSignUpGuest({ nickname });
         },
         onSuccess: (data) => {
-            if (data.data) {
-                localStorage.setItem('accessToken', data.data.accessToken);
-                navigate('/home');
-            }
+            localStorage.setItem('accessToken', data.accessToken);
+            navigate('/home');
         },
         onError: () => {
             addToast({

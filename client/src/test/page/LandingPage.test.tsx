@@ -6,9 +6,8 @@ import { screen, waitFor } from '@testing-library/react';
 import { it, expect, describe } from 'vitest';
 import { baseUrl, server } from '../../mocks/server';
 import { http, HttpResponse } from 'msw';
-import type { JoinAsGuestRequestDto } from '../../types/api/auth/JoinAsGuestRequestDto';
-import type { ResponseDto } from '../../types/api/ResponseDto';
-import type { JoinAsGuestResponseDto } from '../../types/api/auth/JoinAsGuestResponseDto';
+import type { JoinAsGuestRequest } from '../../api/types/auth/JoinAsGuestRequest';
+import type { JoinAsGuestResponse } from '../../api/types/auth/JoinAsGuestResponse';
 import { mockNavigate } from '../../../__mocks__/react-router';
 
 const { mockAddToast } = vi.hoisted(() => ({
@@ -57,19 +56,14 @@ describe('Landing', () => {
     it('닉네임을 입력하고 버튼을 눌러 가입 성공 시 엑세스 토큰을 저장하고 /home으로 navigate 된다', async () => {
         // given
         server.use(
-            http.post<
-                never,
-                JoinAsGuestRequestDto,
-                ResponseDto<JoinAsGuestResponseDto>
-            >(baseUrl + '/auth/sign-up/guest', async () => {
-                return HttpResponse.json({
-                    success: true,
-                    status: 200,
-                    data: {
+            http.post<never, JoinAsGuestRequest, JoinAsGuestResponse>(
+                baseUrl + '/auth/sign-up/guest',
+                async () => {
+                    return HttpResponse.json({
                         accessToken: 'mock-access-token',
-                    },
-                });
-            })
+                    });
+                }
+            )
         );
 
         renderWithWrapper(<LandingPage />);
@@ -97,22 +91,17 @@ describe('Landing', () => {
     it('오류 응답이 반환되면 오류 토스트를 띄운다', async () => {
         // given
         server.use(
-            http.post<
-                never,
-                JoinAsGuestRequestDto,
-                ResponseDto<JoinAsGuestResponseDto>
-            >(baseUrl + '/auth/sign-up/guest', async () => {
-                return HttpResponse.json(
-                    {
-                        success: true,
-                        status: 500,
-                        data: {
-                            accessToken: 'mock-access-token',
+            http.post<never, JoinAsGuestRequest, JoinAsGuestResponse>(
+                baseUrl + '/auth/sign-up/guest',
+                async () => {
+                    return HttpResponse.json(
+                        {
+                            accessToken: '',
                         },
-                    },
-                    { status: 500 }
-                );
-            })
+                        { status: 500 }
+                    );
+                }
+            )
         );
 
         renderWithWrapper(<LandingPage />);
