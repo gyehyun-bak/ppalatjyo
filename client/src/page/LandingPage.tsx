@@ -16,10 +16,8 @@ export default function LandingPage() {
             return postSignUpGuest({ nickname });
         },
         onSuccess: (data) => {
-            if (data.data) {
-                localStorage.setItem('accessToken', data.data.accessToken);
-                navigate('/home');
-            }
+            localStorage.setItem('accessToken', data.accessToken);
+            navigate('/home');
         },
         onError: () => {
             addToast({

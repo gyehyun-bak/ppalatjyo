@@ -17,9 +17,9 @@ export default function CreateQuizPage() {
 
     const { mutate } = useMutation({
         mutationFn: (data: CreateQuizRequestDto) => createQuiz(data),
-        onSuccess: (response) => {
-            if (response.data) {
-                navigate(`/quizzes/${response.data.id}`);
+        onSuccess: (data) => {
+            if (data) {
+                navigate(`/quizzes/${data.id}`);
             }
         },
     });
