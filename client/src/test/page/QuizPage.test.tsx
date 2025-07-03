@@ -24,12 +24,14 @@ describe('QuizPage', () => {
                                 title: 'quiz1',
                                 authorNickname: 'user1',
                                 totalQuestions: 10,
+                                questions: [],
                             },
                             {
                                 id: 2,
                                 title: 'quiz2',
                                 authorNickname: 'user2',
                                 totalQuestions: 20,
+                                questions: [],
                             },
                         ],
                     });

@@ -9,6 +9,7 @@ import QuizPage from './page/QuizPage';
 import ProfilePage from './page/ProfilePage';
 import AuthenticationLayout from './layout/AuthenticationLayout';
 import CreateLobbyPage from './page/lobby/CreateLobbyPage';
+import QuizDetailsPage from './page/quiz/QuizDetailsPage';
 
 function App() {
     return (
@@ -28,6 +29,10 @@ function App() {
                     <Route
                         path="/lobbies/create"
                         element={<CreateLobbyPage />}
+                    />
+                    <Route
+                        path="/quizzes/:quizId"
+                        element={<QuizDetailsPage />}
                     />
                 </Route>
             </Route>

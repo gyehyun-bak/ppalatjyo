@@ -58,6 +58,8 @@ describe('CreateLobbyPage', () => {
                         title: quizTitle,
                         authorNickname: '',
                         totalQuestions: 0,
+                        description: '',
+                        questions: [],
                     });
                 }
             )
@@ -158,6 +160,8 @@ describe('CreateLobbyPage', () => {
                         title: '',
                         authorNickname: '',
                         totalQuestions: 0,
+                        description: '',
+                        questions: [],
                     },
                 });
             }),
@@ -169,6 +173,8 @@ describe('CreateLobbyPage', () => {
                         title: '테스트 퀴즈',
                         authorNickname: '',
                         totalQuestions: 0,
+                        description: '',
+                        questions: [],
                     });
                 }
             )

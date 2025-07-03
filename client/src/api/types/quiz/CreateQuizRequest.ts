@@ -1,5 +1,5 @@
 export interface CreateQuizRequest {
     title: string;
-    description?: string;
+    description: string;
     visibility: 'PUBLIC' | 'PRIVATE';
 }

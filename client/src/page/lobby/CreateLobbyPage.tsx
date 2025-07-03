@@ -23,9 +23,9 @@ export default function CreateLobbyPage() {
     const quizId = searchParams.get('quizId');
 
     const { data, isLoading, isSuccess } = useQuery({
-        enabled: quizId !== null,
+        enabled: !!quizId,
         queryKey: ['quiz', quizId],
-        queryFn: () => getQuiz(Number(quizId)),
+        queryFn: () => getQuiz(quizId as string),
     });
 
     const { mutate } = useMutation({
