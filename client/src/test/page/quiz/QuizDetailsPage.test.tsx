@@ -5,7 +5,11 @@ import type { QuestionResponse } from '../../../api/types/quiz/QuestionResponse'
 import { renderWithWrapper } from '../../utils/renderWithWrapper';
 import QuizDetailsPage from '../../../page/quiz/QuizDetailsPage';
 import { screen, waitFor } from '@testing-library/dom';
-import { mockUseParams } from '../../../../__mocks__/react-router';
+import {
+    mockNavigate,
+    mockUseParams,
+} from '../../../../__mocks__/react-router';
+import userEvent from '@testing-library/user-event';
 
 vi.mock('react-router');
 
@@ -13,7 +17,7 @@ describe('QuizDetailsPage', () => {
     it('쿼리 파라미터의 quizId로 퀴즈 이름, 작성자 이름, 퀴즈 설명, 문제를 불러와 표시합니다', async () => {
         //given
         const quizId = 123;
-        mockUseParams.mockReturnValue({ quizId: quizId });
+        mockUseParams.mockReturnValue({ quizId });
 
         const title = 'quiz123';
         const authorNickname = 'hello';
@@ -60,8 +64,50 @@ describe('QuizDetailsPage', () => {
             expect(screen.getByText(questions[1].content)).toBeInTheDocument();
         });
     });
-    it('퀴즈에 포함된 문제 목록을 표시합니다(정답 제외)', () => {});
-    it('각 문제를 클릭하면 해당 문제 상세보기 페이지로 이동합니다', () => {});
+
+    it('각 문제를 클릭하면 해당 문제 상세보기 페이지로 이동합니다', async () => {
+        //given
+        const quizId = 123;
+        const questionId = 456;
+        mockUseParams.mockReturnValue({ quizId });
+
+        const questions: QuestionResponse[] = [
+            { id: questionId, content: 'question1', answers: [] },
+        ];
+
+        const response = {
+            id: quizId,
+            title: 'quiz123',
+            authorNickname: 'hello',
+            description: 'description123',
+            totalQuestions: 1,
+            questions,
+        };
+
+        server.use(
+            http.get<never, never, QuizResponse>(
+                `${baseUrl}/quizzes/${quizId}?includeQuestions=true`,
+                () => HttpResponse.json(response)
+            )
+        );
+
+        renderWithWrapper(<QuizDetailsPage />);
+
+        const question1Button = await screen.findByTestId(
+            `question-${questionId}`
+        );
+        const user = userEvent.setup();
+
+        // when
+        await user.click(question1Button);
+
+        // then
+        await waitFor(() => {
+            expect(mockNavigate).toBeCalledWith(
+                `/quizzes/${quizId}/questions/${questionId}`
+            );
+        });
+    });
     it('<문제 추가> 버튼을 클릭하면 문제 생성 페이지로 이동합니다', () => {});
     it('<수정하기> 버튼을 클릭하면 해당 퀴즈 수정 페이지로 이동합니다', () => {});
     it('<로비 만들기> 버튼을 클릭하면, 해당 퀴즈 아이디를 쿼리 파라미터로 갖는 로비 만들기 페이지로 이동합니다', () => {});
