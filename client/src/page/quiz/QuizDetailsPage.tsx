@@ -18,8 +18,12 @@ export default function QuizDetailsPage() {
         navigate(`/quizzes/${quizId}/questions/create`);
     };
 
+    const handleEditQuiz = () => {
+        navigate(`/quizzes/${quizId}/edit`);
+    };
+
     return (
-        <div>
+        <>
             {isSuccess && (
                 <div>
                     <div>
@@ -42,8 +46,12 @@ export default function QuizDetailsPage() {
                             />
                         ))}
                     </ul>
+                    <Button data-testid={'create-lobby'}>로비 만들기</Button>
+                    <Button onPress={handleEditQuiz} data-testid={'edit-quiz'}>
+                        수정하기
+                    </Button>
                 </div>
             )}
-        </div>
+        </>
     );
 }

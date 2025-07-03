@@ -150,6 +150,44 @@ describe('QuizDetailsPage', () => {
             );
         });
     });
-    it('<수정하기> 버튼을 클릭하면 해당 퀴즈 수정 페이지로 이동합니다', () => {});
+    it('<수정하기> 버튼을 클릭하면 해당 퀴즈 수정 페이지로 이동합니다', async () => {
+        //given
+        const quizId = 123;
+        mockUseParams.mockReturnValue({ quizId });
+
+        const questions: QuestionResponse[] = [
+            { id: 0, content: 'question1', answers: [] },
+        ];
+
+        const response = {
+            id: quizId,
+            title: 'quiz123',
+            authorNickname: 'hello',
+            description: 'description123',
+            totalQuestions: 1,
+            questions,
+        };
+
+        server.use(
+            http.get<never, never, QuizResponse>(
+                `${baseUrl}/quizzes/${quizId}?includeQuestions=true`,
+                () => HttpResponse.json(response)
+            )
+        );
+
+        renderWithWrapper(<QuizDetailsPage />);
+
+        const editQuizButton = await screen.findByTestId('edit-quiz');
+        const user = userEvent.setup();
+
+        // when
+        await user.click(editQuizButton);
+
+        // then
+        await waitFor(() => {
+            expect(mockNavigate).toBeCalledWith(`/quizzes/${quizId}/edit`);
+        });
+    });
+
     it('<로비 만들기> 버튼을 클릭하면, 해당 퀴즈 아이디를 쿼리 파라미터로 갖는 로비 만들기 페이지로 이동합니다', () => {});
 });
