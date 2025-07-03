@@ -1,16 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { getQuiz } from '../../api/quiz.api';
 import QuestionItem from '../../components/quiz/QuestionItem';
+import { Button } from '@heroui/react';
 
 export default function QuizDetailsPage() {
     const { quizId } = useParams<{ quizId: string }>();
+    const navigate = useNavigate();
 
     const { data, isSuccess } = useQuery({
         queryKey: ['quiz', quizId],
         queryFn: () => getQuiz(quizId as string, true),
         enabled: !!quizId,
     });
+
+    const handleCreateQuestion = () => {
+        navigate(`/quizzes/${quizId}/questions/create`);
+    };
 
     return (
         <div>
@@ -22,6 +28,12 @@ export default function QuizDetailsPage() {
                         <p>{data.description}</p>
                         <p>{data.totalQuestions}</p>
                     </div>
+                    <Button
+                        onPress={handleCreateQuestion}
+                        data-testid={'create-question'}
+                    >
+                        문제 추가
+                    </Button>
                     <ul>
                         {data.questions.map((question) => (
                             <QuestionItem

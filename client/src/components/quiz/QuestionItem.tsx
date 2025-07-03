@@ -16,7 +16,6 @@ export default function QuestionItem({ question }: QuestionItemProps) {
 
     return (
         <Button onPress={handleClick} data-testid={`question-${question.id}`}>
-            <p>{question.id}</p>
             <p>{question.content}</p>
         </Button>
     );
