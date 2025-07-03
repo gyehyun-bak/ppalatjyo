@@ -14,11 +14,14 @@ import userEvent from '@testing-library/user-event';
 vi.mock('react-router');
 
 describe('QuizDetailsPage', () => {
+    const quizId = 123;
+
+    beforeEach(() => {
+        mockUseParams.mockReturnValue({ quizId });
+    });
+
     it('쿼리 파라미터의 quizId로 퀴즈 이름, 작성자 이름, 퀴즈 설명, 문제를 불러와 표시합니다', async () => {
         //given
-        const quizId = 123;
-        mockUseParams.mockReturnValue({ quizId });
-
         const title = 'quiz123';
         const authorNickname = 'hello';
         const description = 'description123';
@@ -67,9 +70,7 @@ describe('QuizDetailsPage', () => {
 
     it('각 문제를 클릭하면 해당 문제 상세보기 페이지로 이동합니다', async () => {
         //given
-        const quizId = 123;
         const questionId = 456;
-        mockUseParams.mockReturnValue({ quizId });
 
         const questions: QuestionResponse[] = [
             { id: questionId, content: 'question1', answers: [] },
@@ -110,9 +111,6 @@ describe('QuizDetailsPage', () => {
     });
     it('<문제 추가> 버튼을 클릭하면 문제 생성 페이지로 이동합니다', async () => {
         //given
-        const quizId = 123;
-        mockUseParams.mockReturnValue({ quizId });
-
         const questions: QuestionResponse[] = [
             { id: 0, content: 'question1', answers: [] },
         ];
@@ -152,9 +150,6 @@ describe('QuizDetailsPage', () => {
     });
     it('<수정하기> 버튼을 클릭하면 해당 퀴즈 수정 페이지로 이동합니다', async () => {
         //given
-        const quizId = 123;
-        mockUseParams.mockReturnValue({ quizId });
-
         const questions: QuestionResponse[] = [
             { id: 0, content: 'question1', answers: [] },
         ];
@@ -191,9 +186,6 @@ describe('QuizDetailsPage', () => {
 
     it('<로비 만들기> 버튼을 클릭하면, 해당 퀴즈 아이디를 쿼리 파라미터로 갖는 로비 만들기 페이지로 이동합니다', async () => {
         //given
-        const quizId = 123;
-        mockUseParams.mockReturnValue({ quizId });
-
         const questions: QuestionResponse[] = [
             { id: 0, content: 'question1', answers: [] },
         ];
