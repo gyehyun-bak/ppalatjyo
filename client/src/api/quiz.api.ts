@@ -7,10 +7,13 @@ export const getQuizzes = async (): Promise<QuizzesResponse> => {
     return (await api.get<QuizzesResponse>('/quizzes')).data;
 };
 
-export const getQuiz = async (quizId: number): Promise<QuizResponse> => {
+export const getQuiz = async (
+    quizId: number | string,
+    includeQuestions: boolean = false
+): Promise<QuizResponse> => {
     return (
         await api.get<QuizResponse>(`/quizzes/${quizId}`, {
-            params: { includeQuestions: true }, // 서버 측 구현 필요
+            params: { includeQuestions: includeQuestions }, // 서버 측 구현 필요
         })
     ).data;
 };

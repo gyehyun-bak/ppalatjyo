@@ -61,6 +61,7 @@ describe('CreateQuizPage', () => {
                     authorNickname: '',
                     totalQuestions: 0,
                     questions: [],
+                    description: '',
                 })
             )
         );
