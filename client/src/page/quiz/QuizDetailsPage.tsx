@@ -22,6 +22,10 @@ export default function QuizDetailsPage() {
         navigate(`/quizzes/${quizId}/edit`);
     };
 
+    const handleCreateLobby = () => {
+        navigate(`/lobbies/create?quizId=${quizId}`);
+    };
+
     return (
         <>
             {isSuccess && (
@@ -46,7 +50,12 @@ export default function QuizDetailsPage() {
                             />
                         ))}
                     </ul>
-                    <Button data-testid={'create-lobby'}>로비 만들기</Button>
+                    <Button
+                        onPress={handleCreateLobby}
+                        data-testid={'create-lobby'}
+                    >
+                        로비 만들기
+                    </Button>
                     <Button onPress={handleEditQuiz} data-testid={'edit-quiz'}>
                         수정하기
                     </Button>
