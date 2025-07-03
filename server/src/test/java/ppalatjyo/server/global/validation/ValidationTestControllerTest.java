@@ -83,13 +83,10 @@ class ValidationTestControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
-                                fieldWithPath("success").description("성공 여부"),
-                                fieldWithPath("status").description("HTTP 상태 코드"),
-                                fieldWithPath("error.message").description("에러 메시지"),
-                                fieldWithPath("error.path").description("요청 경로"),
-                                fieldWithPath("error.timestamp").description("에러 발생 시간"),
-                                subsectionWithPath("error.data").description("필드별 에러 상세 정보"),
-                                fieldWithPath("data").ignored()
+                                fieldWithPath("message").description("에러 메시지"),
+                                fieldWithPath("path").description("요청 경로"),
+                                fieldWithPath("timestamp").description("에러 발생 시간"),
+                                subsectionWithPath("fieldErrors").description("필드별 에러 상세 정보")
                         )
                 ));
     }

@@ -8,8 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import ppalatjyo.server.global.dto.ResponseDto;
-import ppalatjyo.server.global.dto.error.ResponseErrorDto;
+import ppalatjyo.server.global.error.ErrorResponseDto;
 
 import java.io.IOException;
 
@@ -28,12 +27,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         String errorMessage = "Authentication Failed.";
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-        ResponseErrorDto errorDto = ResponseErrorDto.commonError(errorMessage, request.getRequestURI());
-        ResponseDto<Void> responseDto = ResponseDto.error(status, errorDto).getBody();
+        ErrorResponseDto errorDto = ErrorResponseDto.commonError(errorMessage, request.getRequestURI());
 
         response.setStatus(status.value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        objectMapper.writeValue(response.getWriter(), responseDto);
+        objectMapper.writeValue(response.getWriter(), errorDto);
     }
 }

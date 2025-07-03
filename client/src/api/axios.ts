@@ -57,10 +57,7 @@ api.interceptors.response.use(
 
             try {
                 const tokenResponse = await getNewTokens(); // 재발급 요청
-                if (!tokenResponse.data) {
-                    throw new Error('Token reissue failed');
-                }
-                const newAccessToken = tokenResponse.data.accessToken;
+                const newAccessToken = tokenResponse.accessToken;
                 localStorage.setItem('accessToken', newAccessToken);
 
                 // Authorization 헤더 갱신 후 원래 요청 재시도

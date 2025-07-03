@@ -1,4 +1,4 @@
-export interface AnswerResponseDto {
+export interface AnswerResponse {
     id: number;
     content: string;
 }

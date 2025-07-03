@@ -18,9 +18,9 @@ export default function AuthenticationLayout() {
     });
 
     useEffect(() => {
-        if (isSuccess && data.data) {
+        if (isSuccess) {
             setAuthenticated(true);
-            localStorage.setItem('accessToken', data.data.accessToken);
+            localStorage.setItem('accessToken', data.accessToken);
         }
     }, [isSuccess, data, setAuthenticated]);
 

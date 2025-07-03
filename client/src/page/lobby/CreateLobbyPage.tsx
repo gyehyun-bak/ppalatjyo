@@ -7,7 +7,7 @@ import { useNavigate, useSearchParams } from 'react-router';
 import { getQuiz } from '../../api/quiz.api';
 import QuizItem from '../../components/quiz/QuizItem';
 import { createLobby } from '../../api/lobby.api';
-import type { CreateLobbyRequestDto } from '../../types/api/lobby/CreateLobbyRequestDto';
+import type { CreateLobbyRequest } from '../../api/types/lobby/CreateLobbyRequest';
 
 export default function CreateLobbyPage() {
     const store = useLobbyCreateStore();
@@ -29,11 +29,9 @@ export default function CreateLobbyPage() {
     });
 
     const { mutate } = useMutation({
-        mutationFn: (data: CreateLobbyRequestDto) => createLobby(data),
-        onSuccess: (response) => {
-            if (response.data) {
-                navigate(`/lobbies/${response.data.id}`);
-            }
+        mutationFn: (data: CreateLobbyRequest) => createLobby(data),
+        onSuccess: (data) => {
+            navigate(`/lobbies/${data.id}`);
         },
         onError: (error) => {
             console.error('로비 생성 중 오류 발생:', error);
@@ -54,8 +52,7 @@ export default function CreateLobbyPage() {
         name.trim() !== '' &&
         maxUsers > 0 &&
         minPerGame > 0 &&
-        secPerQuestion > 0 &&
-        !!data?.data;
+        secPerQuestion > 0;
 
     const handleCreateLobby = async () => {
         if (!isFormValid || quizId === null) {
@@ -106,8 +103,8 @@ export default function CreateLobbyPage() {
                 value={secPerQuestion}
                 onValueChange={setSecPerQuestion}
             />
-            {isSuccess && data?.data ? (
-                <QuizItem quiz={data.data} />
+            {isSuccess ? (
+                <QuizItem quiz={data} />
             ) : (
                 <Button
                     aria-label="select-quiz"
