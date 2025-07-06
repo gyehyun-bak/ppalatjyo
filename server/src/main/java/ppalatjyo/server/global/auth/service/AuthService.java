@@ -27,6 +27,7 @@ public class AuthService {
     private final UserService userService;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final GitHubOAuthService gitHubOAuthService;
 
     public JoinAsGuestResponseDto joinAsGuest(String nickname, HttpServletResponse response) {
         long userId = userService.joinAsGuest(nickname);
@@ -40,8 +41,8 @@ public class AuthService {
     }
 
     public JoinAsMemberByGitHubResponseDto joinAsMemberByGitHub(JoinAsMemberByGitHubRequestDto requestDto, HttpServletResponse response) {
-
-        long userId = userService.joinAsMember(requestDto.getNickname(), "", OAuthProvider.GITHUB);
+        String code = gitHubOAuthService.getEmailFromCode(requestDto.getCode());
+        long userId = userService.joinAsMember(requestDto.getNickname(), code, OAuthProvider.GITHUB);
 
         String accessToken = jwtTokenProvider.createAccessToken(userId);
         String refreshToken = createAndSaveRefreshToken(userId);

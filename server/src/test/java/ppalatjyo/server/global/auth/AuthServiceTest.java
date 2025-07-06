@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ppalatjyo.server.domain.user.UserRepository;
+import ppalatjyo.server.domain.user.UserService;
 import ppalatjyo.server.domain.user.domain.OAuthProvider;
 import ppalatjyo.server.global.auth.domain.RefreshToken;
 import ppalatjyo.server.global.auth.dto.JoinAsGuestResponseDto;
@@ -18,9 +20,8 @@ import ppalatjyo.server.global.auth.dto.JoinAsMemberByGitHubResponseDto;
 import ppalatjyo.server.global.auth.dto.TokenReissueResponseDto;
 import ppalatjyo.server.global.auth.repository.RefreshTokenRepository;
 import ppalatjyo.server.global.auth.service.AuthService;
+import ppalatjyo.server.global.auth.service.GitHubOAuthService;
 import ppalatjyo.server.global.security.jwt.JwtTokenProvider;
-import ppalatjyo.server.domain.user.UserRepository;
-import ppalatjyo.server.domain.user.UserService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -40,6 +41,9 @@ class AuthServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private GitHubOAuthService gitHubOAuthService;
 
     @InjectMocks
     private AuthService authService;
@@ -98,6 +102,7 @@ class AuthServiceTest {
         // given
         String nickname = "nickname";
         String code = "code";
+        String email = "email";
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         JoinAsMemberByGitHubRequestDto requestDto = new JoinAsMemberByGitHubRequestDto();
@@ -106,12 +111,13 @@ class AuthServiceTest {
 
         when(jwtTokenProvider.createAccessToken(anyLong())).thenReturn("accessToken");
         when(jwtTokenProvider.createRefreshToken(anyLong())).thenReturn("refreshToken");
+        when(gitHubOAuthService.getEmailFromCode(code)).thenReturn(email);
 
         // when
         JoinAsMemberByGitHubResponseDto responseDto = authService.joinAsMemberByGitHub(requestDto, response);
 
         // then
-        verify(userService).joinAsMember(eq(nickname), anyString(), eq(OAuthProvider.GITHUB));
+        verify(userService).joinAsMember(nickname, email, OAuthProvider.GITHUB);
         verify(refreshTokenRepository).save(any(RefreshToken.class));
         assertThat(responseDto.getAccessToken()).isNotNull();
     }
