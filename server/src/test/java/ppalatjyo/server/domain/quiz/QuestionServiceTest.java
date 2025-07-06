@@ -8,11 +8,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
-import ppalatjyo.server.domain.quiz.QuestionService;
 import ppalatjyo.server.domain.quiz.domain.Question;
 import ppalatjyo.server.domain.quiz.domain.Quiz;
-import ppalatjyo.server.domain.quiz.dto.QuestionCreateRequestDto;
-import ppalatjyo.server.domain.quiz.dto.QuestionUpdateRequestDto;
+import ppalatjyo.server.domain.quiz.dto.CreateQuestionRequestDto;
+import ppalatjyo.server.domain.quiz.dto.UpdateQuestionRequestDto;
 import ppalatjyo.server.domain.quiz.repository.QuestionRepository;
 import ppalatjyo.server.domain.quiz.repository.QuizRepository;
 import ppalatjyo.server.domain.user.domain.User;
@@ -45,12 +44,12 @@ class QuestionServiceTest {
         Long quizId = 1L;
         when(quizRepository.findById(quizId)).thenReturn(Optional.of(quiz));
 
-        QuestionCreateRequestDto questionCreateRequestDto = new QuestionCreateRequestDto();
-        questionCreateRequestDto.setQuizId(quizId);
-        questionCreateRequestDto.setContent("content");
+        CreateQuestionRequestDto createQuestionRequestDto = new CreateQuestionRequestDto();
+        createQuestionRequestDto.setQuizId(quizId);
+        createQuestionRequestDto.setContent("content");
 
         // when
-        questionService.create(questionCreateRequestDto);
+        questionService.create(createQuestionRequestDto);
 
         // then
         ArgumentCaptor<Question> captor = ArgumentCaptor.forClass(Question.class);
@@ -60,7 +59,7 @@ class QuestionServiceTest {
         assertThat(question).isNotNull();
         assertThat(question.getQuiz()).isEqualTo(quiz);
         assertThat(quiz.getQuestions().getFirst()).isEqualTo(question);
-        assertThat(question.getContent()).isEqualTo(questionCreateRequestDto.getContent());
+        assertThat(question.getContent()).isEqualTo(createQuestionRequestDto.getContent());
     }
 
     @Test
@@ -74,15 +73,15 @@ class QuestionServiceTest {
 
         when(questionRepository.findById(questionId)).thenReturn(Optional.of(question));
 
-        QuestionUpdateRequestDto questionUpdateRequestDto = new QuestionUpdateRequestDto();
-        questionUpdateRequestDto.setQuestionId(questionId);
-        questionUpdateRequestDto.setContent("newContent");
+        UpdateQuestionRequestDto updateQuestionRequestDto = new UpdateQuestionRequestDto();
+        updateQuestionRequestDto.setQuestionId(questionId);
+        updateQuestionRequestDto.setContent("newContent");
 
         // when
-        questionService.updateQuestion(questionUpdateRequestDto);
+        questionService.updateQuestion(updateQuestionRequestDto);
 
         // then
-        assertThat(question.getContent()).isEqualTo(questionUpdateRequestDto.getContent());
+        assertThat(question.getContent()).isEqualTo(updateQuestionRequestDto.getContent());
     }
 
     @Test

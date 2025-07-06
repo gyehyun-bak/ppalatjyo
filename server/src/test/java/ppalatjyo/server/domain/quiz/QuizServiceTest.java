@@ -3,12 +3,15 @@ package ppalatjyo.server.domain.quiz;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.domain.quiz.QuizService;
 import ppalatjyo.server.domain.quiz.domain.Quiz;
+import ppalatjyo.server.domain.quiz.domain.QuizVisibility;
+import ppalatjyo.server.domain.quiz.dto.CreateQuizRequestDto;
 import ppalatjyo.server.domain.quiz.repository.QuizRepository;
 import ppalatjyo.server.domain.user.UserRepository;
 import ppalatjyo.server.domain.user.domain.User;
@@ -36,17 +39,26 @@ class QuizServiceTest {
     void createQuiz() {
         // given
         String title = "quiz";
+        String description = "quiz description";
+        QuizVisibility visibility = QuizVisibility.PUBLIC;
         User member = User.createMember("user", "", "");
 
         Long userId = 1L;
 
+        CreateQuizRequestDto createQuizRequestDto = new CreateQuizRequestDto(userId, title, description, visibility);
+
         when(userRepository.findById(userId)).thenReturn(Optional.of(member));
 
         // when
-        quizService.create(title, userId);
+        quizService.create(createQuizRequestDto);
 
         // then
-        verify(quizRepository, times(1)).save(any(Quiz.class));
+        ArgumentCaptor<Quiz> captor = ArgumentCaptor.forClass(Quiz.class);
+        verify(quizRepository).save(captor.capture());
+        Quiz quiz = captor.getValue();
+        assertThat(quiz.getTitle()).isEqualTo(title);
+        assertThat(quiz.getDescription()).isEqualTo(description);
+        assertThat(quiz.getVisibility()).isEqualTo(visibility);
     }
 
     @Test

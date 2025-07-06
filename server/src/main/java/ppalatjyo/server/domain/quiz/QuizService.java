@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.domain.quiz.domain.Quiz;
+import ppalatjyo.server.domain.quiz.dto.CreateQuizRequestDto;
 import ppalatjyo.server.domain.quiz.exception.QuizNotFoundException;
 import ppalatjyo.server.domain.quiz.repository.QuizRepository;
 import ppalatjyo.server.domain.user.UserRepository;
@@ -18,9 +19,9 @@ public class QuizService {
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
 
-    public void create(String title, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        Quiz quiz = Quiz.createQuiz(title, user);
+    public void create(CreateQuizRequestDto requestDto) {
+        User user = userRepository.findById(requestDto.getUserId()).orElseThrow(UserNotFoundException::new);
+        Quiz quiz = Quiz.createQuiz(requestDto.getTitle(), user, requestDto.getDescription(), requestDto.getVisibility());
         quizRepository.save(quiz);
     }
 
