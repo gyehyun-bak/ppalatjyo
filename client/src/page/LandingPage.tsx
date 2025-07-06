@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { postSignUpGuest } from "../api/auth.api";
 import type { JoinAsGuestRequest } from "../api/types/auth/JoinAsGuestRequest";
 import Input from "../components/common/Input";
-import GitHubLogInButton from "../components/landing/GitHubLoginButton";
+import GitHubLogInButton from "../components/landing/GitHubLogInButton";
 
 export default function LandingPage() {
     const MAX_LENGTH = 10;
