@@ -1,15 +1,16 @@
-import { Routes, Route } from 'react-router';
-import './App.css';
-import LandingPage from './page/LandingPage';
-import RootLayout from './layout/RootLayout';
-import HomePage from './page/HomePage';
-import HomeLayout from './layout/HomeLayout';
-import BottomNavigationLayout from './layout/BottomNavigationLayout';
-import QuizPage from './page/QuizPage';
-import ProfilePage from './page/ProfilePage';
-import AuthenticationLayout from './layout/AuthenticationLayout';
-import CreateLobbyPage from './page/lobby/CreateLobbyPage';
-import QuizDetailsPage from './page/quiz/QuizDetailsPage';
+import { Routes, Route } from "react-router";
+import "./App.css";
+import LandingPage from "./page/LandingPage";
+import RootLayout from "./layout/RootLayout";
+import HomePage from "./page/HomePage";
+import HomeLayout from "./layout/HomeLayout";
+import BottomNavigationLayout from "./layout/BottomNavigationLayout";
+import QuizPage from "./page/QuizPage";
+import ProfilePage from "./page/ProfilePage";
+import AuthenticationLayout from "./layout/AuthenticationLayout";
+import CreateLobbyPage from "./page/lobby/CreateLobbyPage";
+import QuizDetailsPage from "./page/quiz/QuizDetailsPage";
+import GitHubCallbackPage from "./page/auth/GitHubCallbackPage";
 
 function App() {
     return (
@@ -33,6 +34,10 @@ function App() {
                     <Route
                         path="/quizzes/:quizId"
                         element={<QuizDetailsPage />}
+                    />
+                    <Route
+                        path="/callback/github"
+                        element={<GitHubCallbackPage />}
                     />
                 </Route>
             </Route>
