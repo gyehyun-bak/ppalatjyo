@@ -38,3 +38,9 @@ export const editQuiz = async (
         })
     ).data;
 };
+
+export const deleteQuiz = async (
+    quizId: number | string
+): Promise<QuizResponse> => {
+    return (await api.delete<QuizResponse>(`/quizzes/${quizId}`)).data;
+};

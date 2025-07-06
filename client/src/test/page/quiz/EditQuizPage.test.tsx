@@ -98,6 +98,43 @@ describe("EditQuizPage", () => {
             expect(mockNavigate).toBeCalledWith(`/quizzes/${quizId}`);
         });
     });
-    it('"삭제하기" 버튼을 클릭하면 경고 모달이 표시됩니다', async () => {});
-    it('경고 모달의 "삭제하기" 버튼을 클릭하면 삭제를 요청하고 성공 시 "퀴즈 목록" 페이지로 이동합니다', async () => {});
+
+    it('"삭제하기" 버튼을 클릭하면 경고 모달이 표시됩니다', async () => {
+        // given
+        renderWithWrapper(<EditQuizPage />);
+        const deleteButton = await screen.findByTestId("delete-button");
+
+        // when
+        await user.click(deleteButton);
+
+        // then
+        expect(
+            await screen.findByTestId("confirm-delete-button")
+        ).toBeInTheDocument();
+    });
+
+    it('경고 모달의 "삭제하기" 버튼을 클릭하면 삭제를 요청하고 성공 시 "퀴즈 목록" 페이지로 이동합니다', async () => {
+        // given
+        server.use(
+            http.delete(`${baseUrl}/quizzes/${quizId}`, () =>
+                HttpResponse.text("삭제 완료")
+            )
+        );
+
+        renderWithWrapper(<EditQuizPage />);
+
+        const deleteButton = await screen.findByTestId("delete-button");
+        await user.click(deleteButton);
+        const confirmDeleteButton = await screen.findByTestId(
+            "confirm-delete-button"
+        );
+
+        // when
+        await user.click(confirmDeleteButton);
+
+        // then
+        await waitFor(() => {
+            expect(mockNavigate).toBeCalledWith("/quizzes");
+        });
+    });
 });
