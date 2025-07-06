@@ -21,13 +21,17 @@ class QuizTest {
         // given
         String name = "quiz";
         User member = User.createMember("author", "test@email.com", "google");
+        String description = "description";
+        QuizVisibility visibility = QuizVisibility.PUBLIC;
 
         // when
-        Quiz quiz = Quiz.createQuiz(name, member);
+        Quiz quiz = Quiz.createQuiz(name, member, description, visibility);
 
         // then
         assertThat(quiz.getTitle()).isEqualTo(name);
         assertThat(quiz.getUser()).isEqualTo(member);
+        assertThat(quiz.getDescription()).isEqualTo(description);
+        assertThat(quiz.getVisibility()).isEqualTo(visibility);
     }
 
     @Test

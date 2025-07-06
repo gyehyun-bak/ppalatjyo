@@ -23,6 +23,10 @@ public class Quiz extends BaseEntity {
     @Column(name = "quiz_id")
     private Long id;
     private String title;
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    private QuizVisibility visibility;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -43,6 +47,21 @@ public class Quiz extends BaseEntity {
                 .title(title)
                 .user(user)
                 .questions(new ArrayList<>())
+                .visibility(QuizVisibility.PRIVATE)
+                .build();
+    }
+
+    public static Quiz createQuiz(String title, User user, String description, QuizVisibility visibility) {
+        if (user.getRole() == UserRole.GUEST) {
+            throw new GuestCannotCreateQuizException();
+        }
+
+        return Quiz.builder()
+                .title(title)
+                .user(user)
+                .description(description)
+                .questions(new ArrayList<>())
+                .visibility(visibility)
                 .build();
     }
 
