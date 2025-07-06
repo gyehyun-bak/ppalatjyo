@@ -3,6 +3,7 @@ package ppalatjyo.server.domain.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ppalatjyo.server.domain.user.domain.OAuthProvider;
 import ppalatjyo.server.domain.user.domain.User;
 import ppalatjyo.server.domain.user.dto.JoinAsMemberResponseDto;
 import ppalatjyo.server.domain.user.exception.UserNotFoundException;
@@ -22,16 +23,15 @@ public class UserService {
         return saved.getId();
     }
 
-    public JoinAsMemberResponseDto joinAsMember(String nickname, String oAuthEmail, String oAuthProvider) {
-        User member = User.createMember(nickname, oAuthEmail, oAuthProvider);
-        userRepository.save(member);
-
-        return new JoinAsMemberResponseDto("", "");
+    public long joinAsMember(String nickname, String oAuthEmail, OAuthProvider provider) {
+        User member = User.createMember(nickname, oAuthEmail, provider);
+        User saved = userRepository.save(member);
+        return saved.getId();
     }
 
-    public void promoteGuestToMember(Long userId, String oAuthEmail, String oAuthProvider) {
+    public void promoteGuestToMember(Long userId, String oAuthEmail, OAuthProvider provider) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        user.promoteGuestToMember(oAuthEmail, oAuthProvider);
+        user.promoteGuestToMember(oAuthEmail, provider);
     }
 
     public void changeNickname(Long userId, String newNickname) {

@@ -36,7 +36,7 @@ class AnswerServiceTest {
     @DisplayName("정답 추가")
     void addAnswer() {
         // given
-        User user = User.createMember("user", "", "");
+        User user = User.createMember("user", "", null);
         Quiz quiz = Quiz.createQuiz("quiz", user);
         Question question = Question.create(quiz, "question");
 
@@ -65,7 +65,7 @@ class AnswerServiceTest {
     @DisplayName("정답 수정")
     void updateAnswer() {
         // given
-        User user = User.createMember("user", "", "");
+        User user = User.createMember("user", "", null);
         Quiz quiz = Quiz.createQuiz("quiz", user);
         Question question = Question.create(quiz, "question");
         Answer answer = Answer.createAnswer(question, "answer");
@@ -89,7 +89,7 @@ class AnswerServiceTest {
     @DisplayName("정답 삭제")
     void deleteAnswer() {
         // given
-        User user = User.createMember("user", "", "");
+        User user = User.createMember("user", "", null);
         Quiz quiz = Quiz.createQuiz("quiz", user);
         Question question = Question.create(quiz, "question");
         Answer answer = Answer.createAnswer(question, "answer");

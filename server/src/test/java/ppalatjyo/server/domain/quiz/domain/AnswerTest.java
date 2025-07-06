@@ -2,9 +2,6 @@ package ppalatjyo.server.domain.quiz.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ppalatjyo.server.domain.quiz.domain.Answer;
-import ppalatjyo.server.domain.quiz.domain.Question;
-import ppalatjyo.server.domain.quiz.domain.Quiz;
 import ppalatjyo.server.domain.user.domain.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,7 +12,7 @@ class AnswerTest {
     @DisplayName("Answer 생성")
     void createAnswer() {
         // given
-        User member = User.createMember("user", "", "");
+        User member = User.createMember("user", "", null);
         Quiz quiz = Quiz.createQuiz("quiz", member);
         String content = "answer";
         Question question = Question.create(quiz, "question");
@@ -34,7 +31,7 @@ class AnswerTest {
     @DisplayName("content 변경")
     void changeContent() {
         // given
-        User member = User.createMember("user", "", "");
+        User member = User.createMember("user", "", null);
         Quiz quiz = Quiz.createQuiz("quiz", member);
         String content = "answer";
         Question question = Question.create(quiz, "question");
@@ -53,7 +50,7 @@ class AnswerTest {
     @DisplayName("Answer 삭제")
     void delete() {
         // given
-        User member = User.createMember("user", "", "");
+        User member = User.createMember("user", "", null);
         Quiz quiz = Quiz.createQuiz("quiz", member);
         String content = "answer";
         Question question = Question.create(quiz, "question");
@@ -70,7 +67,7 @@ class AnswerTest {
     @DisplayName("정답 확인 - 정답")
     void isCorrect() {
         // given
-        User member = User.createMember("user", "", "");
+        User member = User.createMember("user", "", null);
         Quiz quiz = Quiz.createQuiz("quiz", member);
         String content = "answer";
         Question question = Question.create(quiz, "question");
@@ -87,7 +84,7 @@ class AnswerTest {
     @DisplayName("정답 확인 - 오답")
     void isCorrectFalse() {
         // given
-        User member = User.createMember("user", "", "");
+        User member = User.createMember("user", "", null);
         Quiz quiz = Quiz.createQuiz("quiz", member);
         String content = "answer";
         Question question = Question.create(quiz, "question");

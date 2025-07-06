@@ -38,7 +38,7 @@ class QuestionServiceTest {
     @DisplayName("Question 생성, Quiz에 추가")
     void createQuestion() {
         // given
-        User member = User.createMember("user", "", "");
+        User member = User.createMember("user", "", null);
         Quiz quiz = Quiz.createQuiz("title", member);
 
         Long quizId = 1L;
@@ -66,7 +66,7 @@ class QuestionServiceTest {
     @DisplayName("Question 수정")
     void updateQuestion() {
         // given
-        User member = User.createMember("user", "", "");
+        User member = User.createMember("user", "", null);
         Quiz quiz = Quiz.createQuiz("title", member);
         Question question = Question.create(quiz, "content");
         Long questionId = 1L;
@@ -88,7 +88,7 @@ class QuestionServiceTest {
     @DisplayName("Question 삭제")
     void delete() {
         // given
-        User member = User.createMember("user", "", "");
+        User member = User.createMember("user", "", null);
         Quiz quiz = Quiz.createQuiz("title", member);
         Question question = Question.create(quiz, "content");
         Long questionId = 1L;

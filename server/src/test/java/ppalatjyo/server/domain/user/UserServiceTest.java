@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.domain.user.UserRepository;
 import ppalatjyo.server.domain.user.UserService;
+import ppalatjyo.server.domain.user.domain.OAuthProvider;
 import ppalatjyo.server.domain.user.domain.User;
 import ppalatjyo.server.domain.user.domain.UserRole;
 import ppalatjyo.server.domain.user.dto.JoinAsMemberResponseDto;
@@ -55,15 +56,18 @@ class UserServiceTest {
         // given
         String nickname = "nickname";
         String oAuthEmail = "test@test.com";
-        String oAuthProvider = "github";
+        OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
+
+        User saved = mock(User.class);
+        when(userRepository.save(any(User.class))).thenReturn(saved);
+        when(saved.getId()).thenReturn(1L);
 
         // when
-        JoinAsMemberResponseDto responseDto = userService.joinAsMember(nickname, oAuthEmail, oAuthProvider);
+        long userId = userService.joinAsMember(nickname, oAuthEmail, oAuthProvider);
 
         // then
-        assertThat(responseDto.getAccessToken()).isNotNull();
-        assertThat(responseDto.getRefreshToken()).isNotNull();
-        // TODO: 2025-06-02 Token 검증 추가
+        assertThat(userId).isEqualTo(1L);
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
@@ -73,7 +77,7 @@ class UserServiceTest {
         User user = User.createGuest("nickname");
         Long id = 1L;
         String oAuthEmail = "test@test.com";
-        String oAuthProvider = "github";
+        OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
         // when

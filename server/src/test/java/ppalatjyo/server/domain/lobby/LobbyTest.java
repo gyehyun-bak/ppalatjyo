@@ -7,6 +7,7 @@ import ppalatjyo.server.domain.lobby.domain.LobbyOptions;
 import ppalatjyo.server.domain.lobby.domain.LobbyStatus;
 import ppalatjyo.server.domain.lobby.exception.LobbyAlreadyDeletedException;
 import ppalatjyo.server.domain.quiz.domain.Quiz;
+import ppalatjyo.server.domain.user.domain.OAuthProvider;
 import ppalatjyo.server.domain.user.domain.User;
 import ppalatjyo.server.domain.userlobby.UserLobby;
 
@@ -21,7 +22,7 @@ class LobbyTest {
         // given
         String name = "name";
         User host = User.createGuest("user");
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", OAuthProvider.GITHUB));
         int maxUsers = 10;
         int minPerGame = 10;
         int secPerQuestion = 60;
@@ -49,7 +50,7 @@ class LobbyTest {
         String name = "name";
         String password = "1234";
         User host = User.createGuest("user");
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", OAuthProvider.GITHUB));
         int maxUsers = 10;
         int minPerGame = 10;
         int secPerQuestion = 60;
@@ -80,7 +81,7 @@ class LobbyTest {
         // given
         String oldName = "oldName";
         String newName = "newName";
-        Lobby lobby = Lobby.create(oldName, User.createGuest("host"), Quiz.createQuiz("quiz", User.createMember("n", "e", "p")), LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create(oldName, User.createGuest("host"), Quiz.createQuiz("quiz", User.createMember("n", "e", OAuthProvider.GITHUB)), LobbyOptions.defaultOptions());
 
         // when
         lobby.changeName(newName);
@@ -93,7 +94,7 @@ class LobbyTest {
     @DisplayName("Lobby 삭제")
     void deleteLobby() {
         // given
-        Lobby lobby = Lobby.create("lobby", User.createGuest("host"), Quiz.createQuiz("quiz", User.createMember("n", "e", "p")), LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", User.createGuest("host"), Quiz.createQuiz("quiz", User.createMember("n", "e", OAuthProvider.GITHUB)), LobbyOptions.defaultOptions());
 
         // when
         lobby.delete();
@@ -107,7 +108,7 @@ class LobbyTest {
     @DisplayName("삭제된 Lobby는 삭제할 수 없음")
     void lobbyAlreadyDeleted() {
         // given
-        Lobby lobby = Lobby.create("lobby", User.createGuest("host"), Quiz.createQuiz("quiz", User.createMember("n", "e", "p")), LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", User.createGuest("host"), Quiz.createQuiz("quiz", User.createMember("n", "e", OAuthProvider.GITHUB)), LobbyOptions.defaultOptions());
         lobby.delete();
 
         // when
@@ -122,7 +123,7 @@ class LobbyTest {
         User oldHost = User.createGuest("oldHost");
         User newHost = User.createGuest("newHost");
 
-        Lobby lobby = Lobby.create("lobby", oldHost, Quiz.createQuiz("quiz", User.createMember("n", "e", "p")), LobbyOptions.defaultOptions());
+        Lobby lobby = Lobby.create("lobby", oldHost, Quiz.createQuiz("quiz", User.createMember("n", "e", OAuthProvider.GITHUB)), LobbyOptions.defaultOptions());
 
         // when
         lobby.changeHost(newHost);
@@ -136,7 +137,7 @@ class LobbyTest {
     void changeOptions() {
         // given
         LobbyOptions options = LobbyOptions.createOptions(10, 10, 10);
-        Lobby lobby = Lobby.create("lobby", User.createGuest("host"), Quiz.createQuiz("quiz", User.createMember("n", "e", "p")), options);
+        Lobby lobby = Lobby.create("lobby", User.createGuest("host"), Quiz.createQuiz("quiz", User.createMember("n", "e", OAuthProvider.GITHUB)), options);
         LobbyOptions newOptions = LobbyOptions.createOptions(20, 20, 20);
 
         // when
@@ -152,10 +153,10 @@ class LobbyTest {
     @DisplayName("Quiz 변경")
     void changeQuiz() {
         // given
-        Quiz oldQuiz = Quiz.createQuiz("oldQuiz", User.createMember("n", "e", "p"));
+        Quiz oldQuiz = Quiz.createQuiz("oldQuiz", User.createMember("n", "e", OAuthProvider.GITHUB));
         Lobby lobby = Lobby.create("lobby", User.createGuest("host"), oldQuiz, LobbyOptions.defaultOptions());
 
-        Quiz newQuiz = Quiz.createQuiz("newQuiz", User.createMember("n", "e", "p"));
+        Quiz newQuiz = Quiz.createQuiz("newQuiz", User.createMember("n", "e", OAuthProvider.GITHUB));
 
         // when
         lobby.changeQuiz(newQuiz);
@@ -168,7 +169,7 @@ class LobbyTest {
     @DisplayName("로비가 비었으면 isEmpty() == true")
     void isEmpty() {
         // given
-        Quiz quiz = Quiz.createQuiz("oldQuiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("oldQuiz", User.createMember("n", "e", OAuthProvider.GITHUB));
         User user = User.createGuest("host");
         Lobby lobby = Lobby.create("lobby", user, quiz, LobbyOptions.defaultOptions());
 
@@ -185,7 +186,7 @@ class LobbyTest {
     @DisplayName("로비에 누가 남아있으면 isEmpty() == false")
     void isEmptyFalse() {
         // given
-        Quiz quiz = Quiz.createQuiz("oldQuiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("oldQuiz", User.createMember("n", "e", OAuthProvider.GITHUB));
         User user = User.createGuest("host");
         Lobby lobby = Lobby.create("lobby", user, quiz, LobbyOptions.defaultOptions());
 

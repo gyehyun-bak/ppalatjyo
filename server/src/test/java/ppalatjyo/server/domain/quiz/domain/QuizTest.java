@@ -20,7 +20,7 @@ class QuizTest {
     void createQuiz() {
         // given
         String name = "quiz";
-        User member = User.createMember("author", "test@email.com", "google");
+        User member = User.createMember("author", "test@email.com", null);
         String description = "description";
         QuizVisibility visibility = QuizVisibility.PUBLIC;
 
@@ -51,7 +51,7 @@ class QuizTest {
     @DisplayName("Quiz 이름 수정")
     void changeTitle() {
         // given
-        Quiz quiz = Quiz.createQuiz("oldName", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("oldName", User.createMember("n", "e", null));
         String name = "newName";
 
         // when
@@ -65,7 +65,7 @@ class QuizTest {
     @DisplayName("문제 추가")
     void addQuestion() {
         // given
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", null));
         Question question = Question.create(quiz, "content");
         Answer.createAnswer(question, "answer1");
         Answer.createAnswer(question, "answer2");
@@ -85,7 +85,7 @@ class QuizTest {
     @DisplayName("문제 삭제")
     void delete() {
         // given
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", null));
 
         // when
         quiz.delete();

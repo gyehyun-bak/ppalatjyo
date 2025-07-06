@@ -46,7 +46,7 @@ class LobbyServiceTest {
         // given
         String name = "lobby";
         User host = User.createGuest("host");
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", null));
         long hostId = 1L;
         long quizId = 1L;
         int maxUsers = 10;
@@ -79,7 +79,7 @@ class LobbyServiceTest {
         // given
         String name = "lobby";
         User host = User.createGuest("host");
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", null));
         LobbyOptions options = LobbyOptions.createOptions(10, 10, 10);
         Lobby lobby = Lobby.create(name, host, quiz, options);
 
@@ -103,7 +103,7 @@ class LobbyServiceTest {
         // given
         String name = "lobby";
         User host = User.createGuest("host");
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", null));
         LobbyOptions options = LobbyOptions.defaultOptions();
         Lobby lobby = Lobby.create(name, host, quiz, options);
 
@@ -122,7 +122,7 @@ class LobbyServiceTest {
     void deleteIfEmpty() {
         // given
         Long lobbyId = 1L;
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", null));
         Lobby lobby = Lobby.create("lobby", User.createGuest("host"), quiz, LobbyOptions.defaultOptions());
         when(userLobbyRepository.countByLobbyIdAndLeftAtIsNull(lobbyId)).thenReturn(0);
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
@@ -142,7 +142,7 @@ class LobbyServiceTest {
         String name = "lobby";
         User oldHost = User.createGuest("oldHost");
         User newHost = User.createGuest("newHost");
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", null));
         LobbyOptions options = LobbyOptions.defaultOptions();
         Lobby lobby = Lobby.create(name, oldHost, quiz, options);
 
@@ -162,8 +162,8 @@ class LobbyServiceTest {
     @DisplayName("Quiz 변경")
     void changeQuiz() {
         // given
-        Quiz oldQuiz = Quiz.createQuiz("oldQuiz", User.createMember("n", "e", "p"));
-        Quiz newQuiz = Quiz.createQuiz("newQuiz", User.createMember("n", "e", "p"));
+        Quiz oldQuiz = Quiz.createQuiz("oldQuiz", User.createMember("n", "e", null));
+        Quiz newQuiz = Quiz.createQuiz("newQuiz", User.createMember("n", "e", null));
         Lobby lobby = Lobby.create("lobby", User.createGuest("host"), oldQuiz, LobbyOptions.defaultOptions());
 
         long newQuizId = 1L;

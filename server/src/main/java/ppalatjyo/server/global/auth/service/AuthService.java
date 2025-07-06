@@ -1,12 +1,16 @@
-package ppalatjyo.server.global.auth;
+package ppalatjyo.server.global.auth.service;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ppalatjyo.server.domain.user.domain.OAuthProvider;
+import ppalatjyo.server.global.auth.exception.RefreshTokenException;
 import ppalatjyo.server.global.auth.domain.RefreshToken;
-import ppalatjyo.server.global.auth.dto.SignUpAsGuestResponseDto;
+import ppalatjyo.server.global.auth.dto.JoinAsGuestResponseDto;
+import ppalatjyo.server.global.auth.dto.JoinAsMemberByGitHubRequestDto;
+import ppalatjyo.server.global.auth.dto.JoinAsMemberByGitHubResponseDto;
 import ppalatjyo.server.global.auth.dto.TokenReissueResponseDto;
 import ppalatjyo.server.global.auth.repository.RefreshTokenRepository;
 import ppalatjyo.server.global.security.jwt.JwtTokenProvider;
@@ -23,8 +27,9 @@ public class AuthService {
     private final UserService userService;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final GitHubOAuthService gitHubOAuthService;
 
-    public SignUpAsGuestResponseDto singUpAsGuest(String nickname, HttpServletResponse response) {
+    public JoinAsGuestResponseDto joinAsGuest(String nickname, HttpServletResponse response) {
         long userId = userService.joinAsGuest(nickname);
 
         String accessToken = jwtTokenProvider.createAccessToken(userId);
@@ -32,7 +37,18 @@ public class AuthService {
 
         storeRefreshTokenInCookie(response, refreshToken);
 
-        return new SignUpAsGuestResponseDto(accessToken);
+        return new JoinAsGuestResponseDto(accessToken);
+    }
+
+    public JoinAsMemberByGitHubResponseDto joinAsMemberByGitHub(JoinAsMemberByGitHubRequestDto requestDto, HttpServletResponse response) {
+        String code = gitHubOAuthService.getEmailFromCode(requestDto.getCode());
+        long userId = userService.joinAsMember(requestDto.getNickname(), code, OAuthProvider.GITHUB);
+
+        String accessToken = jwtTokenProvider.createAccessToken(userId);
+        String refreshToken = createAndSaveRefreshToken(userId);
+        storeRefreshTokenInCookie(response, refreshToken);
+
+        return new JoinAsMemberByGitHubResponseDto(accessToken);
     }
 
     public TokenReissueResponseDto reissue(String oldRefreshToken, HttpServletResponse response) {

@@ -54,7 +54,7 @@ class GameServiceTest {
         // given
         Long lobbyId = 1L;
 
-        User host = User.createMember("host", "email", "provider");
+        User host = User.createMember("host", "email", null);
         User participant = User.createGuest("user");
 
         Quiz quiz = Quiz.createQuiz("quiz", host);
@@ -187,7 +187,7 @@ class GameServiceTest {
         // given
         String answer = "answer";
 
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", null));
         Question question1 = Question.create(quiz, "question1");
         Answer.createAnswer(question1, answer);
 
@@ -234,7 +234,7 @@ class GameServiceTest {
         String answer = "answer1";
         String wrongAnswer = "wrongAnswer";
 
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", null));
         Question question1 = Question.create(quiz, "question1");
         Answer.createAnswer(question1, answer);
 
@@ -288,7 +288,7 @@ class GameServiceTest {
     }
 
     private Quiz createQuiz() {
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", null));
         Question question1 = Question.create(quiz, "question1");
         Answer.createAnswer(question1, "answer1");
         Question question2 = Question.create(quiz, "question2");
