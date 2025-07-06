@@ -15,9 +15,10 @@ describe("CreateQuizPage", () => {
         // given
         renderWithWrapper(<CreateQuizPage />);
 
-        const titleInput = screen.getByLabelText("퀴즈 이름");
-        const descriptionInput = screen.getByLabelText("퀴즈 설명");
-        const privateRadio = screen.getByLabelText("비공개");
+        const titleInput = screen.getByTestId("title-input");
+        const descriptionInput = screen.getByTestId("description-input");
+        const publicRadio = await screen.findByTestId("public-radio");
+        const privateRadio = await screen.findByTestId("private-radio");
 
         const user = userEvent.setup();
 
@@ -30,7 +31,8 @@ describe("CreateQuizPage", () => {
         await waitFor(() => {
             expect(titleInput).toHaveValue("퀴즈 제목");
             expect(descriptionInput).toHaveValue("퀴즈 설명 내용");
-            expect(privateRadio).toBeChecked();
+            expect(privateRadio).toHaveAttribute("data-selected", "true");
+            expect(publicRadio).not.toHaveAttribute("data-selected", "true");
         });
     });
 

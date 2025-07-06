@@ -50,8 +50,8 @@ describe("EditQuizPage", () => {
         await waitFor(() => {
             expect(titleInput).toHaveValue(title);
             expect(descriptionInput).toHaveValue(description);
-            expect(privateRadio).toBeChecked(); // visibility가 PRIVATE이므로
-            expect(publicRadio).not.toBeChecked();
+            expect(privateRadio).toHaveAttribute("data-selected", "true");
+            expect(publicRadio).not.toHaveAttribute("data-selected", "true");
         });
     });
     it('"저장하기"를 클릭하면 업데이트를 요청하고 성공 시 "퀴즈 상세 보기" 페이지로 이동합니다', async () => {});
