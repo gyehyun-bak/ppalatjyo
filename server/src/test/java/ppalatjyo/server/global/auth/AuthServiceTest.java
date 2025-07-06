@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ppalatjyo.server.global.auth.domain.RefreshToken;
-import ppalatjyo.server.global.auth.dto.SignUpAsGuestResponseDto;
+import ppalatjyo.server.global.auth.dto.JoinAsGuestResponseDto;
 import ppalatjyo.server.global.auth.dto.TokenReissueResponseDto;
 import ppalatjyo.server.global.auth.repository.RefreshTokenRepository;
 import ppalatjyo.server.global.security.jwt.JwtTokenProvider;
@@ -50,7 +50,7 @@ class AuthServiceTest {
         when(jwtTokenProvider.createAccessToken(anyLong())).thenReturn("accessToken");
 
         // when
-        SignUpAsGuestResponseDto responseDto = authService.singUpAsGuest(nickname, response);
+        JoinAsGuestResponseDto responseDto = authService.joinAsGuest(nickname, response);
 
         // then
         verify(userService).joinAsGuest(nickname);
@@ -86,5 +86,13 @@ class AuthServiceTest {
         verify(response).addCookie(any(Cookie.class));
 
         assertThat(responseDto.getAccessToken()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("멤버로 가입 - GitHub")
+    void joinAsMemberByGitHub() {
+        String nickname = "nickname";
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
     }
 }

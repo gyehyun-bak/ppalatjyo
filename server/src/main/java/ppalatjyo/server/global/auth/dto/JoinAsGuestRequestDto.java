@@ -3,6 +3,6 @@ package ppalatjyo.server.global.auth.dto;
 import lombok.Data;
 
 @Data
-public class GuestLoginRequestDto {
+public class JoinAsGuestRequestDto {
     private String nickname;
 }

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.global.auth.domain.RefreshToken;
-import ppalatjyo.server.global.auth.dto.SignUpAsGuestResponseDto;
+import ppalatjyo.server.global.auth.dto.JoinAsGuestResponseDto;
 import ppalatjyo.server.global.auth.dto.TokenReissueResponseDto;
 import ppalatjyo.server.global.auth.repository.RefreshTokenRepository;
 import ppalatjyo.server.global.security.jwt.JwtTokenProvider;
@@ -24,7 +24,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public SignUpAsGuestResponseDto singUpAsGuest(String nickname, HttpServletResponse response) {
+    public JoinAsGuestResponseDto joinAsGuest(String nickname, HttpServletResponse response) {
         long userId = userService.joinAsGuest(nickname);
 
         String accessToken = jwtTokenProvider.createAccessToken(userId);
@@ -32,7 +32,7 @@ public class AuthService {
 
         storeRefreshTokenInCookie(response, refreshToken);
 
-        return new SignUpAsGuestResponseDto(accessToken);
+        return new JoinAsGuestResponseDto(accessToken);
     }
 
     public TokenReissueResponseDto reissue(String oldRefreshToken, HttpServletResponse response) {

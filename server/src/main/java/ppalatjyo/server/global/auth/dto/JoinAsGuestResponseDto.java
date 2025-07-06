@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SignUpAsGuestResponseDto {
+public class JoinAsGuestResponseDto {
     private String accessToken;
 }
