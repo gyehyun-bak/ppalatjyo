@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ppalatjyo.server.domain.user.domain.OAuthProvider;
+import ppalatjyo.server.domain.user.dto.JoinAsMemberResponseDto;
 import ppalatjyo.server.global.auth.domain.RefreshToken;
 import ppalatjyo.server.global.auth.dto.JoinAsGuestResponseDto;
 import ppalatjyo.server.global.auth.dto.JoinAsMemberByGitHubRequestDto;
@@ -35,6 +37,17 @@ public class AuthService {
         storeRefreshTokenInCookie(response, refreshToken);
 
         return new JoinAsGuestResponseDto(accessToken);
+    }
+
+    public JoinAsMemberByGitHubResponseDto joinAsMemberByGitHub(JoinAsMemberByGitHubRequestDto requestDto, HttpServletResponse response) {
+
+        long userId = userService.joinAsMember(requestDto.getNickname(), "", OAuthProvider.GITHUB);
+
+        String accessToken = jwtTokenProvider.createAccessToken(userId);
+        String refreshToken = createAndSaveRefreshToken(userId);
+        storeRefreshTokenInCookie(response, refreshToken);
+
+        return new JoinAsMemberByGitHubResponseDto(accessToken);
     }
 
     public TokenReissueResponseDto reissue(String oldRefreshToken, HttpServletResponse response) {
@@ -77,9 +90,5 @@ public class AuthService {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
-    }
-
-    public JoinAsMemberByGitHubResponseDto joinAsMemberByGitHub(JoinAsMemberByGitHubRequestDto requestDto, HttpServletResponse response) {
-        return null;
     }
 }

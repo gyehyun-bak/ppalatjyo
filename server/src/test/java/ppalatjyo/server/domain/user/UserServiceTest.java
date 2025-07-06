@@ -58,13 +58,16 @@ class UserServiceTest {
         String oAuthEmail = "test@test.com";
         OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
 
+        User saved = mock(User.class);
+        when(userRepository.save(any(User.class))).thenReturn(saved);
+        when(saved.getId()).thenReturn(1L);
+
         // when
-        JoinAsMemberResponseDto responseDto = userService.joinAsMember(nickname, oAuthEmail, oAuthProvider);
+        long userId = userService.joinAsMember(nickname, oAuthEmail, oAuthProvider);
 
         // then
-        assertThat(responseDto.getAccessToken()).isNotNull();
-        assertThat(responseDto.getRefreshToken()).isNotNull();
-        // TODO: 2025-06-02 Token 검증 추가
+        assertThat(userId).isEqualTo(1L);
+        verify(userRepository).save(any(User.class));
     }
 
     @Test

@@ -23,11 +23,10 @@ public class UserService {
         return saved.getId();
     }
 
-    public JoinAsMemberResponseDto joinAsMember(String nickname, String oAuthEmail, OAuthProvider provider) {
+    public long joinAsMember(String nickname, String oAuthEmail, OAuthProvider provider) {
         User member = User.createMember(nickname, oAuthEmail, provider);
-        userRepository.save(member);
-
-        return new JoinAsMemberResponseDto("", "");
+        User saved = userRepository.save(member);
+        return saved.getId();
     }
 
     public void promoteGuestToMember(Long userId, String oAuthEmail, OAuthProvider provider) {

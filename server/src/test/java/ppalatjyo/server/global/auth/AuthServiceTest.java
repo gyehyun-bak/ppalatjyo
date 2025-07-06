@@ -110,7 +110,7 @@ class AuthServiceTest {
         JoinAsMemberByGitHubResponseDto responseDto = authService.joinAsMemberByGitHub(requestDto, response);
 
         // then
-        verify(userService).joinAsMember(nickname, anyString(), OAuthProvider.GITHUB);
+        verify(userService).joinAsMember(eq(nickname), anyString(), eq(OAuthProvider.GITHUB));
         verify(refreshTokenRepository).save(any(RefreshToken.class));
         assertThat(responseDto.getAccessToken()).isNotNull();
     }
