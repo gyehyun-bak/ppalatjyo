@@ -1,10 +1,11 @@
-import type { CreateQuizRequest } from './types/quiz/CreateQuizRequest';
-import type { QuizResponse } from './types/quiz/QuizResponse';
-import type { QuizzesResponse } from './types/quiz/QuizzesResponse';
-import { api } from './axios';
+import type { CreateQuizRequest } from "./types/quiz/CreateQuizRequest";
+import type { QuizResponse } from "./types/quiz/QuizResponse";
+import type { QuizzesResponse } from "./types/quiz/QuizzesResponse";
+import { api } from "./axios";
+import type { EditQuizRequest } from "./types/quiz/EditQuizRequest";
 
 export const getQuizzes = async (): Promise<QuizzesResponse> => {
-    return (await api.get<QuizzesResponse>('/quizzes')).data;
+    return (await api.get<QuizzesResponse>("/quizzes")).data;
 };
 
 export const getQuiz = async (
@@ -26,4 +27,20 @@ export const createQuiz = async (
             data,
         })
     ).data;
+};
+
+export const editQuiz = async (
+    data: EditQuizRequest
+): Promise<QuizResponse> => {
+    return (
+        await api.put<QuizResponse>(`/quizzes/${data.id}`, {
+            data,
+        })
+    ).data;
+};
+
+export const deleteQuiz = async (
+    quizId: number | string
+): Promise<QuizResponse> => {
+    return (await api.delete<QuizResponse>(`/quizzes/${quizId}`)).data;
 };

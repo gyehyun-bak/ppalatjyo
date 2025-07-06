@@ -1,27 +1,27 @@
-import { http, HttpResponse } from 'msw';
-import { baseUrl, server } from '../../mocks/server';
-import type { LobbiesResponse } from '../../api/types/lobby/LobbiesResponse';
-import { renderWithWrapper } from '../utils/renderWithWrapper';
-import HomePage from '../../page/HomePage';
-import { waitFor, screen } from '@testing-library/dom';
-import '@testing-library/jest-dom';
-import userEvent from '@testing-library/user-event';
-import { mockNavigate } from '../../../__mocks__/react-router';
+import { http, HttpResponse } from "msw";
+import { baseUrl, server } from "../../mocks/server";
+import type { LobbiesResponse } from "../../api/types/lobby/LobbiesResponse";
+import { renderWithWrapper } from "../utils/renderWithWrapper";
+import HomePage from "../../page/HomePage";
+import { waitFor, screen } from "@testing-library/dom";
+import "@testing-library/jest-dom";
+import userEvent from "@testing-library/user-event";
+import { mockNavigate } from "../../../__mocks__/react-router";
 
-vi.mock('react-router');
+vi.mock("react-router");
 
-describe('Home', () => {
-    it('로비 목록을 가져와 표시한다', async () => {
+describe("Home", () => {
+    it("로비 목록을 가져와 표시한다", async () => {
         // given
         server.use(
             http.get<never, never, LobbiesResponse>(
-                baseUrl + '/lobbies',
+                baseUrl + "/lobbies",
                 async () => {
                     return HttpResponse.json({
                         lobbies: [
                             {
                                 id: 1,
-                                name: '로비 1',
+                                name: "로비 1",
                                 options: {
                                     maxUsers: 10,
                                     minPerGame: 2,
@@ -29,18 +29,19 @@ describe('Home', () => {
                                 },
                                 quiz: {
                                     id: 1,
-                                    title: '퀴즈 1',
-                                    authorNickname: '',
+                                    title: "퀴즈 1",
+                                    authorNickname: "",
                                     totalQuestions: 0,
                                     questions: [],
-                                    description: '',
+                                    description: "",
+                                    visibility: "PUBLIC",
                                 },
-                                host: { id: 1, nickname: '사용자1' },
+                                host: { id: 1, nickname: "사용자1" },
                                 currentUserCount: 1111,
                             },
                             {
                                 id: 2,
-                                name: '로비 2',
+                                name: "로비 2",
                                 options: {
                                     maxUsers: 5,
                                     minPerGame: 1,
@@ -48,13 +49,14 @@ describe('Home', () => {
                                 },
                                 quiz: {
                                     id: 2,
-                                    title: '퀴즈 2',
-                                    authorNickname: '',
+                                    title: "퀴즈 2",
+                                    authorNickname: "",
                                     totalQuestions: 0,
                                     questions: [],
-                                    description: '',
+                                    description: "",
+                                    visibility: "PUBLIC",
                                 },
-                                host: { id: 2, nickname: '사용자2' },
+                                host: { id: 2, nickname: "사용자2" },
                                 currentUserCount: 2222,
                             },
                         ],
@@ -79,17 +81,17 @@ describe('Home', () => {
         });
     });
 
-    it('<새로고침> 버튼을 누르면 로비 목록을 새로고침한다', async () => {
+    it("<새로고침> 버튼을 누르면 로비 목록을 새로고침한다", async () => {
         // given
         server.use(
             http.get<never, never, LobbiesResponse>(
-                baseUrl + '/lobbies',
+                baseUrl + "/lobbies",
                 async () => {
                     return HttpResponse.json({
                         lobbies: [
                             {
                                 id: 1,
-                                name: 'oldLobby',
+                                name: "oldLobby",
                                 options: {
                                     maxUsers: 10,
                                     minPerGame: 2,
@@ -97,13 +99,14 @@ describe('Home', () => {
                                 },
                                 quiz: {
                                     id: 1,
-                                    title: '퀴즈 1',
-                                    authorNickname: '',
+                                    title: "퀴즈 1",
+                                    authorNickname: "",
                                     totalQuestions: 0,
                                     questions: [],
-                                    description: '',
+                                    description: "",
+                                    visibility: "PUBLIC",
                                 },
-                                host: { id: 1, nickname: '사용자1' },
+                                host: { id: 1, nickname: "사용자1" },
                                 currentUserCount: 1111,
                             },
                         ],
@@ -113,19 +116,19 @@ describe('Home', () => {
         );
 
         renderWithWrapper(<HomePage />);
-        const refreshButton = screen.getByLabelText('refresh');
+        const refreshButton = screen.getByLabelText("refresh");
         const user = userEvent.setup();
 
         // when
         server.use(
             http.get<never, never, LobbiesResponse>(
-                baseUrl + '/lobbies',
+                baseUrl + "/lobbies",
                 async () => {
                     return HttpResponse.json({
                         lobbies: [
                             {
                                 id: 1,
-                                name: 'newLobby',
+                                name: "newLobby",
                                 options: {
                                     maxUsers: 10,
                                     minPerGame: 2,
@@ -133,13 +136,14 @@ describe('Home', () => {
                                 },
                                 quiz: {
                                     id: 1,
-                                    title: '퀴즈 1',
-                                    authorNickname: '',
+                                    title: "퀴즈 1",
+                                    authorNickname: "",
                                     totalQuestions: 0,
                                     questions: [],
-                                    description: '',
+                                    description: "",
+                                    visibility: "PUBLIC",
                                 },
-                                host: { id: 1, nickname: '사용자1' },
+                                host: { id: 1, nickname: "사용자1" },
                                 currentUserCount: 1111,
                             },
                         ],
@@ -156,10 +160,10 @@ describe('Home', () => {
         });
     });
 
-    it('<로비 만들기> 버튼을 누르면 로비 만들기 페이지로 이동한다', async () => {
+    it("<로비 만들기> 버튼을 누르면 로비 만들기 페이지로 이동한다", async () => {
         // given
         renderWithWrapper(<HomePage />);
-        const createLobbyButton = screen.getByLabelText('create-lobby');
+        const createLobbyButton = screen.getByLabelText("create-lobby");
         const user = userEvent.setup();
 
         // when
@@ -167,7 +171,7 @@ describe('Home', () => {
 
         // then
         await waitFor(() => {
-            expect(mockNavigate).toHaveBeenCalledWith('/lobbies/create');
+            expect(mockNavigate).toHaveBeenCalledWith("/lobbies/create");
         });
     });
 });

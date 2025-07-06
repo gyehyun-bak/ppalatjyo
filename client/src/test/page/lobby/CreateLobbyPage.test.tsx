@@ -1,22 +1,22 @@
-import { screen, waitFor } from '@testing-library/dom';
-import CreateLobbyPage from '../../../page/lobby/CreateLobbyPage';
-import { useLobbyCreateStore } from '../../../store/useLobbyCreateStore';
-import { renderWithWrapper } from '../../utils/renderWithWrapper';
-import '@testing-library/jest-dom';
-import { baseUrl, server } from '../../../mocks/server';
-import { http, HttpResponse } from 'msw';
-import type { QuizResponse } from '../../../api/types/quiz/QuizResponse';
-import userEvent from '@testing-library/user-event';
-import type { LobbyResponse } from '../../../api/types/lobby/LobbyResponse';
-import { mockNavigate } from '../../../../__mocks__/react-router';
+import { screen, waitFor } from "@testing-library/dom";
+import CreateLobbyPage from "../../../page/lobby/CreateLobbyPage";
+import { useLobbyCreateStore } from "../../../store/useLobbyCreateStore";
+import { renderWithWrapper } from "../../utils/renderWithWrapper";
+import "@testing-library/jest-dom";
+import { baseUrl, server } from "../../../mocks/server";
+import { http, HttpResponse } from "msw";
+import type { QuizResponse } from "../../../api/types/quiz/QuizResponse";
+import userEvent from "@testing-library/user-event";
+import type { LobbyResponse } from "../../../api/types/lobby/LobbyResponse";
+import { mockNavigate } from "../../../../__mocks__/react-router";
 
-vi.mock('zustand');
-vi.mock('react-router');
+vi.mock("zustand");
+vi.mock("react-router");
 
-describe('CreateLobbyPage', () => {
-    it('useLobbyStore에서 기존 설정을 불러온다', async () => {
+describe("CreateLobbyPage", () => {
+    it("useLobbyStore에서 기존 설정을 불러온다", async () => {
         // given
-        const prevName = '테스트 로비';
+        const prevName = "테스트 로비";
         const prevMaxUsers = 11;
         const prevMinPerGame = 22;
         const prevSecPerQuestion = 33;
@@ -32,22 +32,22 @@ describe('CreateLobbyPage', () => {
         renderWithWrapper(<CreateLobbyPage />);
 
         // then
-        expect(screen.getByLabelText('로비 이름')).toHaveValue(prevName);
-        expect(screen.getByLabelText('최대 인원')).toHaveValue(
+        expect(screen.getByLabelText("로비 이름")).toHaveValue(prevName);
+        expect(screen.getByLabelText("최대 인원")).toHaveValue(
             String(prevMaxUsers)
         );
-        expect(screen.getByLabelText('게임 시간 (분)')).toHaveValue(
+        expect(screen.getByLabelText("게임 시간 (분)")).toHaveValue(
             String(prevMinPerGame)
         );
-        expect(screen.getByLabelText('문제당 제한 시간 (초)')).toHaveValue(
+        expect(screen.getByLabelText("문제당 제한 시간 (초)")).toHaveValue(
             String(prevSecPerQuestion)
         );
     });
 
-    it('쿼리 파라미터에 quizId가 있으면, 퀴즈 정보를 불러와 선택한 퀴즈에 표시한다', async () => {
+    it("쿼리 파라미터에 quizId가 있으면, 퀴즈 정보를 불러와 선택한 퀴즈에 표시한다", async () => {
         // given
         const quizId = 123;
-        const quizTitle = '테스트 퀴즈';
+        const quizTitle = "테스트 퀴즈";
 
         server.use(
             http.get<never, never, QuizResponse>(
@@ -56,10 +56,11 @@ describe('CreateLobbyPage', () => {
                     return HttpResponse.json({
                         id: quizId,
                         title: quizTitle,
-                        authorNickname: '',
+                        authorNickname: "",
                         totalQuestions: 0,
-                        description: '',
+                        description: "",
                         questions: [],
+                        visibility: "PUBLIC",
                     });
                 }
             )
@@ -76,13 +77,13 @@ describe('CreateLobbyPage', () => {
         });
     });
 
-    it('쿼리 파라미터에 quizId가 없으면, 퀴즈 선택하기 버튼이 표시된다', async () => {
+    it("쿼리 파라미터에 quizId가 없으면, 퀴즈 선택하기 버튼이 표시된다", async () => {
         // when
         renderWithWrapper(<CreateLobbyPage />);
 
         // then
         await waitFor(() => {
-            expect(screen.getByLabelText('select-quiz')).toBeInTheDocument();
+            expect(screen.getByLabelText("select-quiz")).toBeInTheDocument();
         });
     });
 
@@ -90,14 +91,14 @@ describe('CreateLobbyPage', () => {
         // given
         const { setName, setMaxUsers, setMinPerGame, setSecPerQuestion } =
             useLobbyCreateStore.getState();
-        setName('로비 이름');
+        setName("로비 이름");
         setMaxUsers(12);
         setMinPerGame(5);
         setSecPerQuestion(30);
 
         renderWithWrapper(<CreateLobbyPage />);
 
-        const selectQuizButton = screen.getByLabelText('select-quiz');
+        const selectQuizButton = screen.getByLabelText("select-quiz");
         const user = userEvent.setup();
 
         // when
@@ -106,22 +107,22 @@ describe('CreateLobbyPage', () => {
         // then
         await waitFor(() => {
             const state = useLobbyCreateStore.getState();
-            expect(state.name).toBe('로비 이름');
+            expect(state.name).toBe("로비 이름");
             expect(state.maxUsers).toBe(12);
             expect(state.minPerGame).toBe(5);
             expect(state.secPerQuestion).toBe(30);
-            expect(mockNavigate).toHaveBeenCalledWith('/quizzes');
+            expect(mockNavigate).toHaveBeenCalledWith("/quizzes");
         });
     });
 
-    it('모든 필수 입력 필드가 채워지지 않으면 <로비 만들기> 버튼이 비활성화된다', () => {
+    it("모든 필수 입력 필드가 채워지지 않으면 <로비 만들기> 버튼이 비활성화된다", () => {
         // given
         renderWithWrapper(<CreateLobbyPage />);
 
-        const createLobbyButton = screen.getByRole('button', {
-            name: '로비 만들기',
+        const createLobbyButton = screen.getByRole("button", {
+            name: "로비 만들기",
         });
-        const nameInput = screen.getByLabelText('로비 이름');
+        const nameInput = screen.getByLabelText("로비 이름");
         const user = userEvent.setup();
 
         // when
@@ -135,7 +136,7 @@ describe('CreateLobbyPage', () => {
         // given
         const quizId = 123;
         const lobbyId = 456;
-        const lobbyName = '테스트 로비';
+        const lobbyName = "테스트 로비";
         const maxUsers = 10;
         const minPerGame = 5;
         const secPerQuestion = 30;
@@ -144,7 +145,7 @@ describe('CreateLobbyPage', () => {
             http.post<never, never, LobbyResponse>(`${baseUrl}/lobbies`, () => {
                 return HttpResponse.json({
                     id: lobbyId,
-                    name: '',
+                    name: "",
                     currentUserCount: 0,
                     options: {
                         maxUsers: 0,
@@ -153,15 +154,16 @@ describe('CreateLobbyPage', () => {
                     },
                     host: {
                         id: 0,
-                        nickname: '',
+                        nickname: "",
                     },
                     quiz: {
                         id: 0,
-                        title: '',
-                        authorNickname: '',
+                        title: "",
+                        authorNickname: "",
                         totalQuestions: 0,
-                        description: '',
+                        description: "",
                         questions: [],
+                        visibility: "PUBLIC",
                     },
                 });
             }),
@@ -170,11 +172,12 @@ describe('CreateLobbyPage', () => {
                 () => {
                     return HttpResponse.json({
                         id: quizId,
-                        title: '테스트 퀴즈',
-                        authorNickname: '',
+                        title: "테스트 퀴즈",
+                        authorNickname: "",
                         totalQuestions: 0,
-                        description: '',
+                        description: "",
                         questions: [],
+                        visibility: "PUBLIC",
                     });
                 }
             )
@@ -183,14 +186,14 @@ describe('CreateLobbyPage', () => {
         renderWithWrapper(<CreateLobbyPage />, {
             route: `/lobbies/create?quizId=${quizId}`,
         });
-        const createLobbyButton = screen.getByRole('button', {
-            name: '로비 만들기',
+        const createLobbyButton = screen.getByRole("button", {
+            name: "로비 만들기",
         });
-        const nameInput = screen.getByLabelText('로비 이름');
-        const maxUsersInput = screen.getByLabelText('최대 인원');
-        const minPerGameInput = screen.getByLabelText('게임 시간 (분)');
+        const nameInput = screen.getByLabelText("로비 이름");
+        const maxUsersInput = screen.getByLabelText("최대 인원");
+        const minPerGameInput = screen.getByLabelText("게임 시간 (분)");
         const secPerQuestionInput =
-            screen.getByLabelText('문제당 제한 시간 (초)');
+            screen.getByLabelText("문제당 제한 시간 (초)");
         const user = userEvent.setup();
 
         // when
