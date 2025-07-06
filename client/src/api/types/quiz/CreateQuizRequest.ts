@@ -1,5 +1,7 @@
+import type { QuizVisibility } from "./QuizVisibility";
+
 export interface CreateQuizRequest {
     title: string;
     description: string;
-    visibility: 'PUBLIC' | 'PRIVATE';
+    visibility: QuizVisibility;
 }

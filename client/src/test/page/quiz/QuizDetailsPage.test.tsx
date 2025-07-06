@@ -1,40 +1,40 @@
-import { http, HttpResponse } from 'msw';
-import { baseUrl, server } from '../../../mocks/server';
-import type { QuizResponse } from '../../../api/types/quiz/QuizResponse';
-import type { QuestionResponse } from '../../../api/types/quiz/QuestionResponse';
-import { renderWithWrapper } from '../../utils/renderWithWrapper';
-import QuizDetailsPage from '../../../page/quiz/QuizDetailsPage';
-import { screen, waitFor } from '@testing-library/dom';
+import { http, HttpResponse } from "msw";
+import { baseUrl, server } from "../../../mocks/server";
+import type { QuizResponse } from "../../../api/types/quiz/QuizResponse";
+import type { QuestionResponse } from "../../../api/types/quiz/QuestionResponse";
+import { renderWithWrapper } from "../../utils/renderWithWrapper";
+import QuizDetailsPage from "../../../page/quiz/QuizDetailsPage";
+import { screen, waitFor } from "@testing-library/dom";
 import {
     mockNavigate,
     mockUseParams,
-} from '../../../../__mocks__/react-router';
-import userEvent from '@testing-library/user-event';
+} from "../../../../__mocks__/react-router";
+import userEvent from "@testing-library/user-event";
 
-vi.mock('react-router');
+vi.mock("react-router");
 
-describe('QuizDetailsPage', () => {
+describe("QuizDetailsPage", () => {
     const quizId = 123;
 
     beforeEach(() => {
         mockUseParams.mockReturnValue({ quizId });
     });
 
-    it('쿼리 파라미터의 quizId로 퀴즈 이름, 작성자 이름, 퀴즈 설명, 문제를 불러와 표시합니다', async () => {
+    it("쿼리 파라미터의 quizId로 퀴즈 이름, 작성자 이름, 퀴즈 설명, 문제를 불러와 표시합니다", async () => {
         //given
-        const title = 'quiz123';
-        const authorNickname = 'hello';
-        const description = 'description123';
+        const title = "quiz123";
+        const authorNickname = "hello";
+        const description = "description123";
         const totalQuestions = 2;
         const questions: QuestionResponse[] = [
             {
                 id: 0,
-                content: 'question1',
+                content: "question1",
                 answers: [],
             },
             {
                 id: 1,
-                content: 'question2',
+                content: "question2",
                 answers: [],
             },
         ];
@@ -50,6 +50,7 @@ describe('QuizDetailsPage', () => {
                         description: description,
                         totalQuestions: totalQuestions,
                         questions: questions,
+                        visibility: "PUBLIC",
                     })
             )
         );
@@ -68,27 +69,27 @@ describe('QuizDetailsPage', () => {
         });
     });
 
-    it('각 문제를 클릭하면 해당 문제 상세보기 페이지로 이동합니다', async () => {
+    it("각 문제를 클릭하면 해당 문제 상세보기 페이지로 이동합니다", async () => {
         //given
         const questionId = 456;
 
         const questions: QuestionResponse[] = [
-            { id: questionId, content: 'question1', answers: [] },
+            { id: questionId, content: "question1", answers: [] },
         ];
-
-        const response = {
-            id: quizId,
-            title: 'quiz123',
-            authorNickname: 'hello',
-            description: 'description123',
-            totalQuestions: 1,
-            questions,
-        };
 
         server.use(
             http.get<never, never, QuizResponse>(
                 `${baseUrl}/quizzes/${quizId}?includeQuestions=true`,
-                () => HttpResponse.json(response)
+                () =>
+                    HttpResponse.json({
+                        id: quizId,
+                        title: "quiz123",
+                        authorNickname: "hello",
+                        description: "description123",
+                        totalQuestions: 1,
+                        questions,
+                        visibility: "PUBLIC",
+                    })
             )
         );
 
@@ -109,32 +110,32 @@ describe('QuizDetailsPage', () => {
             );
         });
     });
-    it('<문제 추가> 버튼을 클릭하면 문제 생성 페이지로 이동합니다', async () => {
+    it("<문제 추가> 버튼을 클릭하면 문제 생성 페이지로 이동합니다", async () => {
         //given
         const questions: QuestionResponse[] = [
-            { id: 0, content: 'question1', answers: [] },
+            { id: 0, content: "question1", answers: [] },
         ];
-
-        const response = {
-            id: quizId,
-            title: 'quiz123',
-            authorNickname: 'hello',
-            description: 'description123',
-            totalQuestions: 1,
-            questions,
-        };
 
         server.use(
             http.get<never, never, QuizResponse>(
                 `${baseUrl}/quizzes/${quizId}?includeQuestions=true`,
-                () => HttpResponse.json(response)
+                () =>
+                    HttpResponse.json({
+                        id: quizId,
+                        title: "quiz123",
+                        authorNickname: "hello",
+                        description: "description123",
+                        totalQuestions: 1,
+                        questions,
+                        visibility: "PUBLIC",
+                    })
             )
         );
 
         renderWithWrapper(<QuizDetailsPage />);
 
         const createQuestionButton = await screen.findByTestId(
-            'create-question'
+            "create-question"
         );
         const user = userEvent.setup();
 
@@ -148,31 +149,31 @@ describe('QuizDetailsPage', () => {
             );
         });
     });
-    it('<수정하기> 버튼을 클릭하면 해당 퀴즈 수정 페이지로 이동합니다', async () => {
+    it("<수정하기> 버튼을 클릭하면 해당 퀴즈 수정 페이지로 이동합니다", async () => {
         //given
         const questions: QuestionResponse[] = [
-            { id: 0, content: 'question1', answers: [] },
+            { id: 0, content: "question1", answers: [] },
         ];
-
-        const response = {
-            id: quizId,
-            title: 'quiz123',
-            authorNickname: 'hello',
-            description: 'description123',
-            totalQuestions: 1,
-            questions,
-        };
 
         server.use(
             http.get<never, never, QuizResponse>(
                 `${baseUrl}/quizzes/${quizId}?includeQuestions=true`,
-                () => HttpResponse.json(response)
+                () =>
+                    HttpResponse.json({
+                        id: quizId,
+                        title: "quiz123",
+                        authorNickname: "hello",
+                        description: "description123",
+                        totalQuestions: 1,
+                        questions,
+                        visibility: "PUBLIC",
+                    })
             )
         );
 
         renderWithWrapper(<QuizDetailsPage />);
 
-        const editQuizButton = await screen.findByTestId('edit-quiz');
+        const editQuizButton = await screen.findByTestId("edit-quiz");
         const user = userEvent.setup();
 
         // when
@@ -184,31 +185,31 @@ describe('QuizDetailsPage', () => {
         });
     });
 
-    it('<로비 만들기> 버튼을 클릭하면, 해당 퀴즈 아이디를 쿼리 파라미터로 갖는 로비 만들기 페이지로 이동합니다', async () => {
+    it("<로비 만들기> 버튼을 클릭하면, 해당 퀴즈 아이디를 쿼리 파라미터로 갖는 로비 만들기 페이지로 이동합니다", async () => {
         //given
         const questions: QuestionResponse[] = [
-            { id: 0, content: 'question1', answers: [] },
+            { id: 0, content: "question1", answers: [] },
         ];
-
-        const response = {
-            id: quizId,
-            title: 'quiz123',
-            authorNickname: 'hello',
-            description: 'description123',
-            totalQuestions: 1,
-            questions,
-        };
 
         server.use(
             http.get<never, never, QuizResponse>(
                 `${baseUrl}/quizzes/${quizId}?includeQuestions=true`,
-                () => HttpResponse.json(response)
+                () =>
+                    HttpResponse.json({
+                        id: quizId,
+                        title: "quiz123",
+                        authorNickname: "hello",
+                        description: "description123",
+                        totalQuestions: 1,
+                        questions,
+                        visibility: "PUBLIC",
+                    })
             )
         );
 
         renderWithWrapper(<QuizDetailsPage />);
 
-        const createLobbyButton = await screen.findByTestId('create-lobby');
+        const createLobbyButton = await screen.findByTestId("create-lobby");
         const user = userEvent.setup();
 
         // when
