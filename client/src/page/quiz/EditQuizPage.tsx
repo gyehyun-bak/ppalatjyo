@@ -1,13 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router";
-import { getQuiz } from "../../api/quiz.api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router";
+import { editQuiz, getQuiz } from "../../api/quiz.api";
 import { Button, Form, Radio, RadioGroup, Textarea } from "@heroui/react";
 import Input from "../../components/common/Input";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { QuizVisibility } from "../../api/types/quiz/QuizVisibility";
+import type { EditQuizRequest } from "../../api/types/quiz/EditQuizRequest";
 
 export default function EditQuizPage() {
     const { quizId } = useParams<{ quizId: string }>();
+    const navigate = useNavigate();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [visibility, setVisibility] = useState<QuizVisibility>("PRIVATE");
@@ -18,6 +20,13 @@ export default function EditQuizPage() {
         enabled: !!quizId,
     });
 
+    const { mutate, isPending } = useMutation({
+        mutationFn: (data: EditQuizRequest) => editQuiz(data),
+        onSuccess: () => {
+            navigate(`/quizzes/${quizId}`);
+        },
+    });
+
     useEffect(() => {
         if (isSuccess) {
             setTitle(data.title);
@@ -26,8 +35,20 @@ export default function EditQuizPage() {
         }
     }, [isSuccess, data]);
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!quizId) return;
+        const data: EditQuizRequest = {
+            id: quizId,
+            title: title,
+            description: description,
+            visibility: visibility,
+        };
+        mutate(data);
+    };
+
     return (
-        <Form>
+        <Form onSubmit={handleSubmit}>
             <Input
                 isRequired
                 type="text"
@@ -67,7 +88,13 @@ export default function EditQuizPage() {
                     비공개
                 </Radio>
             </RadioGroup>
-            <Button type="submit">저장하기</Button>
+            <Button
+                isLoading={isPending}
+                type="submit"
+                data-testid="save-button"
+            >
+                저장하기
+            </Button>
         </Form>
     );
 }

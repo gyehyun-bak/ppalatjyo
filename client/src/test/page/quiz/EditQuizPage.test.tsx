@@ -60,6 +60,7 @@ describe("EditQuizPage", () => {
             expect(publicRadio).not.toHaveAttribute("data-selected", "true");
         });
     });
+
     it('"저장하기"를 클릭하면 업데이트를 요청하고 성공 시 "퀴즈 상세 보기" 페이지로 이동합니다', async () => {
         // given
         server.use(
@@ -77,7 +78,16 @@ describe("EditQuizPage", () => {
                     })
             )
         );
+
         renderWithWrapper(<EditQuizPage />);
+
+        const titleInput = await screen.findByTestId("title-input");
+        const descriptionInput = await screen.findByTestId("description-input");
+        const publicRadio = await screen.findByTestId("public-radio");
+        await user.type(titleInput, "제목");
+        await user.type(descriptionInput, "설명");
+        await user.click(publicRadio);
+
         const saveButton = await screen.findByTestId("save-button");
 
         // when
