@@ -5,7 +5,7 @@
 
 <빨랐죠>는 먼저 맞추면 이기는 채팅 기반의 퀴즈 게임 웹 서비스입니다. 다른 사람들이 만든 퀴즈로 플레이하거나, 원하는 퀴즈를 만들어 사람들과 경쟁할 수 있습니다.
 
-[프로젝트 소개 블로그](https://velog.io/@gyehyunbak/%EB%B9%A8%EB%9E%90%EC%A3%A0-%EA%B8%B0%ED%9A%8D-%EB%B0%8F-%EC%84%A4%EA%B3%84)
+[프로젝트 소개 블로그](https://velog.io/@gyehyunbak/Ppalatjyo)
 
 ## 기능 소개
 
