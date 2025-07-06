@@ -48,7 +48,7 @@ class UserGameTest {
     }
 
     private Quiz getQuiz() {
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", "p"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("n", "e", null));
         Question question1 = Question.create(quiz, "question1");
         Answer.createAnswer(question1, "answer1");
         Question question2 = Question.create(quiz, "question2");

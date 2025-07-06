@@ -49,7 +49,7 @@ class UserLobbyServiceTest {
         Long userId = 1L;
         Long lobbyId = 1L;
 
-        User host = User.createMember("host", "email", "provider");
+        User host = User.createMember("host", "email", null);
         Lobby lobby = Lobby.create("lobby", host, Quiz.createQuiz("quiz", host), LobbyOptions.defaultOptions());
         User user = User.createGuest("user");
 
@@ -80,7 +80,7 @@ class UserLobbyServiceTest {
         Long userId = 1L;
         Long lobbyId = 1L;
 
-        User host = User.createMember("host", "email", "provider");
+        User host = User.createMember("host", "email", null);
         Lobby lobby = Lobby.create("lobby", host, Quiz.createQuiz("quiz", host), LobbyOptions.defaultOptions());
         Question.create(lobby.getQuiz(), "question");
         User user = User.createGuest("user");
@@ -106,7 +106,7 @@ class UserLobbyServiceTest {
         int maxUsers = 10;
         LobbyOptions options = LobbyOptions.createOptions(maxUsers, 10, 10);
 
-        User host = User.createMember("host", "email", "provider");
+        User host = User.createMember("host", "email", null);
         Lobby lobby = Lobby.create("lobby", host, Quiz.createQuiz("quiz", host), options);
         User user = User.createGuest("user");
 
@@ -130,7 +130,7 @@ class UserLobbyServiceTest {
         Long userId = 1L;
         Long lobbyId = 1L;
 
-        User host = User.createMember("host", "email", "provider");
+        User host = User.createMember("host", "email", null);
         Lobby lobby = Lobby.withPassword("lobby", password, host, Quiz.createQuiz("quiz", host), LobbyOptions.defaultOptions());
         User user = User.createGuest("user");
 
@@ -162,7 +162,7 @@ class UserLobbyServiceTest {
         Long userId = 1L;
         Long lobbyId = 1L;
 
-        User host = User.createMember("host", "email", "provider");
+        User host = User.createMember("host", "email", null);
         Lobby lobby = Lobby.withPassword("lobby", password, host, Quiz.createQuiz("quiz", host), LobbyOptions.defaultOptions());
         User user = User.createGuest("user");
 
@@ -182,7 +182,7 @@ class UserLobbyServiceTest {
         Long userId = 1L;
         Long lobbyId = 1L;
 
-        User host = User.createMember("host", "email", "provider");
+        User host = User.createMember("host", "email", null);
         Lobby lobby = Lobby.create("lobby", host, Quiz.createQuiz("quiz", host), LobbyOptions.defaultOptions());
         User user = User.createGuest("user");
 

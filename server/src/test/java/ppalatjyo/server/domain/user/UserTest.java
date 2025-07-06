@@ -2,6 +2,7 @@ package ppalatjyo.server.domain.user;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ppalatjyo.server.domain.user.domain.OAuthProvider;
 import ppalatjyo.server.domain.user.exception.UserAlreadyMemberException;
 import ppalatjyo.server.domain.user.domain.User;
 import ppalatjyo.server.domain.user.domain.UserRole;
@@ -35,7 +36,7 @@ class UserTest {
         // given
         String nickname = "nickname";
         String oAuthEmail = "member@test.com";
-        String oAuthProvider = "provider";
+        OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
 
         // when
         User user = User.createMember(nickname, oAuthEmail, oAuthProvider);
@@ -58,7 +59,7 @@ class UserTest {
         User user = User.createGuest(nickname);
 
         String oAuthEmail = "member@test.com";
-        String oAuthProvider = "provider";
+        OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
 
         // when
         user.promoteGuestToMember(oAuthEmail, oAuthProvider);
@@ -75,7 +76,7 @@ class UserTest {
         // given
         String nickname = "nickname";
         String oAuthEmail = "member@test.com";
-        String oAuthProvider = "provider";
+        OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
 
         User user = User.createMember(nickname, oAuthEmail, oAuthProvider);
 

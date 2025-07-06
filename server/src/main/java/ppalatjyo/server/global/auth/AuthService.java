@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.global.auth.domain.RefreshToken;
 import ppalatjyo.server.global.auth.dto.JoinAsGuestResponseDto;
+import ppalatjyo.server.global.auth.dto.JoinAsMemberByGitHubRequestDto;
+import ppalatjyo.server.global.auth.dto.JoinAsMemberByGitHubResponseDto;
 import ppalatjyo.server.global.auth.dto.TokenReissueResponseDto;
 import ppalatjyo.server.global.auth.repository.RefreshTokenRepository;
 import ppalatjyo.server.global.security.jwt.JwtTokenProvider;
@@ -75,5 +77,9 @@ public class AuthService {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
+    }
+
+    public JoinAsMemberByGitHubResponseDto joinAsMemberByGitHub(JoinAsMemberByGitHubRequestDto requestDto, HttpServletResponse response) {
+        return null;
     }
 }

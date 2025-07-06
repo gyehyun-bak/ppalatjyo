@@ -8,7 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
-import ppalatjyo.server.domain.quiz.QuizService;
 import ppalatjyo.server.domain.quiz.domain.Quiz;
 import ppalatjyo.server.domain.quiz.domain.QuizVisibility;
 import ppalatjyo.server.domain.quiz.dto.CreateQuizRequestDto;
@@ -41,7 +40,7 @@ class QuizServiceTest {
         String title = "quiz";
         String description = "quiz description";
         QuizVisibility visibility = QuizVisibility.PUBLIC;
-        User member = User.createMember("user", "", "");
+        User member = User.createMember("user", "", null);
 
         Long userId = 1L;
 
@@ -65,7 +64,7 @@ class QuizServiceTest {
     @DisplayName("Quiz 이름 수정")
     void changeTitle() {
         // given
-        User member = User.createMember("user", "", "");
+        User member = User.createMember("user", "", null);
         Quiz quiz = Quiz.createQuiz("title", member);
 
         Long quizId = 1L;
@@ -84,7 +83,7 @@ class QuizServiceTest {
     @DisplayName("Quiz 삭제")
     void delete() {
         // given
-        User member = User.createMember("user", "", "");
+        User member = User.createMember("user", "", null);
         Quiz quiz = Quiz.createQuiz("title", member);
 
         Long quizId = 1L;

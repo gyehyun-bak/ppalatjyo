@@ -32,7 +32,7 @@ class UserGameServiceTest {
     void increaseScoreBy() {
         // given
         User user = User.createGuest("user");
-        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("m", "email", "password"));
+        Quiz quiz = Quiz.createQuiz("quiz", User.createMember("m", "email", null));
         Lobby lobby = Lobby.create(
                 "lobby",
                 user,

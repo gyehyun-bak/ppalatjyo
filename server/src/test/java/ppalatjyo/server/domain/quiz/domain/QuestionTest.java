@@ -16,7 +16,7 @@ class QuestionTest {
     void create() {
         // given
         String content = "content";
-        User user = User.createMember("author", "<EMAIL>", "google");
+        User user = User.createMember("author", "<EMAIL>", null);
         Quiz quiz = Quiz.createQuiz("quiz", user);
 
         // when
@@ -32,7 +32,7 @@ class QuestionTest {
     @DisplayName("content 변경")
     void changeContent() {
         // given
-        User user = User.createMember("author", "<EMAIL>", "google");
+        User user = User.createMember("author", "<EMAIL>", null);
         Quiz quiz = Quiz.createQuiz("quiz", user);
         Question question = Question.create(quiz, "content");
 
@@ -49,7 +49,7 @@ class QuestionTest {
     @DisplayName("Question 삭제")
     void delete() {
         // given
-        User user = User.createMember("author", "<EMAIL>", "google");
+        User user = User.createMember("author", "<EMAIL>", null);
         Quiz quiz = Quiz.createQuiz("quiz", user);
         Question question = Question.create(quiz, "content");
 
@@ -64,7 +64,7 @@ class QuestionTest {
     @DisplayName("정답 확인 - 정답")
     void isCorrect() {
         // given
-        User user = User.createMember("author", "<EMAIL>", "google");
+        User user = User.createMember("author", "<EMAIL>", null);
         Quiz quiz = Quiz.createQuiz("quiz", user);
         Question question = Question.create(quiz, "question");
 
@@ -82,7 +82,7 @@ class QuestionTest {
     @DisplayName("정답 확인 - 오답")
     void isCorrectFalse() {
         // given
-        User user = User.createMember("author", "<EMAIL>", "google");
+        User user = User.createMember("author", "<EMAIL>", null);
         Quiz quiz = Quiz.createQuiz("quiz", user);
         Question question = Question.create(quiz, "question");
 

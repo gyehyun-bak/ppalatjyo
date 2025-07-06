@@ -21,7 +21,9 @@ public class User extends BaseEntity {
     private Long id;
     private String nickname;
     private String oAuthEmail;
-    private String oAuthProvider;
+
+    @Enumerated(EnumType.STRING)
+    private OAuthProvider oAuthProvider;
 
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
@@ -38,22 +40,22 @@ public class User extends BaseEntity {
                 .build();
     }
 
-    public static User createMember(String nickname, String oAuthEmail, String oAuthProvider) {
+    public static User createMember(String nickname, String oAuthEmail, OAuthProvider provider) {
         return User.builder()
                 .nickname(nickname)
                 .role(UserRole.MEMBER)
                 .oAuthEmail(oAuthEmail)
-                .oAuthProvider(oAuthProvider)
+                .oAuthProvider(provider)
                 .build();
     }
 
-    public void promoteGuestToMember(String oAuthEmail, String oAuthProvider) {
+    public void promoteGuestToMember(String oAuthEmail, OAuthProvider provider) {
         if (this.role == UserRole.MEMBER || this.role == UserRole.ADMIN) {
             throw new UserAlreadyMemberException();
         }
 
         this.oAuthEmail = oAuthEmail;
-        this.oAuthProvider = oAuthProvider;
+        this.oAuthProvider = provider;
         this.role = UserRole.MEMBER;
     }
 

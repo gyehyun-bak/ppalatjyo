@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.domain.user.UserRepository;
 import ppalatjyo.server.domain.user.UserService;
+import ppalatjyo.server.domain.user.domain.OAuthProvider;
 import ppalatjyo.server.domain.user.domain.User;
 import ppalatjyo.server.domain.user.domain.UserRole;
 import ppalatjyo.server.domain.user.dto.JoinAsMemberResponseDto;
@@ -55,7 +56,7 @@ class UserServiceTest {
         // given
         String nickname = "nickname";
         String oAuthEmail = "test@test.com";
-        String oAuthProvider = "github";
+        OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
 
         // when
         JoinAsMemberResponseDto responseDto = userService.joinAsMember(nickname, oAuthEmail, oAuthProvider);
@@ -73,7 +74,7 @@ class UserServiceTest {
         User user = User.createGuest("nickname");
         Long id = 1L;
         String oAuthEmail = "test@test.com";
-        String oAuthProvider = "github";
+        OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
         // when

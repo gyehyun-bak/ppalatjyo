@@ -10,8 +10,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ppalatjyo.server.domain.user.domain.OAuthProvider;
 import ppalatjyo.server.global.auth.domain.RefreshToken;
 import ppalatjyo.server.global.auth.dto.JoinAsGuestResponseDto;
+import ppalatjyo.server.global.auth.dto.JoinAsMemberByGitHubRequestDto;
+import ppalatjyo.server.global.auth.dto.JoinAsMemberByGitHubResponseDto;
 import ppalatjyo.server.global.auth.dto.TokenReissueResponseDto;
 import ppalatjyo.server.global.auth.repository.RefreshTokenRepository;
 import ppalatjyo.server.global.security.jwt.JwtTokenProvider;
@@ -91,8 +94,24 @@ class AuthServiceTest {
     @Test
     @DisplayName("멤버로 가입 - GitHub")
     void joinAsMemberByGitHub() {
+        // given
         String nickname = "nickname";
+        String code = "code";
         HttpServletResponse response = mock(HttpServletResponse.class);
 
+        JoinAsMemberByGitHubRequestDto requestDto = new JoinAsMemberByGitHubRequestDto();
+        requestDto.setNickname(nickname);
+        requestDto.setCode(code);
+
+        when(jwtTokenProvider.createAccessToken(anyLong())).thenReturn("accessToken");
+        when(jwtTokenProvider.createRefreshToken(anyLong())).thenReturn("refreshToken");
+
+        // when
+        JoinAsMemberByGitHubResponseDto responseDto = authService.joinAsMemberByGitHub(requestDto, response);
+
+        // then
+        verify(userService).joinAsMember(nickname, anyString(), OAuthProvider.GITHUB);
+        verify(refreshTokenRepository).save(any(RefreshToken.class));
+        assertThat(responseDto.getAccessToken()).isNotNull();
     }
 }
