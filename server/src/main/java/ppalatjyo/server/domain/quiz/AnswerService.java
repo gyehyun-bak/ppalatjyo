@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.domain.quiz.domain.Answer;
 import ppalatjyo.server.domain.quiz.domain.Question;
-import ppalatjyo.server.domain.quiz.dto.AnswerCreateRequestDto;
-import ppalatjyo.server.domain.quiz.dto.AnswerUpdateRequestDto;
+import ppalatjyo.server.domain.quiz.dto.CreateAnswerRequestDto;
+import ppalatjyo.server.domain.quiz.dto.UpdateAnswerRequestDto;
 import ppalatjyo.server.domain.quiz.exception.AnswerNotFoundException;
 import ppalatjyo.server.domain.quiz.exception.QuestionNotFoundException;
 import ppalatjyo.server.domain.quiz.repository.AnswerRepository;
@@ -20,13 +20,13 @@ public class AnswerService {
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
 
-    public void create(AnswerCreateRequestDto requestDto) {
+    public void create(CreateAnswerRequestDto requestDto) {
         Question question = questionRepository.findById(requestDto.getQuestionId()).orElseThrow(QuestionNotFoundException::new);
         Answer answer = Answer.createAnswer(question, requestDto.getContent());
         answerRepository.save(answer);
     }
 
-    public void update(AnswerUpdateRequestDto requestDto) {
+    public void update(UpdateAnswerRequestDto requestDto) {
         Answer answer = answerRepository.findById(requestDto.getAnswerId()).orElseThrow(AnswerNotFoundException::new);
         answer.changeContent(requestDto.getContent());
     }

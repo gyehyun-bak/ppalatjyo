@@ -7,12 +7,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ppalatjyo.server.domain.quiz.AnswerService;
 import ppalatjyo.server.domain.quiz.domain.Answer;
 import ppalatjyo.server.domain.quiz.domain.Question;
 import ppalatjyo.server.domain.quiz.domain.Quiz;
-import ppalatjyo.server.domain.quiz.dto.AnswerCreateRequestDto;
-import ppalatjyo.server.domain.quiz.dto.AnswerUpdateRequestDto;
+import ppalatjyo.server.domain.quiz.dto.CreateAnswerRequestDto;
+import ppalatjyo.server.domain.quiz.dto.UpdateAnswerRequestDto;
 import ppalatjyo.server.domain.quiz.repository.AnswerRepository;
 import ppalatjyo.server.domain.quiz.repository.QuestionRepository;
 import ppalatjyo.server.domain.user.domain.User;
@@ -44,7 +43,7 @@ class AnswerServiceTest {
         Long questionId = 1L;
         String content = "answer";
 
-        AnswerCreateRequestDto requestDto = new AnswerCreateRequestDto();
+        CreateAnswerRequestDto requestDto = new CreateAnswerRequestDto();
         requestDto.setQuestionId(questionId);
         requestDto.setContent(content);
 
@@ -75,7 +74,7 @@ class AnswerServiceTest {
         when(answerRepository.findById(answerId)).thenReturn(Optional.of(answer));
 
         String newContent = "newContent";
-        AnswerUpdateRequestDto requestDto = new AnswerUpdateRequestDto();
+        UpdateAnswerRequestDto requestDto = new UpdateAnswerRequestDto();
         requestDto.setAnswerId(answerId);
         requestDto.setContent(newContent);
 
