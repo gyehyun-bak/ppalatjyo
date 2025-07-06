@@ -1,4 +1,4 @@
-package ppalatjyo.server.global.auth;
+package ppalatjyo.server.global.auth.service;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.domain.user.domain.OAuthProvider;
-import ppalatjyo.server.domain.user.dto.JoinAsMemberResponseDto;
+import ppalatjyo.server.global.auth.exception.RefreshTokenException;
 import ppalatjyo.server.global.auth.domain.RefreshToken;
 import ppalatjyo.server.global.auth.dto.JoinAsGuestResponseDto;
 import ppalatjyo.server.global.auth.dto.JoinAsMemberByGitHubRequestDto;
