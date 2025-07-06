@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import ppalatjyo.server.global.auth.exception.GitHubAccessTokenExchangeException;
 import ppalatjyo.server.global.auth.exception.GitHubEmailFetchingFailedException;
@@ -55,23 +56,28 @@ public class GitHubOAuthService {
         String userEmailUrl = "https://api.github.com/user/emails";
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(accessToken);
+        headers.setBearerAuth(accessToken);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<List> response = restTemplate.exchange(userEmailUrl, HttpMethod.GET, entity, List.class);
-        if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
-            throw new GitHubEmailFetchingFailedException();
-        }
+        try {
+            ResponseEntity<List> response = restTemplate.exchange(userEmailUrl, HttpMethod.GET, entity, List.class);
 
-        // GitHub API는 기본 이메일이 여러 개일 수 있으므로 primary & verified된 것 사용
-        for (Object item : response.getBody()) {
-            if (item instanceof Map emailInfo) {
-                if (Boolean.TRUE.equals(emailInfo.get("primary")) && Boolean.TRUE.equals(emailInfo.get("verified"))) {
-                    return (String) emailInfo.get("email");
+            if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
+                throw new GitHubEmailFetchingFailedException();
+            }
+
+            // GitHub API는 기본 이메일이 여러 개일 수 있으므로 primary & verified된 것 사용
+            for (Object item : response.getBody()) {
+                if (item instanceof Map emailInfo) {
+                    if (Boolean.TRUE.equals(emailInfo.get("primary")) && Boolean.TRUE.equals(emailInfo.get("verified"))) {
+                        return (String) emailInfo.get("email");
+                    }
                 }
             }
+        } catch (RestClientException e) {
+            throw new GitHubEmailFetchingFailedException(e);
         }
 
         throw new GitHubNoPrimaryEmailException();

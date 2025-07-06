@@ -1,4 +1,4 @@
 package ppalatjyo.server.global.auth.exception;
 
-public class GitHubAccessTokenExchangeException extends RuntimeException {
+public class GitHubAccessTokenExchangeException extends GitHubOAuthException {
 }
