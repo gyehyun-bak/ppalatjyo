@@ -1,20 +1,17 @@
 package ppalatjyo.server.domain.userlobby;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ppalatjyo.server.domain.game.domain.Game;
 import ppalatjyo.server.domain.lobby.LobbyRepository;
 import ppalatjyo.server.domain.lobby.LobbyService;
 import ppalatjyo.server.domain.lobby.domain.Lobby;
 import ppalatjyo.server.domain.lobby.exception.LobbyNotFoundException;
+import ppalatjyo.server.domain.message.MessageService;
 import ppalatjyo.server.domain.user.UserRepository;
 import ppalatjyo.server.domain.user.domain.User;
 import ppalatjyo.server.domain.user.exception.UserNotFoundException;
 import ppalatjyo.server.domain.userlobby.dto.JoinLobbyRequestDto;
-import ppalatjyo.server.domain.userlobby.event.UserJoinedLobbyEvent;
-import ppalatjyo.server.domain.userlobby.event.UserLeftLobbyEvent;
 import ppalatjyo.server.domain.userlobby.exception.LobbyIsFullException;
 import ppalatjyo.server.domain.userlobby.exception.LobbyIsInGameException;
 import ppalatjyo.server.domain.userlobby.exception.UserLobbyNotFoundException;
@@ -31,7 +28,7 @@ public class UserLobbyService {
     private final UserRepository userRepository;
     private final LobbyRepository lobbyRepository;
     private final UserLobbyRepository userLobbyRepository;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final MessageService messageService;
     private final LobbyService lobbyService;
 
     /**
@@ -72,7 +69,8 @@ public class UserLobbyService {
 
         userLobbyRepository.save(userLobby);
 
-        applicationEventPublisher.publishEvent(new UserJoinedLobbyEvent(userId, lobbyId));
+        String content = user.getNickname() + "님이 참가하였습니다.";
+        messageService.sendSystemMessage(content, lobbyId);
     }
 
     /**
@@ -96,6 +94,7 @@ public class UserLobbyService {
     private void leave(UserLobby userLobby) {
         userLobby.leave();
 
-        applicationEventPublisher.publishEvent(new UserLeftLobbyEvent(userLobby.getUser().getId(), userLobby.getLobby().getId()));
+        String content = userLobby.getUser().getNickname() + "님이 나갔습니다.";
+        messageService.sendSystemMessage(content, userLobby.getLobby().getId());
     }
 }

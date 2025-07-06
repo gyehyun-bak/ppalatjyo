@@ -7,19 +7,18 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import ppalatjyo.server.domain.game.domain.Game;
 import ppalatjyo.server.domain.lobby.LobbyRepository;
 import ppalatjyo.server.domain.lobby.LobbyService;
 import ppalatjyo.server.domain.lobby.domain.Lobby;
 import ppalatjyo.server.domain.lobby.domain.LobbyOptions;
+import ppalatjyo.server.domain.message.MessageService;
 import ppalatjyo.server.domain.quiz.domain.Question;
 import ppalatjyo.server.domain.quiz.domain.Quiz;
 import ppalatjyo.server.domain.user.UserRepository;
 import ppalatjyo.server.domain.user.domain.User;
 import ppalatjyo.server.domain.userlobby.dto.JoinLobbyRequestDto;
-import ppalatjyo.server.domain.userlobby.event.UserLeftLobbyEvent;
 import ppalatjyo.server.domain.userlobby.exception.LobbyIsFullException;
 import ppalatjyo.server.domain.userlobby.exception.LobbyIsInGameException;
 import ppalatjyo.server.domain.userlobby.exception.WrongLobbyPasswordException;
@@ -37,8 +36,8 @@ class UserLobbyServiceTest {
     @Mock private UserRepository userRepository;
     @Mock private LobbyRepository lobbyRepository;
     @Mock private UserLobbyRepository userLobbyRepository;
-    @Mock private ApplicationEventPublisher applicationEventPublisher;
     @Mock private LobbyService lobbyService;
+    @Mock private MessageService messageService;
 
     @InjectMocks
     private UserLobbyService userLobbyService;
@@ -64,7 +63,8 @@ class UserLobbyServiceTest {
 
         // then
         ArgumentCaptor<UserLobby> captor = ArgumentCaptor.forClass(UserLobby.class);
-        verify(userLobbyRepository, times(1)).save(captor.capture());
+        verify(userLobbyRepository).save(captor.capture());
+        verify(messageService).sendSystemMessage(any(), any());
 
         UserLobby userLobby = captor.getValue();
 
@@ -85,7 +85,7 @@ class UserLobbyServiceTest {
         Question.create(lobby.getQuiz(), "question");
         User user = User.createGuest("user");
 
-        Game game = Game.start(lobby); // 게임 시작
+        Game.start(lobby); // 게임 시작
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
@@ -145,6 +145,7 @@ class UserLobbyServiceTest {
         // then
         ArgumentCaptor<UserLobby> captor = ArgumentCaptor.forClass(UserLobby.class);
         verify(userLobbyRepository).save(captor.capture());
+        verify(messageService).sendSystemMessage(any(), any());
         UserLobby userLobby = captor.getValue();
         assertThat(userLobby.getUser()).isEqualTo(user);
         assertThat(userLobby.getLobby()).isEqualTo(lobby);
@@ -175,7 +176,7 @@ class UserLobbyServiceTest {
     }
 
     @Test
-    @DisplayName("User가 Lobby에서 나감")
+    @DisplayName("User가 Lobby 나감")
     void leave() {
         // given
         Long userId = 1L;
@@ -193,9 +194,9 @@ class UserLobbyServiceTest {
         userLobbyService.leave(userId, lobbyId);
 
         // then
-        verify(applicationEventPublisher, times(1)).publishEvent(any(UserLeftLobbyEvent.class));
         verify(lobbyService).deleteIfEmpty(lobbyId);
         verify(userLobbyRepository).flush();
+        verify(messageService).sendSystemMessage(any(), any());
         assertThat(userLobby.isLeft()).isTrue();
     }
 }
