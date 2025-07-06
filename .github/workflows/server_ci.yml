@@ -49,10 +49,10 @@ jobs:
                     jpa:
                       hibernate:
                         ddl-auto: create
-                    oauth:
-                      github:
-                        client-id: {CLIENT_ID}
-                        client-secret: {CLIENT_SECRET}
+                  oauth:
+                    github:
+                      client-id: CLIENT_ID
+                      client-secret: CLIENT_SECRET
                   EOT
 
             - name: Grant execute permission for gradlew
