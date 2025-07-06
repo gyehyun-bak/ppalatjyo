@@ -1,14 +1,15 @@
-import { useState } from 'react';
-import { addToast, Button } from '@heroui/react';
-import { useNavigate } from 'react-router';
-import { useMutation } from '@tanstack/react-query';
-import { postSignUpGuest } from '../api/auth.api';
-import type { JoinAsGuestRequest } from '../api/types/auth/JoinAsGuestRequest';
-import Input from '../components/common/Input';
+import { useState } from "react";
+import { addToast, Button } from "@heroui/react";
+import { useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { postSignUpGuest } from "../api/auth.api";
+import type { JoinAsGuestRequest } from "../api/types/auth/JoinAsGuestRequest";
+import Input from "../components/common/Input";
+import GitHubLogInButton from "../components/landing/GitHubLogInButton";
 
 export default function LandingPage() {
     const MAX_LENGTH = 10;
-    const [nickname, setNickname] = useState('');
+    const [nickname, setNickname] = useState("");
     const navigate = useNavigate();
 
     const { mutate, isPending } = useMutation({
@@ -16,26 +17,26 @@ export default function LandingPage() {
             return postSignUpGuest({ nickname });
         },
         onSuccess: (data) => {
-            localStorage.setItem('accessToken', data.accessToken);
-            navigate('/home');
+            localStorage.setItem("accessToken", data.accessToken);
+            navigate("/home");
         },
         onError: () => {
             addToast({
-                title: '문제가 발생하였습니다.',
-                color: 'danger',
+                title: "문제가 발생하였습니다.",
+                color: "danger",
             });
         },
     });
 
     const validateNickname = () => {
-        return nickname.trim() != '';
+        return nickname.trim() != "";
     };
 
     const handleContinue = async () => {
         if (validateNickname()) {
             mutate({ nickname });
         } else {
-            mutate({ nickname: '익명' });
+            mutate({ nickname: "익명" });
         }
     };
 
@@ -58,6 +59,7 @@ export default function LandingPage() {
             >
                 계속하기
             </Button>
+            <GitHubLogInButton />
         </div>
     );
 }
