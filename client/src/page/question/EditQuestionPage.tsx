@@ -27,13 +27,10 @@ export default function EditQuestionPage() {
     const { mutate: editMutate, isPending: editIsPending } = useMutation({
         mutationFn: (data: EditQuestionRequest) =>
             editQuestion(quizId as string, questionId as string, data),
+        onSuccess: () => {
+            navigate(`/quizzes/${quizId}/questions/${questionId}`);
+        },
     });
-
-    useEffect(() => {
-        if (!quizId || !questionId) {
-            navigate('/quizzes'); // 퀴즈 목록 페이지로 이동
-        }
-    }, [quizId, questionId, navigate]);
 
     useEffect(() => {
         if (isSuccess && data) {
