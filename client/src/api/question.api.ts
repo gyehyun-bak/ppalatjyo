@@ -43,3 +43,11 @@ export const editQuestion = async (
         )
     ).data;
 };
+
+export const deleteQuestion = async (
+    quizId: number | string,
+    questionId: number | string
+): Promise<void> => {
+    return (await api.delete(`/quizzes/${quizId}/questions/${questionId}`))
+        .data;
+};

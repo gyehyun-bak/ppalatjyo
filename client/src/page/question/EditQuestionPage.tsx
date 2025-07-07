@@ -1,9 +1,23 @@
-import { addToast, Button, Form } from '@heroui/react';
+import {
+    addToast,
+    Button,
+    Form,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    useDisclosure,
+} from '@heroui/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router';
 import Input from '../../components/common/Input';
 import { useEffect, useState } from 'react';
-import { editQuestion, getQuestion } from '../../api/question.api';
+import {
+    deleteQuestion,
+    editQuestion,
+    getQuestion,
+} from '../../api/question.api';
 import { X } from 'lucide-react';
 import type { EditQuestionRequest } from '../../api/types/question/EditQuestionRequest';
 
@@ -16,6 +30,7 @@ export default function EditQuestionPage() {
         quizId: string;
         questionId: string;
     }>();
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const { data, isSuccess } = useQuery({
         queryKey: ['question', questionId],
@@ -29,6 +44,14 @@ export default function EditQuestionPage() {
             editQuestion(quizId as string, questionId as string, data),
         onSuccess: () => {
             navigate(`/quizzes/${quizId}/questions/${questionId}`);
+        },
+    });
+
+    const { mutate: deleteMutate, isPending: deleteIsPending } = useMutation({
+        mutationFn: () =>
+            deleteQuestion(quizId as string, questionId as string),
+        onSuccess: () => {
+            navigate(`/quizzes/${quizId}`);
         },
     });
 
@@ -62,45 +85,89 @@ export default function EditQuestionPage() {
     };
 
     return (
-        <Form onSubmit={handleSubmit}>
-            <Input
-                isRequired
-                value={content}
-                onValueChange={setContent}
-                data-testid="content-input"
-            />
-            <Input
-                value={answer}
-                onValueChange={setAnswer}
-                data-testid="answer-input"
-            />
-            <Button onPress={handleAddAnswer} data-testid="add-answer-button">
-                추가
-            </Button>
-            <ul>
-                {answers.map((answer, index) => (
-                    <li key={index}>
-                        <p>{answer}</p>
-                        <Button
-                            type="button"
-                            onPress={() =>
-                                setAnswers(
-                                    answers.filter((_, i) => i !== index)
-                                )
-                            }
-                        >
-                            <X />
-                        </Button>
-                    </li>
-                ))}
-            </ul>
-            <Button
-                isLoading={editIsPending}
-                type="submit"
-                data-testid="save-button"
-            >
-                저장하기
-            </Button>
-        </Form>
+        <>
+            <Form onSubmit={handleSubmit}>
+                <Input
+                    isRequired
+                    value={content}
+                    onValueChange={setContent}
+                    data-testid="content-input"
+                />
+                <Input
+                    value={answer}
+                    onValueChange={setAnswer}
+                    data-testid="answer-input"
+                />
+                <Button
+                    onPress={handleAddAnswer}
+                    data-testid="add-answer-button"
+                >
+                    추가
+                </Button>
+                <ul>
+                    {answers.map((answer, index) => (
+                        <li key={index}>
+                            <p>{answer}</p>
+                            <Button
+                                type="button"
+                                data-testid="delete-answer-button"
+                                onPress={() =>
+                                    setAnswers(
+                                        answers.filter((_, i) => i !== index)
+                                    )
+                                }
+                            >
+                                <X />
+                            </Button>
+                        </li>
+                    ))}
+                </ul>
+                <Button
+                    type="button"
+                    data-testid="delete-button"
+                    onPress={onOpen}
+                >
+                    삭제하기
+                </Button>
+                <Button
+                    isLoading={editIsPending}
+                    type="submit"
+                    data-testid="save-button"
+                >
+                    저장하기
+                </Button>
+            </Form>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader>질문 삭제하기</ModalHeader>
+                            <ModalBody>
+                                <p>
+                                    정말로 삭제하시겠습니까? 삭제 이후에는
+                                    되돌릴 수 없습니다.
+                                </p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button
+                                    isLoading={deleteIsPending}
+                                    onPress={onClose}
+                                >
+                                    취소하기
+                                </Button>
+                                <Button
+                                    isLoading={deleteIsPending}
+                                    color="danger"
+                                    onPress={() => deleteMutate()}
+                                    data-testid="confirm-delete-button"
+                                >
+                                    삭제하기
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+        </>
     );
 }
