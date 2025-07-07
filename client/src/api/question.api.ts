@@ -1,5 +1,6 @@
 import { api } from './axios';
 import type { CreateQuestionRequest } from './types/question/CreateQuestionRequest';
+import type { EditQuestionRequest } from './types/question/EditQuestionRequest';
 import type { QuestionResponse } from './types/quiz/QuestionResponse';
 
 export const createQuestion = async (
@@ -11,4 +12,42 @@ export const createQuestion = async (
             data,
         })
     ).data;
+};
+
+export const getQuestion = async (
+    quizId: string | number,
+    questionId: string | number,
+    includeAnswers: boolean = false
+): Promise<QuestionResponse> => {
+    return (
+        await api.get<QuestionResponse>(
+            `/quizzes/${quizId}/questions/${questionId}`,
+            {
+                params: { includeAnswers },
+            }
+        )
+    ).data;
+};
+
+export const editQuestion = async (
+    quizId: string | number,
+    questionId: string | number,
+    data: EditQuestionRequest
+): Promise<QuestionResponse> => {
+    return (
+        await api.put<QuestionResponse>(
+            `/quizzes/${quizId}/questions/${questionId}`,
+            {
+                data,
+            }
+        )
+    ).data;
+};
+
+export const deleteQuestion = async (
+    quizId: number | string,
+    questionId: number | string
+): Promise<void> => {
+    return (await api.delete(`/quizzes/${quizId}/questions/${questionId}`))
+        .data;
 };

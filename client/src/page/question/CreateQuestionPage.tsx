@@ -63,7 +63,7 @@ export default function CreateQuestionPage() {
             <ul>
                 {answers.map((answer, index) => (
                     <li key={index}>
-                        {answer}
+                        <p>{answer}</p>
                         <Button
                             type="button"
                             onPress={() =>
