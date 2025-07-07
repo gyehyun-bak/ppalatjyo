@@ -11,6 +11,8 @@ import { http, HttpResponse } from 'msw';
 import type { QuestionResponse } from '../../../api/types/quiz/QuestionResponse';
 import type { CreateQuestionRequest } from '../../../api/types/question/CreateQuestionRequest';
 
+vi.mock('react-router');
+
 describe('CreateQuestionPage', () => {
     const user = userEvent.setup();
     const quizId = 123;
@@ -35,10 +37,10 @@ describe('CreateQuestionPage', () => {
         const questionId = 123;
         renderWithWrapper(<CreateQuestionPage />);
 
-        const contentInput = screen.getByTestId('content-input');
-        const answerInput = screen.getByTestId('answer-input');
-        const addAnswerButton = screen.getByTestId('add-answer-button');
-        const saveButton = screen.getByTestId('save-button');
+        const contentInput = await screen.findByTestId('content-input');
+        const answerInput = await screen.findByTestId('answer-input');
+        const addAnswerButton = await screen.findByTestId('add-answer-button');
+        const saveButton = await screen.findByTestId('save-button');
 
         // when
         await user.type(contentInput, 'content');
