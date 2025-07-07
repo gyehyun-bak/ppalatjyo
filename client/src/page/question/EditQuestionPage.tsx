@@ -1,26 +1,46 @@
 import { addToast, Button, Form } from '@heroui/react';
-import React, { useState } from 'react';
-import Input from '../../components/common/Input';
-import { useMutation } from '@tanstack/react-query';
-import { createQuestion } from '../../api/question.api';
-import type { CreateQuestionRequest } from '../../api/types/question/CreateQuestionRequest';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router';
+import Input from '../../components/common/Input';
+import { useEffect, useState } from 'react';
+import { editQuestion, getQuestion } from '../../api/question.api';
 import { X } from 'lucide-react';
+import type { EditQuestionRequest } from '../../api/types/question/EditQuestionRequest';
 
-export default function CreateQuestionPage() {
-    const { quizId } = useParams<{ quizId: string }>();
+export default function EditQuestionPage() {
     const navigate = useNavigate();
     const [content, setContent] = useState('');
     const [answer, setAnswer] = useState('');
     const [answers, setAnswers] = useState<string[]>([]);
+    const { quizId, questionId } = useParams<{
+        quizId: string;
+        questionId: string;
+    }>();
 
-    const { mutate, isPending } = useMutation({
-        mutationFn: (data: CreateQuestionRequest) =>
-            createQuestion(quizId!, data),
-        onSuccess: (data) => {
-            navigate(`/quizzes/${quizId}/questions/${data.id}`);
-        },
+    const { data, isSuccess } = useQuery({
+        queryKey: ['question', questionId],
+        queryFn: () =>
+            getQuestion(quizId as string, questionId as string, true),
+        enabled: !!quizId && !!questionId,
     });
+
+    const { mutate: editMutate, isPending: editIsPending } = useMutation({
+        mutationFn: (data: EditQuestionRequest) =>
+            editQuestion(quizId as string, questionId as string, data),
+    });
+
+    useEffect(() => {
+        if (!quizId || !questionId) {
+            navigate('/quizzes'); // 퀴즈 목록 페이지로 이동
+        }
+    }, [quizId, questionId, navigate]);
+
+    useEffect(() => {
+        if (isSuccess && data) {
+            setContent(data.content);
+            setAnswers(data.answers.map((answer) => answer.content));
+        }
+    }, [data, isSuccess]);
 
     const handleAddAnswer = () => {
         if (answer.trim() === '') return;
@@ -36,12 +56,12 @@ export default function CreateQuestionPage() {
             return;
         }
 
-        const data: CreateQuestionRequest = {
+        const data: EditQuestionRequest = {
             content,
             answers,
         };
 
-        mutate(data);
+        editMutate(data);
     };
 
     return (
@@ -78,7 +98,7 @@ export default function CreateQuestionPage() {
                 ))}
             </ul>
             <Button
-                isLoading={isPending}
+                isLoading={editIsPending}
                 type="submit"
                 data-testid="save-button"
             >
