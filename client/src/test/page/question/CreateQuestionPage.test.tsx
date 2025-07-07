@@ -11,7 +11,21 @@ import { http, HttpResponse } from 'msw';
 import type { QuestionResponse } from '../../../api/types/quiz/QuestionResponse';
 import type { CreateQuestionRequest } from '../../../api/types/question/CreateQuestionRequest';
 
+const { mockAddToast } = vi.hoisted(() => ({
+    mockAddToast: vi.fn(),
+}));
+
 vi.mock('react-router');
+
+vi.mock('@heroui/react', async () => {
+    const actual = await vi.importActual<typeof import('@heroui/react')>(
+        '@heroui/react'
+    );
+    return {
+        ...actual,
+        addToast: mockAddToast,
+    };
+});
 
 describe('CreateQuestionPage', () => {
     const user = userEvent.setup();
@@ -55,19 +69,32 @@ describe('CreateQuestionPage', () => {
             );
         });
     });
-    it('"답" 입력 칸에 추가할 답을 입력하고 "추가" 버튼을 클릭하면 생성할 답 목록에 추가된다', async () => {
-        // given
-        // when
-        // then
-    });
-    it('추가된 답의 "X" 버튼을 누르면 해당 답을 삭제한다', async () => {
-        // given
-        // when
-        // then
-    });
     it('추가된 답 없이 "저장하기" 버튼을 누르면 "최소 1개의 답이 있어야 합니다" 경고 토스트를 띄운다', async () => {
-        // given
+        server.use(
+            http.post<never, CreateQuestionRequest, QuestionResponse>(
+                `${baseUrl}/quizzes/${quizId}/questions`,
+                () =>
+                    HttpResponse.json({
+                        id: questionId,
+                        content: '',
+                        answers: [],
+                    })
+            )
+        );
+        const questionId = 123;
+        renderWithWrapper(<CreateQuestionPage />);
+
+        const contentInput = await screen.findByTestId('content-input');
+        const saveButton = await screen.findByTestId('save-button');
+
         // when
+        await user.type(contentInput, 'content');
+        await user.click(saveButton);
+
         // then
+        await waitFor(() => {
+            expect(mockNavigate).not.toHaveBeenCalled();
+            expect(mockAddToast).toHaveBeenCalled();
+        });
     });
 });

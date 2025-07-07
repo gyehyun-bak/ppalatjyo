@@ -1,4 +1,4 @@
-import { Button, Form } from '@heroui/react';
+import { addToast, Button, Form } from '@heroui/react';
 import React, { useState } from 'react';
 import Input from '../../components/common/Input';
 import { useMutation } from '@tanstack/react-query';
@@ -22,8 +22,19 @@ export default function CreateQuestionPage() {
         },
     });
 
+    const handleAddAnswer = () => {
+        if (answer.trim() === '') return;
+        setAnswers((prev) => [...prev, answer.trim()]);
+        setAnswer('');
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (answers.length == 0) {
+            addToast({ title: '최소 1개의 답이 있어야 합니다.' });
+            return;
+        }
 
         const data: CreateQuestionRequest = {
             content,
@@ -46,7 +57,9 @@ export default function CreateQuestionPage() {
                 onValueChange={setAnswer}
                 data-testid="answer-input"
             />
-            <Button data-testid="add-answer-button">추가</Button>
+            <Button onPress={handleAddAnswer} data-testid="add-answer-button">
+                추가
+            </Button>
             <ul>
                 {answers.map((answer, index) => (
                     <li key={index}>
