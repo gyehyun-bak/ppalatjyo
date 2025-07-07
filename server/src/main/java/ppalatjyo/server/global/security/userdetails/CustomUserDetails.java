@@ -1,9 +1,9 @@
 package ppalatjyo.server.global.security.userdetails;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ppalatjyo.server.domain.user.domain.User;
-import ppalatjyo.server.domain.user.domain.UserRole;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,13 +20,11 @@ public class CustomUserDetails implements UserDetails {
         return user.getId();
     }
 
-    public UserRole getRole() {
-        return user.getRole();
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(
+                new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+        );
     }
 
     @Override
