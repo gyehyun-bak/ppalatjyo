@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getLobbies } from '../api/lobby.api';
-import LobbyItem from '../components/lobby/LobbyItem';
+import LobbyItem from '../components/LobbyItem';
 import { addToast, Button } from '@heroui/react';
 import { useNavigate } from 'react-router';
 
