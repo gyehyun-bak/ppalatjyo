@@ -1,5 +1,8 @@
 import { userEvent, type UserEvent } from '@testing-library/user-event';
-import { mockUseParams } from '../../../../__mocks__/react-router';
+import {
+    mockNavigate,
+    mockUseParams,
+} from '../../../../__mocks__/react-router';
 import { baseUrl, server } from '../../../mocks/server';
 import { http, HttpResponse } from 'msw';
 import type { QuestionResponse } from '../../../api/types/quiz/QuestionResponse';
@@ -55,5 +58,21 @@ describe('QuestionDetailsPage', () => {
         expect(await screen.findByText(answer1)).toBeVisible();
         expect(await screen.findByText(answer2)).toBeVisible();
     });
-    it('"수정하기" 버튼을 누르면 "문제 수정하기" 페이지로 이동한다', async () => {});
+
+    it('"수정하기" 버튼을 누르면 "문제 수정하기" 페이지로 이동한다', async () => {
+        // given
+        renderWithWrapper(<QuestionDetailsPage />);
+
+        const editButton = await screen.findByTestId('edit-button');
+
+        // when
+        await user.click(editButton);
+
+        // then
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith(
+                `/quizzes/${quizId}/questions/${questionId}/edit`
+            );
+        });
+    });
 });
