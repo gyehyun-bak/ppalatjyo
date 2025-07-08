@@ -18,8 +18,8 @@ import {
     editQuestion,
     getQuestion,
 } from '../../api/question.api';
-import { X } from 'lucide-react';
 import type { EditQuestionRequest } from '../../api/types/question/EditQuestionRequest';
+import AnswerItem from '../../components/AnswerItem';
 
 export default function EditQuestionPage() {
     const navigate = useNavigate();
@@ -84,6 +84,10 @@ export default function EditQuestionPage() {
         editMutate(data);
     };
 
+    const deleteAnswer = (index: number) => {
+        setAnswers(answers.filter((_, i) => i !== index));
+    };
+
     return (
         <>
             <Form onSubmit={handleSubmit}>
@@ -106,20 +110,12 @@ export default function EditQuestionPage() {
                 </Button>
                 <ul>
                     {answers.map((answer, index) => (
-                        <li key={index}>
-                            <p>{answer}</p>
-                            <Button
-                                type="button"
-                                data-testid="delete-answer-button"
-                                onPress={() =>
-                                    setAnswers(
-                                        answers.filter((_, i) => i !== index)
-                                    )
-                                }
-                            >
-                                <X />
-                            </Button>
-                        </li>
+                        <AnswerItem
+                            key={index}
+                            answer={answer}
+                            index={index}
+                            deleteAnswer={deleteAnswer}
+                        />
                     ))}
                 </ul>
                 <Button
