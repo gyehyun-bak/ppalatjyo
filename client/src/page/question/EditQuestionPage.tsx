@@ -18,7 +18,6 @@ import {
     editQuestion,
     getQuestion,
 } from '../../api/question.api';
-import { X } from 'lucide-react';
 import type { EditQuestionRequest } from '../../api/types/question/EditQuestionRequest';
 import AnswerItem from '../../components/AnswerItem';
 
@@ -114,6 +113,7 @@ export default function EditQuestionPage() {
                         <AnswerItem
                             key={index}
                             answer={answer}
+                            index={index}
                             deleteAnswer={deleteAnswer}
                         />
                     ))}

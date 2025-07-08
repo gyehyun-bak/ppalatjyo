@@ -1,23 +1,32 @@
 import { Button, Card, CardBody } from '@heroui/react';
-import type { AnswerResponse } from '../api/types/quiz/AnswerResponse';
+import { X } from 'lucide-react';
 
 interface AnswerItemProps {
-    answer: AnswerResponse;
-    deleteAnswer: (answer: AnswerResponse) => void;
+    answer: string;
+    index: number;
+    deletable?: boolean;
+    deleteAnswer?: (index: number) => void;
 }
 
-export default function AnswerItem({ answer, deleteAnswer }: AnswerItemProps) {
+export default function AnswerItem({
+    answer,
+    index,
+    deletable = true,
+    deleteAnswer,
+}: AnswerItemProps) {
     return (
         <Card>
             <CardBody>
-                <p>{answer.content}</p>
-                <Button
-                    type="button"
-                    data-testid="delete-answer-button"
-                    onPress={() => deleteAnswer(answer)}
-                >
-                    <X />
-                </Button>
+                <p>{answer}</p>
+                {deletable && (
+                    <Button
+                        type="button"
+                        data-testid="delete-answer-button"
+                        onPress={() => deleteAnswer?.(index)}
+                    >
+                        <X />
+                    </Button>
+                )}
             </CardBody>
         </Card>
     );

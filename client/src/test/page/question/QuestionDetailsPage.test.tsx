@@ -51,12 +51,7 @@ describe('QuestionDetailsPage', () => {
         renderWithWrapper(<QuestionDetailsPage />);
 
         // then
-        const contentInput = await screen.findByTestId('content-input');
-
-        await waitFor(() => {
-            expect(contentInput).toHaveValue(content);
-        });
-
+        expect(await screen.findByText(content)).toBeVisible();
         expect(await screen.findByText(answer1)).toBeVisible();
         expect(await screen.findByText(answer2)).toBeVisible();
     });
