@@ -7,6 +7,24 @@
 
 [프로젝트 소개 블로그](https://velog.io/@gyehyunbak/Ppalatjyo)
 
+## 프로젝트 목표 및 핵심결과(Objective and Key Results)
+
+> O: 많은 사람들에게 도움과 즐거움을 주는 애플리케이션 만들기
+>
+> - KR1: 신규 유저 수 1000명 이상 - NewComer
+> - KR2: 재방문률(Retention) 50% 이상, 재방문 유저 500명 이상 - Regular
+> - KR3: 컨텐츠 생성 유저 100명 이상 - Creator
+> - KR4: 피드백 제공 유저 20명 이상 - Contributor
+> - KR5: 총 게임 플레이 횟수 2000회 이상
+
+> O: 대용량 트래픽에서도 안정적인 실시간 서비스 만들기
+>
+> - KR1: 핵심 API의 10만 TPS에서 200ms 이하 응답 속도 유지
+> - KR2: 동시 접속자 10만 명에서 웹소켓 메시지 수신 성공률 99.9% 이상 유지
+> - KR3: 무중단 배포로 99.99% 가용성 달성
+> - KR4: 자동 장애 복구 시간 1분 이내
+> - KR5: 핵심 비즈니스 로직 테스트 커버리지 90% 이상 유지
+
 ## 기능 소개
 
 ![image](https://github.com/user-attachments/assets/8a753f4a-38f8-4808-b518-cacf505b4904)
