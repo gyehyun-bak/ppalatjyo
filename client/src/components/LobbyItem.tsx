@@ -1,4 +1,4 @@
-import type { LobbyResponse } from '../../api/types/lobby/LobbyResponse';
+import type { LobbyResponse } from "../api/types/lobby/LobbyResponse";
 
 interface LobbyItemProps {
     lobby: LobbyResponse;
