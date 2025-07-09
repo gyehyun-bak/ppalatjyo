@@ -6,11 +6,11 @@ import HomePage from "./page/HomePage";
 import HomeLayout from "./layout/HomeLayout";
 import BottomNavigationLayout from "./layout/BottomNavigationLayout";
 import QuizPage from "./page/QuizPage";
-import ProfilePage from "./page/ProfilePage";
 import AuthenticationLayout from "./layout/AuthenticationLayout";
 import CreateLobbyPage from "./page/lobby/CreateLobbyPage";
 import QuizDetailsPage from "./page/quiz/QuizDetailsPage";
 import GitHubCallbackPage from "./page/auth/GitHubCallbackPage";
+import ProfilePage from "./page/profile/ProfilePage";
 
 function App() {
     return (
