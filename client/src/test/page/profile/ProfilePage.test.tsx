@@ -45,7 +45,7 @@ describe("ProfilePage", () => {
 
         // then
         await waitFor(() => {
-            expect(mockNavigate).toHaveBeenCalledWith("/profile/edit/nickname");
+            expect(mockNavigate).toHaveBeenCalledWith("/profile/edit");
         });
     });
 

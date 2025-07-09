@@ -20,9 +20,9 @@ export default function ProfilePage() {
             )}
             <Button
                 aria-label="edit-nickname"
-                onPress={() => navigate("/profile/edit/nickname")}
+                onPress={() => navigate("/profile/edit")}
             >
-                닉네임 수정
+                프로필 수정
             </Button>
             <Button aria-label="log-out" onPress={() => navigate("/logout")}>
                 로그아웃
