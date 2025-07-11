@@ -63,4 +63,19 @@ describe("ProfilePage", () => {
             expect(mockNavigate).toHaveBeenCalledWith("/logout");
         });
     });
+
+    it("'멤버로 전환' 버튼을 클릭하면 멤버로 전환 페이지로 이동한다", async () => {
+        // given
+        renderWithWrapper(<ProfilePage />);
+        const toMemberButton = await screen.findByTestId("to-member-button");
+        const user = userEvent.setup();
+
+        // when
+        await user.click(toMemberButton);
+
+        // then
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith("/profile/to-member");
+        });
+    });
 });
