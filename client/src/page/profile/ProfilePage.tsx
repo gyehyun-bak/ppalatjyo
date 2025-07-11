@@ -27,6 +27,12 @@ export default function ProfilePage() {
             <Button aria-label="log-out" onPress={() => navigate("/logout")}>
                 로그아웃
             </Button>
+            <Button
+                data-testid="to-member-button"
+                onPress={() => navigate("/profile/to-member")}
+            >
+                멤버로 전환
+            </Button>
         </div>
     );
 }
