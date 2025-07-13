@@ -27,3 +27,7 @@ export const joinAsMemberByGitHub = async (
         )
     ).data;
 };
+
+export const logOut = async (): Promise<void> => {
+    return (await api.post("/auth/log-out")).data;
+};
